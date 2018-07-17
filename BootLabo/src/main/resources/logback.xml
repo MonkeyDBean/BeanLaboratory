@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!--<property name="log_path" value="./../../log/"/>-->
+    <property name="log_name" value="BootLabo"/>
+
+    <!-- 控制台输出日志 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d [Thread:%thread] %-36logger{36} L%-4line %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 所有日志输出到文件 -->
+    <appender name="ServerFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${log_name}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [Thread:%thread] %-36logger{36} L%-4line %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- error日志单独记录到文件 -->
+    <appender name="ServerErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/%d{yyyy-MM-dd}/${log_name}.error.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [Thread:%thread] %logger\(%file:%line\) %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 全局日志级别, 如需调整,修改这里 -->
+    <root level="DEBUG">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="ServerFile"/>
+        <appender-ref ref="ServerErrorFile"/>
+    </root>
+
+</configuration>

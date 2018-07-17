@@ -1,0 +1,33 @@
+.container{
+	padding:30px;
+	text-align: center;
+}
+.img-box{
+	width: 100px;
+	height: 100px;
+	position: relative;
+	overflow: hidden;
+	border:solid 1px #ccc;
+	border-radius: 10px;
+}
+.img-box>img,
+.icon-cheng1-copy{
+	position: absolute;
+	width: 100%;
+	height: auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	margin:auto;
+}
+
+.icon-cheng1-copy{
+	font-size: 40px;
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+.upload-input{
+	display: none !important;
+}

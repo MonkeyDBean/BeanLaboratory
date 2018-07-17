@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monkeybean.labo.dao.LaboDataDao">
+
+    <select id="queryAccountInfo" resultType="HashMap" parameterType="HashMap">
+        select
+        *, date_format(forbid_time, "%Y-%m-%d %T") as forbidTime_format
+        from
+        account
+        <where>
+            <choose>
+                <when test="email != null">
+                    email = #{email}
+                </when>
+                <when test="phone != null">
+                    phone = #{phone}
+                </when>
+                <otherwise>
+                    account_id = #{accountId}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="queryMaxAccountId" resultType="Integer">
+        select
+        MAX(account_id)
+        from
+        account;
+    </select>
+
+    <select id="queryListByArray" parameterType="HashMap" resultType="HashMap">
+        select
+        id, phone
+        from
+        ${table}
+        where
+        phone in
+        <foreach collection="array" index = "index" item = "item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateAccountInfo" parameterType="HashMap">
+        update
+        account
+        <set>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="ipv4 != null">
+                ipv4 = #{ipv4},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime},
+            </if>
+        </set>
+        <where>
+            <choose>
+                <when test="phoneParam != null">
+                    phone = #{phoneParam}
+                </when>
+                <otherwise>
+                    account_id = #{accountId}
+                </otherwise>
+            </choose>
+        </where>
+    </update>
+
+    <insert id="addAccountInfo" parameterType="HashMap">
+        insert into
+        account(account_id, phone, password, nickname, ipv4, login_time, create_time)
+        values
+        (#{accountId}, #{phone}, #{password}, #{nickname}, #{ipv4}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    </insert>
+
+    <select id="queryLatestMessageRecord" resultType="HashMap" parameterType="HashMap">
+        select
+        *
+        from
+        message_record
+        <where>
+            id = (select max(id) from message_record where phone = #{phone})
+            <if test="verifyStatus != null">
+                and verify_status = #{verifyStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryTodayMessageApplyCount" resultType="Integer" parameterType="String">
+        select
+        count(*)
+        from
+        message_record
+        where
+        phone = #{phone} and date_format(create_time,'%Y-%m-%d') = date_format(now(),'%Y-%m-%d');
+    </select>
+
+    <update id="updateMessageRecord" parameterType="String">
+        update
+        message_record
+        set
+        verify_status = 1
+        where
+        phone = #{phone}
+        order by
+        create_time desc
+        limit 1;
+    </update>
+
+    <insert id="addMessageRecord" parameterType="HashMap">
+        insert into
+        message_record(phone, message_code, res_code, res_custom, create_time)
+        values
+        (#{phone}, #{messageCode}, #{resCode}, #{resCustom}, CURRENT_TIMESTAMP);
+    </insert>
+
+    <select id="queryTempAsset" parameterType="String" resultType="HashMap">
+        select
+        *
+        from
+        asset_temp
+        where
+        file_name = #{fileName};
+    </select>
+
+    <insert id="addNewTempAsset" parameterType="HashMap">
+        insert into
+        asset_temp(account_id, file_name, cover)
+        values
+        (#{accountId}, #{fileName}, #{cover});
+    </insert>
+
+    <delete id="clearTempAssetBeforeDate" parameterType="String">
+        delete from
+        asset_temp
+        where
+        date_format(create_time, "%Y-%m-%d") &lt; #{dateStr};
+    </delete>
+
+    <select id="queryImageInfoList" parameterType="HashMap" resultType="HashMap">
+        select
+        *, date_format(create_time,'%Y-%m-%d %T') as createTime_format
+        from
+        image_info
+        <where>
+            is_delete = 0
+            <if test="fileHash != null">
+                and file_hash = #{fileHash}
+            </if>
+            <if test="accountId != null">
+                and account_id = #{accountId}
+            </if>
+            <if test="isShare != null">
+                and is_share = #{isShare}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+        </where>
+        order by
+        create_time desc
+        <if test="limit != null and offset != null">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="queryImageInfoCount" parameterType="HashMap" resultType="Integer">
+        select
+        count(*)
+        from
+        image_info
+        <where>
+            is_delete = 0
+            <if test="fileHash != null">
+                and file_hash = #{fileHash}
+            </if>
+            <if test="accountId != null">
+                and account_id = #{accountId}
+            </if>
+            <if test="isShare != null">
+                and is_share = #{isShare}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateImageInfo" parameterType="HashMap">
+        update
+        image_info
+        <set>
+            <if test="fileName != null">
+                file_name = #{fileName},
+            </if>
+            <if test="fileDes != null">
+                file_des = #{fileDes},
+            </if>
+        </set>
+        where account_id = #{accountId};
+    </update>
+
+    <update id="updateImageListStatus" parameterType="HashMap">
+        update
+        image_info
+        <set>
+            <if test="isShare != null">
+                is_share = #{isShare},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+        </set>
+        where account_id = #{accountId}
+        and id in
+        <foreach collection="idList" index = "index" item = "item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <insert id="addImageInfo" parameterType="HashMap">
+        insert into
+        image_info(account_id, file_name, file_hash, store_path, access_path, create_time)
+        values
+        (#{accountId}, #{fileName}, #{fileHash}, #{storePath}, #{accessPath}, CURRENT_TIMESTAMP);
+    </insert>
+
+    <insert id="addMultiImage" parameterType="HashMap">
+        insert into
+        image_info(account_id, file_name, file_hash, store_path, access_path, create_time) VALUES
+        <foreach collection="imageList" item="item" index="index" separator=",">
+            (#{accountId}, #{item.fileName}, #{item.fileHash}, #{item.storePath}, #{item.accessPath}, CURRENT_TIMESTAMP)
+        </foreach>
+    </insert>
+
+    <select id="queryProjectInfoList" parameterType="HashMap" resultType="HashMap">
+        select
+        *
+        from
+        other_project_info
+        <where>
+            <if test="projectType != null">
+                and project_type = #{projectType}
+            </if>
+        </where>
+        order by
+        create_time desc
+        <if test="limit != null and offset != null">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="queryProjectInfoCount" parameterType="Integer" resultType="Integer">
+        select
+        count(*)
+        from
+        other_project_info
+        <where>
+            <if test="projectType != null">
+                and project_type = #{projectType}
+            </if>
+        </where>
+    </select>
+
+</mapper>
