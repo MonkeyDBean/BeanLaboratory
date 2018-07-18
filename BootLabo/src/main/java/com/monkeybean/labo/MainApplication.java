@@ -13,9 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 /**
+ * 若打成war包，需继承SpringBootServletInitializer
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @SpringBootApplication
+//public class MainApplication extends SpringBootServletInitializer {
 public class MainApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(MainApplication.class);
@@ -28,9 +31,22 @@ public class MainApplication {
     }
 
     public static void main(String[] args) {
+
         SpringApplicationBuilder builder = new SpringApplicationBuilder(MainApplication.class);
         builder.bannerMode(Banner.Mode.LOG).run(args);
+
+//        //若打成war包，已重写的SpringApplicationBuilder，直接起应用
+//        SpringApplication.run(MainApplication.class, args);
     }
+
+//    /**
+//     * 若打成war包，则重写SpringApplicationBuilder的构建
+//     */
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder applicationBuilder) {
+//        applicationBuilder.bannerMode(Banner.Mode.LOG);
+//        return applicationBuilder.sources(MainApplication.class);
+//    }
 
     // 配置filter实现前端的跨域访问
     @Bean
@@ -50,6 +66,9 @@ public class MainApplication {
         return registration;
     }
 
+//    /**
+//     * 文件上传配置，在配置文件中配置即可，此处无需再次配置
+//     */
 //    @Bean
 //    public MultipartConfigElement multipartConfigElement() {
 //        MultipartConfigFactory factory = new MultipartConfigFactory();

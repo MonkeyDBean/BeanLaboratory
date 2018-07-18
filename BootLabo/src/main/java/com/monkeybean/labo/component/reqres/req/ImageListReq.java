@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**
- * Created by zhangbin on 2018/7/3.
+ * Created by MonkeyBean on 2018/7/3.
  */
 public class ImageListReq {
 

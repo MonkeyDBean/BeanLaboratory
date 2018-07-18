@@ -114,13 +114,13 @@ public class DateUtil {
     }
 
     /**
-     * 判断日期间隔是否在最近一个月内
+     * 判断日期间隔是否在最近n个月内
      *
      * @param dateFrom 开始时间(格式: yyyy-MM-dd)
      * @param dataTo   结束时间(格式: yyyy-MM-dd)
-     * @return 后者日期在前者日期之前，且在最近一月内返回true
+     * @return 后者日期在前者日期之前，且在最近n个月内返回true
      */
-    public static boolean checkOneMonthLegal(String dateFrom, String dataTo) {
+    public static boolean checkNMonthLegal(String dateFrom, String dataTo, int nMonths) {
         Calendar fromCalendar = Calendar.getInstance(TimeZone.getDefault());
         fromCalendar.setTime(DateUtil.dateStr2Date(dateFrom));
         Calendar endCalendar = Calendar.getInstance(TimeZone.getDefault());
@@ -128,7 +128,7 @@ public class DateUtil {
         if (!fromCalendar.after(endCalendar)) {
             Calendar standardCalendar = Calendar.getInstance(TimeZone.getDefault());
             boolean endLegal = !endCalendar.after(standardCalendar);
-            standardCalendar.add(Calendar.MONTH, -1);
+            standardCalendar.add(Calendar.MONTH, -nMonths);
             boolean startLegal = !standardCalendar.after(fromCalendar);
             return endLegal && startLegal;
         }

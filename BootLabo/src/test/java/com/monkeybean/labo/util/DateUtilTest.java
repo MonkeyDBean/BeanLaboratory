@@ -23,7 +23,7 @@ public class DateUtilTest {
     public void checkOneMonthLegal() {
         String dateFrom = "2018-06-10";
         String dateTo = "2018-07-09";
-        System.out.println("checkOneMonthLegal result：" + DateUtil.checkOneMonthLegal(dateFrom, dateTo));
+        System.out.println("checkOneMonthLegal result：" + DateUtil.checkNMonthLegal(dateFrom, dateTo, 2));
     }
 
 }

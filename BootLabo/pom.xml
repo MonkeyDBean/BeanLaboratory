@@ -14,6 +14,7 @@
     <groupId>com.monkeybean</groupId>
     <artifactId>BootLabo</artifactId>
     <packaging>jar</packaging>
+    <!--<packaging>war</packaging>-->
     <version>1.0</version>
 
     <name>BootLabo</name>
@@ -24,7 +25,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jarName>BootLabo</jarName>
+        <packageName>BootLabo</packageName>
     </properties>
 
     <dependencies>
@@ -202,7 +203,7 @@
     </dependencies>
 
     <build>
-        <finalName>${jarName}</finalName>
+        <finalName>${packageName}</finalName>
         <plugins>
 
             <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
@@ -216,6 +217,12 @@
             </plugin>
 
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- 若打成war包，则需注释如下jar plugin -->
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
@@ -224,10 +231,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
 
             <!-- generate release package -->
             <plugin>
@@ -235,7 +238,6 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
                 <executions>
-
                     <execution>
                         <id>clean</id>
                         <phase>clean</phase>
@@ -251,7 +253,6 @@
                             </tasks>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>package</id>
                         <phase>package</phase>
@@ -302,7 +303,6 @@
                             </target>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
         </plugins>
