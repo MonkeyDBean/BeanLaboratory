@@ -60,6 +60,16 @@ public class OtherConfig {
      */
     private int mailSendMaxNum;
 
+    /**
+     * 心知天气 user id
+     */
+    private String weatherUserId;
+
+    /**
+     * 心知天气，api key
+     */
+    private String weatherApiKey;
+
     public String getSqlSalt() {
         return sqlSalt;
     }
@@ -138,5 +148,21 @@ public class OtherConfig {
 
     public void setMailSendMaxNum(int mailSendMaxNum) {
         this.mailSendMaxNum = mailSendMaxNum;
+    }
+
+    public String getWeatherUserId() {
+        return weatherUserId;
+    }
+
+    public void setWeatherUserId(String weatherUserId) {
+        this.weatherUserId = weatherUserId;
+    }
+
+    public String getWeatherApiKey() {
+        return weatherApiKey;
+    }
+
+    public void setWeatherApiKey(String weatherApiKey) {
+        this.weatherApiKey = weatherApiKey;
     }
 }

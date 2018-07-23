@@ -425,7 +425,7 @@ public class IdentityService {
      */
     public boolean sendMail(String mailTo, String activeUrl) {
         final String subject = "账户邮箱激活";
-        String content = "<html><body><h3>通用WebBeanApp邮箱绑定：<a href=" + activeUrl + ">激活地址</a></h3></body></html>";
+        String content = "<html><body><h3>欢迎使用MonkeyBean&Sherry小系统, 邮箱绑定，请点击：<a href=" + activeUrl + ">激活地址</a></h3></body></html>";
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);

@@ -5,7 +5,6 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
 import java.util.UUID;
 
 /**
@@ -17,10 +16,6 @@ public class ZXingUtilTest {
     public void decodeQRCode() throws Exception {
         String content = "http://monkeybean.cn/";
         String format = "png";
-
-        //home
-//        String filePath = "C:/Users/dell/Desktop/test_img";
-
         String filePath = "C:/Users/Administrator/Desktop/test_img";
         File dirPath = new File(filePath);
         if (!dirPath.exists()) {

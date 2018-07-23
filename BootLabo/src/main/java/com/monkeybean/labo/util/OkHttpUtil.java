@@ -65,6 +65,15 @@ public class OkHttpUtil {
     }
 
     /**
+     * 用于单元测试调用，初始化OkHttpClient
+     */
+    public static void initClient() {
+        if (client == null) {
+            client = new OkHttpClient.Builder().build();
+        }
+    }
+
+    /**
      * Http Get 同步请求
      *
      * @param url 请求地址

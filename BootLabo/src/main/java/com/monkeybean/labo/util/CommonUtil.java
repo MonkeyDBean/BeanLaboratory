@@ -38,13 +38,25 @@ public class CommonUtil {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(d);
     }
-
     public static String getString2(int value) {
         return getString2(String.valueOf(value));
     }
-
     public static String getString2(double value) {
         return getString2(String.valueOf(value));
+    }
+
+    /**
+     * 获取数字某位的值
+     *
+     * @param num 数字
+     * @param index 0:个位,1:十位,2:百位...
+     * @return 返回数字某位，参数不合法则返回0
+     */
+    public static int getNum(int num, int index) {
+        if(index < 0){
+            return 0;
+        }
+        return (num / (int)Math.pow(10, index)) % 10;
     }
 
 }
