@@ -119,7 +119,7 @@ public class ZXingUtil {
     }
 
     /**
-     * 添加logo
+     * 添加logo，二维码有自我修复功能，可遮挡最多30%
      */
     public static BufferedImage addLogoToImage(BufferedImage image, String path) {
         Graphics2D g2 = image.createGraphics();
@@ -137,7 +137,6 @@ public class ZXingUtil {
             RoundRectangle2D.Float round = new RoundRectangle2D.Float(width / 5 * 2, height / 5 * 2, width / 5, height / 5, 20, 20);
             g2.setColor(Color.white);
             g2.draw(round);
-
 
             //设置灰色边框
             BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);

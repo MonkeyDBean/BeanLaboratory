@@ -98,4 +98,19 @@ public interface LaboDataDao {
 
     Integer queryProjectInfoCount(@Param("projectType") Integer projectType);
 
+    /**
+     * config_info表，query
+     */
+    String queryConfigValue(@Param("configName") String configName);
+
+    /**
+     * config_info表，update
+     */
+    void updateConfigValue(HashMap<String, Object> param);
+
+    /**
+     * config_info表，insert
+     */
+    void addConfigInfo(HashMap<String, Object> param);
+
 }

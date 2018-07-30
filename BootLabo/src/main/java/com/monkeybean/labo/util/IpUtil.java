@@ -50,7 +50,7 @@ public class IpUtil {
         }
 
         //默认将本地地址设置为北京
-        if("127.0.0.1".equals(ip) || "0.0.0.0".equals(ip)) {
+        if ("127.0.0.1".equals(ip) || "0.0.0.0".equals(ip)) {
             return "beijing";
         }
         try {

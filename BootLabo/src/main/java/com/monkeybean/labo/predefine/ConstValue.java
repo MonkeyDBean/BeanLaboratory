@@ -1,5 +1,7 @@
 package com.monkeybean.labo.predefine;
 
+import java.util.HashSet;
+
 /**
  * 常量值
  * <p>
@@ -81,7 +83,23 @@ public class ConstValue {
     /**
      * 初始账户id
      */
-    public static final int ID_START = 100000;
+    public static final int ID_START = 600;
+    /**
+     * 配置表，种子基数配置名称
+     */
+    public static final String idBaseName = "idBaseSeed";
+    /**
+     * 预留账户Id，尾数及位数和
+     */
+    public static final HashSet<Integer> reservedIdTail = new HashSet<Integer>() {{
+        add(6);
+        add(8);
+    }};
+    public static final HashSet<Integer> reservedIdSum = new HashSet<Integer>() {{
+        add(6);
+        add(12);
+        add(24);
+    }};
     /**
      * 图片访问权限类型，0为仅私有，1为共享, 2为所有
      */

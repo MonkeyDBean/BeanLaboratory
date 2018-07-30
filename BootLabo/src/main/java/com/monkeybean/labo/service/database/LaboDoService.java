@@ -360,4 +360,36 @@ public class LaboDoService {
         return laboDao.queryProjectInfoCount(projectType);
     }
 
+    /**
+     * 查询账户Id当前种子基数
+     *
+     * @return 不存在则返回null
+     */
+    public Integer queryIdBaseSeed() {
+        String configValue = laboDao.queryConfigValue(ConstValue.idBaseName);
+        return configValue != null ? Integer.valueOf(configValue) : null;
+    }
+
+    /**
+     * 更新账户Id的种子基数
+     *
+     * @param idSeed 种子基数
+     */
+    public void updateIdBaseSeed(Integer idSeed) {
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("configName", ConstValue.idBaseName);
+        param.put("configValue", String.valueOf(idSeed));
+        laboDao.updateConfigValue(param);
+    }
+
+    /**
+     * 新增账户Id的种子基数配置
+     */
+    public void addIdBaseSeed(String configValue) {
+        HashMap<String, Object> param = new HashMap<>();
+        param.put("configName", ConstValue.idBaseName);
+        param.put("configValue", configValue);
+        laboDao.addConfigInfo(param);
+    }
+
 }

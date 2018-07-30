@@ -209,7 +209,8 @@ public class IdentityService {
         //添加新账户
         String dbPwd = Coder.encryptPassWithSlat(password, otherConfig.getSqlSalt());
         String ip = IpUtil.getIpAddress(request);
-        Integer newAccountId = generateNewId();
+//        Integer newAccountId = generateNewId();
+        Integer newAccountId = publicService.getNewAccountId();
         laboDoService.addAccountInfo(newAccountId, phone, dbPwd, name, ip);
 
         //身份信息写入session

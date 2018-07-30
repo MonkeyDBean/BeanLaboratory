@@ -269,4 +269,27 @@
         </where>
     </select>
 
+    <select id="queryConfigValue" parameterType="String" resultType="String">
+        select
+        config_value
+        from
+        config_info
+        where
+        config_name = #{configName};
+    </select>
+
+    <update id="updateConfigValue" parameterType="HashMap">
+        update
+        config_info
+        set config_value = #{configValue}
+        where config_name = #{configName};
+    </update>
+
+    <insert id="addConfigInfo" parameterType="HashMap">
+        insert into
+        config_info(config_value, config_name, create_time)
+        values
+        (#{configValue}, #{configName}, CURRENT_TIMESTAMP);
+    </insert>
+
 </mapper>

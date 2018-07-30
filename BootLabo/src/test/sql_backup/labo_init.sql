@@ -87,6 +87,16 @@ CREATE TABLE IF NOT EXISTS `update_version` (
   UNIQUE KEY `update_version` (`update_version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据库更新记录表';
 
+-- 表 config_info --
+CREATE TABLE IF NOT EXISTS `config_info` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增索引',
+  `config_name` varchar(255) NOT NULL COMMENT '配置名称',
+  `config_value` varchar(255) DEFAULT NULL COMMENT '属性值',
+  `create_time` datetime NOT NULL COMMENT '记录创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='配置信息表';
+
 -- 更新日志 --
 INSERT INTO `update_version`(`update_version`, `update_log`)
   SELECT '1', '数据库初始化'
