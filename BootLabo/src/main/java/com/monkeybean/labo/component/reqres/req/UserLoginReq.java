@@ -2,6 +2,7 @@ package com.monkeybean.labo.component.reqres.req;
 
 import com.monkeybean.labo.predefine.ConstValue;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -25,7 +26,7 @@ public class UserLoginReq {
     /**
      * google reCaptcha response
      */
-    @NotNull
+    @NotBlank
     private String response;
 
     @Pattern(regexp = ConstValue.LEGAL_BOOLEAN, message = "必须为boolean类型，不区分大小写")

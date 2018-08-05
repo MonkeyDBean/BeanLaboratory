@@ -23,12 +23,12 @@ public class AccountInfoRes {
     /**
      * 头像
      */
-    private byte[] avatar;
+    private String avatar;
 
     public AccountInfoRes() {
     }
 
-    public AccountInfoRes(String phone, String nickname, String email, byte[] avatar) {
+    public AccountInfoRes(String phone, String nickname, String email, String avatar) {
         this.phone = phone;
         this.nickname = nickname;
         this.email = email;
@@ -59,12 +59,11 @@ public class AccountInfoRes {
         this.email = email;
     }
 
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
 }

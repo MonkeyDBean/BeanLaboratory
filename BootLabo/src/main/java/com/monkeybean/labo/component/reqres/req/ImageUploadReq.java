@@ -2,7 +2,8 @@ package com.monkeybean.labo.component.reqres.req;
 
 import com.monkeybean.labo.predefine.ConstValue;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -14,14 +15,14 @@ public class ImageUploadReq {
     /**
      * base64编码的图片
      */
-    @NotEmpty
+    @NotBlank
     private String file64;
 
     /**
      * 文件名
      */
     @Pattern(regexp = ConstValue.LEGAL_IMAGE_NAME, message = "必须为合法图片名")
-    @NotEmpty
+    @NotNull
     @Size(max = 50)
     private String name;
 

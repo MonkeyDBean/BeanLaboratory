@@ -7,7 +7,6 @@ import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.util.IpUtil;
 import com.monkeybean.labo.util.ReCaptchaUtil;
-import com.monkeybean.labo.util.ZXingUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,25 +111,5 @@ public class TestController {
         List<HashMap<String, Object>> resultList = laboDataDao.queryListByArray(param);
         return new Result<>(ReturnCode.SUCCESS, resultList);
     }
-
-    /**
-     * 测试生成二维码
-     */
-    @ApiOperation(value = "测试Google ZXing生成二维码")
-    @GetMapping(path = "code/zxing/generate")
-    public void generateZXingCode(@RequestParam(value = "content") String content, @RequestParam(value = "format") String format,
-                                  @RequestParam(value = "width") int width, @RequestParam(value = "height") int height,
-                                  @RequestParam(value = "fill") boolean fill, HttpServletResponse response) {
-        try {
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType("image/" + format);
-            ZXingUtil.generateQRCode(content, format, width, height, response.getOutputStream(), fill);
-        } catch (IOException e) {
-            logger.error("ServletOutputStream, IOException: {}", e);
-        }
-    }
-
 
 }

@@ -271,7 +271,7 @@ public class IdentityService {
         accountInfoRes.setNickname(accountInfo.get("nickname").toString());
         accountInfoRes.setEmail((String) accountInfo.get("email"));
         if (accountInfo.get("avatar") != null) {
-            accountInfoRes.setAvatar((byte[]) accountInfo.get("avatar"));
+            accountInfoRes.setAvatar(Base64.encodeBase64String((byte[]) accountInfo.get("avatar")));
         }
         return new Result<>(ReturnCode.SUCCESS, accountInfoRes);
     }

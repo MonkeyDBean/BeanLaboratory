@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -46,13 +47,12 @@ public class OperationController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sharetype", value = "图片共享类型，0为私有，1为共享, 2为账户所有图片", required = true, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "current", value = "当前页，第一页为1", required = true, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "size", value = "每页数量", required = true, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "total", value = "查询的记录总数,首次请求即第一页时传任意非负整数，非首页传后端返回的定值", required = true, dataType = "int", paramType = "query")
+            @ApiImplicitParam(name = "size", value = "每页数量", required = true, dataType = "int", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @GetMapping(value = "list/image/get")
     public Result<HashMap<String, Object>> getImageList(@Valid ImageListReq reqModel, HttpSession session) {
-        return operationService.getImageList(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getSharetypeInt(), reqModel.getCurrentInt(), reqModel.getSizeInt(), reqModel.getTotalInt());
+        return operationService.getImageList(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getSharetypeInt(), reqModel.getCurrentInt(), reqModel.getSizeInt());
     }
 
     @ApiOperation(value = "更新图片名称及图片描述")
@@ -78,10 +78,10 @@ public class OperationController {
         return operationService.changeImageStatus(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getId(), reqModel.getOperateInt());
     }
 
-    @ApiOperation(value = "多张图片上传")
+    @ApiOperation(value = "多张图片上传, 最多9张")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/multi/upload")
-    public Result<HashMap<String, String>> uploadMultiImage(@RequestParam(value = "fileImg") MultipartFile[] fileImg, HttpSession session) {
+    public Result<List<String>> uploadMultiImage(@RequestParam(value = "fileImg") MultipartFile[] fileImg, HttpSession session) {
         return operationService.uploadMultiImage(Integer.parseInt(session.getAttribute("accountId").toString()), fileImg);
     }
 
@@ -97,8 +97,5 @@ public class OperationController {
     public Result<HashMap<String, Object>> getOtherProjectInfo(@Valid OtherProjectInfoReq reqModel, HttpSession session) {
         return operationService.getOtherProjectInfo(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getTypeInt(), reqModel.getCurrentInt(), reqModel.getSizeInt(), reqModel.getTotalInt());
     }
-
-    //TODO
-//    @ApiOperation(value = "二维码服务，工具")
 
 }

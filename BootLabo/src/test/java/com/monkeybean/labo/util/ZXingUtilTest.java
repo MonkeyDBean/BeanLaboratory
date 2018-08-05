@@ -25,7 +25,7 @@ public class ZXingUtilTest {
         File imageFile = new File(imagePath);
 
         //生成二维码写入文件
-        ZXingUtil.generateQRCode(content, format, 200, 200, imageFile, true);
+        ZXingUtil.generateQRCode(content, format, 200, 200, imageFile, true, null);
         BufferedImage bufferedImage = ImageIO.read(imageFile);
 
         //测试解码
@@ -40,7 +40,7 @@ public class ZXingUtilTest {
         String logoPath = filePath + "/" + logoName;
         String addLogoPath = filePath + "/" + UUID.randomUUID().toString().substring(0, 8) + "." + format;
         File addLogoImage = new File(addLogoPath);
-        ImageIO.write(ZXingUtil.addLogoToImage(bufferedImage, logoPath), format, addLogoImage);
+        ImageIO.write(ZXingUtil.addLogoToImage(bufferedImage, ImageIO.read(new File(logoPath))), format, addLogoImage);
     }
 
 }

@@ -90,51 +90,56 @@ public class TokenKeyFilter implements Filter {
             return;
         } else { //安全验证
 
-            //访问时间校验
-            String stimeStr = httpServletRequest.getParameter("stime");
-            String sign = httpServletRequest.getParameter("sign");
-            if (stimeStr == null || sign == null || !LegalUtil.isLegalTimestamp(stimeStr)) {
-                logger.warn("safe param lack or illegal");
-                httpServletResponse.setStatus(401);
-                return;
-            }
-            long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(stimeStr));
-            if (internalTime > ConstValue.TIME_OUT) {
-                logger.warn("stime is illegal, stime is: {}, internalTime is: {}", stimeStr, internalTime);
-                httpServletResponse.setStatus(401);
-                return;
-            }
-
-            //签名校验
-            String signOriginData = "";
-            Enumeration<String> paramNames = httpServletRequest.getParameterNames();
-            while (paramNames.hasMoreElements()) {
-                String eachParam = paramNames.nextElement();
-                if (!eachParam.equals("sign")) {
-                    signOriginData += httpServletRequest.getParameter(eachParam);
-                }
-            }
-            String paramSign = DigestUtils.md5Hex(signOriginData);
-            logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
-            if (!paramSign.equalsIgnoreCase(sign)) {
-                logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
-                chain.doFilter(httpServletRequest, httpServletResponse);
-                httpServletResponse.setStatus(401);
-                return;
-            }
-
-            //Session校验，排除未登录的接口
+            //是否校验签名及session(文件上传接口不校验签名，未登录的接口不校验session)
+            boolean checkSign = true, checkSession = true;
             if (servletPath.contains("message/apply") || servletPath.contains("user/login") || servletPath.contains("user/register")
                     || servletPath.contains("password/reset")) {
-                chain.doFilter(httpServletRequest, httpServletResponse);
-                return;
+                checkSession = false;
+            } else if (servletPath.contains("avatar/upload") || servletPath.contains("image/multi/upload")) {
+                checkSign = false;
             }
+            if (checkSign) {
 
-            logger.debug("filter sessionId: {}", httpServletRequest.getSession().getId());
-            if (httpServletRequest.getSession().getAttribute("accountId") == null) {
-                logger.debug("session filter 403, param accountId is null");
-                httpServletResponse.setStatus(403);
-                return;
+                //访问时间校验
+                String sTimeStr = httpServletRequest.getParameter("stime");
+                String sign = httpServletRequest.getParameter("sign");
+                if (sTimeStr == null || sign == null || !LegalUtil.isLegalTimestamp(sTimeStr)) {
+                    logger.warn("safe param lack or illegal");
+                    httpServletResponse.setStatus(401);
+                    return;
+                }
+                long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(sTimeStr));
+                if (internalTime > ConstValue.TIME_OUT) {
+                    logger.warn("stime is illegal, stime is: {}, internalTime is: {}", sTimeStr, internalTime);
+                    httpServletResponse.setStatus(401);
+                    return;
+                }
+
+                //签名校验
+                String signOriginData = "";
+                Enumeration<String> paramNames = httpServletRequest.getParameterNames();
+                while (paramNames.hasMoreElements()) {
+                    String eachParam = paramNames.nextElement();
+                    if (!eachParam.equals("sign")) {
+                        signOriginData += httpServletRequest.getParameter(eachParam);
+                    }
+                }
+                String paramSign = DigestUtils.md5Hex(signOriginData);
+                logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
+                if (!paramSign.equalsIgnoreCase(sign)) {
+                    logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
+                    chain.doFilter(httpServletRequest, httpServletResponse);
+                    httpServletResponse.setStatus(401);
+                    return;
+                }
+            }
+            if (checkSession) {
+                logger.debug("filter sessionId: {}", httpServletRequest.getSession().getId());
+                if (httpServletRequest.getSession().getAttribute("accountId") == null) {
+                    logger.debug("session filter 403, param accountId is null");
+                    httpServletResponse.setStatus(403);
+                    return;
+                }
             }
         }
         chain.doFilter(httpServletRequest, httpServletResponse);

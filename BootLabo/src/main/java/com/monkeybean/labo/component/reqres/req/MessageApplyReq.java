@@ -2,7 +2,7 @@ package com.monkeybean.labo.component.reqres.req;
 
 import com.monkeybean.labo.predefine.ConstValue;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -19,7 +19,7 @@ public class MessageApplyReq {
     @NotNull
     private String phone;
 
-    @NotEmpty(message = "图形验证码不能为空")
+    @NotBlank(message = "图形验证码不能为空")
     @Size(min = 4, max = 4, message = "验证码长度不合法")
     private String code;
 

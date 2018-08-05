@@ -9,6 +9,7 @@ import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.database.LaboDoService;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,14 +122,14 @@ public class OperationService {
 
     /**
      * 获取图片列表
+     * 当前记录数未达请求页数，返回最后页数数据
      *
      * @param accountId   账户Id
      * @param shareType   图片类型，0为账户私有，1为公共，2为账户所有
      * @param currentPage 当前页，首页为1
      * @param pageSize    每页记录数量
-     * @param totalNum    查询的记录总数
      */
-    public Result<HashMap<String, Object>> getImageList(int accountId, int shareType, int currentPage, int pageSize, int totalNum) {
+    public Result<HashMap<String, Object>> getImageList(int accountId, int shareType, int currentPage, int pageSize) {
         HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("getImageList, account is illegal, accountId: {}", accountId);
@@ -143,18 +144,13 @@ public class OperationService {
         } else if (shareType == ConstValue.IMAGE_ACCESS_ALL) {
             queryShareType = null;
         }
-
-        //允许多终端登录，查询时，数据记录可能增多；采取如下方案，查询第一条记录时，即确定要查询的总页数，保证数据正确性
-        Integer nowCount = laboDoService.queryImageCountByShareType(queryShareType, queryAccountId);
-        int totalCount = 0;
-        if (nowCount != 0) {
+        Integer totalCount = laboDoService.queryImageCountByShareType(queryShareType, queryAccountId);
+        if (totalCount != 0) {
             int offset;
-            if (currentPage == 1) { //首页，总记录数为数据库当前记录数
-                totalCount = nowCount;
-                offset = 0;
-            } else { //非首页的总记录数使用前端回传参数
-                totalCount = totalNum;
-                offset = nowCount - totalNum + pageSize * (currentPage - 1);
+            if (totalCount <= (currentPage - 1) * pageSize) {
+                offset = totalCount / pageSize * pageSize;
+            } else {
+                offset = pageSize * (currentPage - 1);
             }
             List<HashMap<String, Object>> imageList = laboDoService.queryImageListByShareType(queryShareType, queryAccountId, pageSize, offset);
             for (HashMap<String, Object> eachImage : imageList) {
@@ -222,9 +218,9 @@ public class OperationService {
      *
      * @param accountId 账户ip
      * @param fileImg   文件数组
-     * @return 返回上传成功的图片名称
+     * @return 图片访问路径列表
      */
-    public Result<HashMap<String, String>> uploadMultiImage(int accountId, MultipartFile[] fileImg) {
+    public Result<List<String>> uploadMultiImage(int accountId, MultipartFile[] fileImg) {
         HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("uploadMultiImage, account is illegal, accountId: {}", accountId);
@@ -237,7 +233,7 @@ public class OperationService {
             return new Result<>(ReturnCode.UPLOAD_FILE_IS_NULL);
         }
         List<HashMap<String, Object>> imageDbList = new ArrayList<>();
-        HashMap<String, String> successAccessPath = new HashMap<>();
+        List<String> successAccessPaths = new ArrayList<>();
         for (MultipartFile file : fileImg) {
             String fileName = file.getOriginalFilename();
             String[] names = fileName.split("\\.");
@@ -255,7 +251,8 @@ public class OperationService {
                 String accessPath;
                 String storePath;
                 String fileMd5 = DigestUtils.md5Hex(Base64.encodeBase64(fileBytes));
-                if (laboDoService.queryImageListByHash(fileMd5, accountId).isEmpty()) {
+                List<HashMap<String, Object>> myImageDbList = laboDoService.queryImageListByHash(fileMd5, accountId);
+                if (myImageDbList.isEmpty()) {
                     List<HashMap<String, Object>> dbImageInfoList = laboDoService.queryImageListByHash(fileMd5, null);
                     if (dbImageInfoList.size() > 0) {
                         HashMap<String, Object> dbImageInfo = dbImageInfoList.get(0);
@@ -270,10 +267,14 @@ public class OperationService {
                         String fileStorePath = rootPathDir.getPath() + "/" + fileName;
                         File imageFile = new File(fileStorePath);
                         try {
-                            FileOutputStream outputStream = new FileOutputStream(imageFile);
-                            outputStream.write(fileBytes);
-                            outputStream.flush();
-                            outputStream.close();
+                            //使用工具类
+                            FileUtils.copyInputStreamToFile(file.getInputStream(), imageFile);
+
+//                            //不使用工具类
+//                            FileOutputStream outputStream = new FileOutputStream(imageFile);
+//                            outputStream.write(fileBytes);
+//                            outputStream.flush();
+//                            outputStream.close();
                             logger.info("file store success, accountId: {}, fileName: {}", accountId, fileName);
                         } catch (IOException e) {
                             logger.error("accountId: {}, fileName: {}, file IOException: {}", accountId, fileName, e);
@@ -287,14 +288,16 @@ public class OperationService {
                     imageInfo.put("storePath", storePath);
                     imageInfo.put("accessPath", accessPath);
                     imageDbList.add(imageInfo);
-                    successAccessPath.put(fileName, accessPath);
+                    successAccessPaths.add(accessPath);
+                } else {
+                    successAccessPaths.add(myImageDbList.get(0).get("access_path").toString());
                 }
             }
         }
         if (!imageDbList.isEmpty()) {
             laboDoService.addMultiImage(accountId, imageDbList);
         }
-        return new Result<>(ReturnCode.SUCCESS, successAccessPath);
+        return new Result<>(ReturnCode.SUCCESS, successAccessPaths);
     }
 
     /**
@@ -314,14 +317,16 @@ public class OperationService {
         }
         List<OtherProjectInfoRes> dataList = new ArrayList<>();
         HashMap<String, Object> data = new HashMap<>();
+
+        //多终端登录查询，数据记录可能增多；采取如下方案，查询第一条记录时，即确定要查询的总页数，保证数据正确性；适用于数据记录只增不减的情况
         Integer nowCount = laboDoService.queryProjectInfoCount(projectType);
         int totalCount = 0;
         if (nowCount != 0) {
             int offset;
-            if (currentPage == 1) {
+            if (currentPage == 1) {  //首页，总记录数为数据库当前记录数
                 totalCount = nowCount;
                 offset = 0;
-            } else {
+            } else { //非首页的总记录数使用前端回传参数
                 totalCount = totalNum;
                 offset = nowCount - totalNum + pageSize * (currentPage - 1);
             }

@@ -40,19 +40,33 @@ public class ZXingUtil {
         return image;
     }
 
-    private static void writeToFile(BitMatrix matrix, String format, File file) {
+    /**
+     * 二维码图片写入到文件
+     *
+     * @param format    图片格式
+     * @param file      目标文件
+     * @param logoImage logo图片
+     */
+    private static void writeToFile(BitMatrix matrix, String format, File file, BufferedImage logoImage) {
         BufferedImage image = toBufferedImage(matrix);
         try {
-            ImageIO.write(image, format, file);
+            ImageIO.write(logoImage != null ? addLogoToImage(image, logoImage) : image, format, file);
         } catch (IOException e) {
             logger.error("writeToFile, Could not write an image of format: {}, IOException: {}", format, e);
         }
     }
 
-    private static void writeToStream(BitMatrix matrix, String format, OutputStream stream) {
+    /**
+     * 二维码图片写入到流
+     *
+     * @param format    图片格式
+     * @param stream    输出流
+     * @param logoImage logo图片
+     */
+    private static void writeToStream(BitMatrix matrix, String format, OutputStream stream, BufferedImage logoImage) {
         BufferedImage image = toBufferedImage(matrix);
         try {
-            ImageIO.write(image, format, stream);
+            ImageIO.write(logoImage != null ? addLogoToImage(image, logoImage) : image, format, stream);
         } catch (IOException e) {
             logger.error("writeToStream, Could not write an image of format: {}, IOException: {}", format, e);
         }
@@ -82,18 +96,30 @@ public class ZXingUtil {
      * @param height  图片高度
      * @param stream  输出流
      * @param isFill  二维码是否填充到整个图片
+     * @param logo    中心logo, 值为null则不使用
      */
-    public static void generateQRCode(String content, String format, int width, int height, OutputStream stream, boolean isFill) {
+    public static void generateQRCode(String content, String format, int width, int height, OutputStream stream, boolean isFill, BufferedImage logo) {
         BitMatrix bitMatrix = generateBitMatrix(content, width, height, isFill);
         if (bitMatrix != null) {
-            writeToStream(bitMatrix, format, stream);
+            writeToStream(bitMatrix, format, stream, logo);
         }
     }
 
-    public static void generateQRCode(String content, String format, int width, int height, File file, boolean isFill) {
+    /**
+     * 生成二维码
+     *
+     * @param content 二维码内容，纯文本或链接地址
+     * @param format  格式，如png, jpeg, jpg
+     * @param width   图片宽度
+     * @param height  图片高度
+     * @param file    输出文件
+     * @param isFill  二维码是否填充到整个图片
+     * @param logo    中心logo, 值为null则不使用
+     */
+    public static void generateQRCode(String content, String format, int width, int height, File file, boolean isFill, BufferedImage logo) {
         BitMatrix bitMatrix = generateBitMatrix(content, width, height, isFill);
         if (bitMatrix != null) {
-            writeToFile(bitMatrix, format, file);
+            writeToFile(bitMatrix, format, file, logo);
         }
     }
 
@@ -120,35 +146,33 @@ public class ZXingUtil {
 
     /**
      * 添加logo，二维码有自我修复功能，可遮挡最多30%
+     *
+     * @param baseImage 未加logo的原图
+     * @param logo      logo图片
      */
-    public static BufferedImage addLogoToImage(BufferedImage image, String path) {
-        Graphics2D g2 = image.createGraphics();
-        int width = image.getWidth();
-        int height = image.getHeight();
-        try {
-            BufferedImage logo = ImageIO.read(new File(path));
+    public static BufferedImage addLogoToImage(BufferedImage baseImage, BufferedImage logo) {
+        Graphics2D g2 = baseImage.createGraphics();
+        int width = baseImage.getWidth();
+        int height = baseImage.getHeight();
 
-            //开始绘制，设置笔画对象
-            g2.drawImage(logo, width / 5 * 2, height / 5 * 2, width / 5, height / 5, null);
-            BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2.setStroke(stroke);
+        //开始绘制，设置笔画对象
+        g2.drawImage(logo, width / 5 * 2, height / 5 * 2, width / 5, height / 5, null);
+        BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g2.setStroke(stroke);
 
-            //指定弧度的圆角矩形，绘制
-            RoundRectangle2D.Float round = new RoundRectangle2D.Float(width / 5 * 2, height / 5 * 2, width / 5, height / 5, 20, 20);
-            g2.setColor(Color.white);
-            g2.draw(round);
+        //指定弧度的圆角矩形，绘制
+        RoundRectangle2D.Float round = new RoundRectangle2D.Float(width / 5 * 2, height / 5 * 2, width / 5, height / 5, 20, 20);
+        g2.setColor(Color.white);
+        g2.draw(round);
 
-            //设置灰色边框
-            BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
-            g2.setStroke(stroke2);
-            RoundRectangle2D.Float round2 = new RoundRectangle2D.Float(width / 5 * 2 + 2, height / 5 * 2 + 2, width / 5 - 4, height / 5 - 4, 20, 20);
-            g2.setColor(new Color(128, 128, 128));
-            g2.draw(round2);
-            g2.dispose();
-            image.flush();
-        } catch (IOException e) {
-            logger.error("IOException: {}", e);
-        }
-        return image;
+        //设置灰色边框
+        BasicStroke stroke2 = new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+        g2.setStroke(stroke2);
+        RoundRectangle2D.Float round2 = new RoundRectangle2D.Float(width / 5 * 2 + 2, height / 5 * 2 + 2, width / 5 - 4, height / 5 - 4, 20, 20);
+        g2.setColor(new Color(128, 128, 128));
+        g2.draw(round2);
+        g2.dispose();
+        baseImage.flush();
+        return baseImage;
     }
 }

@@ -1,14 +1,17 @@
 package com.monkeybean.labo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.monkeybean.labo.component.config.MessageConfig;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
+import com.monkeybean.labo.component.reqres.req.QRCodeGenerateReq;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.util.AliYunUtil;
 import com.monkeybean.labo.util.Coder;
+import com.monkeybean.labo.util.ZXingUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,11 +21,21 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.regex.Pattern;
@@ -95,6 +108,65 @@ public class UtilController {
         data.put("requestPwd", requestPwd);
         data.put("dbPwd", dbPwd);
         return new Result<>(ReturnCode.SUCCESS, data);
+    }
+
+    @ApiOperation(value = "获取json配置中的第n条数据")
+    @ApiImplicitParam(name = "order", value = "数据索引", required = true, dataType = "int", paramType = "query")
+    @RequestMapping(path = "getJsonData", method = RequestMethod.GET)
+    public Result<String> getJsonData(@RequestParam(value = "order") int order) {
+        try {
+            Resource resource = new ClassPathResource("info_config.json");
+            File file = resource.getFile();
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            StringBuilder builder = new StringBuilder();
+            String line = "";
+            while (line != null) {
+                builder.append(line);
+                line = reader.readLine();
+            }
+            JSONArray array = JSONArray.parseArray(builder.toString());
+            if (order > 0 && order <= array.size()) {
+                return new Result<>(ReturnCode.SUCCESS, array.getString(order - 1));
+            }
+            return new Result<>(ReturnCode.SUCCESS);
+        } catch (IOException e) {
+            logger.error("IOException, e: {}", e);
+            return new Result<>(ReturnCode.SERVER_EXCEPTION);
+        }
+    }
+
+    @ApiOperation(value = "生成二维码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "content", value = "二维码内容", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "format", value = "生成图片的格式，如png, jpeg, jpg", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "width", value = "图片宽度, 像素", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "height", value = "图片高度，像素", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "hasBlank", value = "是否有白边", defaultValue = "false", required = true, dataType = "boolean", paramType = "query"),
+            @ApiImplicitParam(name = "hasLogo", value = "是否加logo，无白边可加logo", defaultValue = "false", required = true, dataType = "boolean", paramType = "query")
+    })
+    @PostMapping(path = "qrcode/generate")
+    public void generateQRCode(@Valid @ModelAttribute QRCodeGenerateReq reqModel, @RequestParam(value = "cover") MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Boolean isFill;
+            BufferedImage logo = null;
+            if (reqModel.isHasBlank()) {
+                isFill = false;
+            } else {
+                isFill = true;
+                if (reqModel.isHasLogo()) {
+                    logo = ImageIO.read(file.getInputStream());
+                }
+            }
+            response.setHeader("Pragma", "no-cache");
+            response.setHeader("Cache-Control", "no-cache");
+            response.setDateHeader("Expires", 0);
+            response.setContentType("image/" + request.getParameter("format"));
+            ServletOutputStream sOutputStream = response.getOutputStream();
+            ZXingUtil.generateQRCode(reqModel.getContent(), reqModel.getFormat(), reqModel.getWidth(), reqModel.getHeight(), sOutputStream, isFill, logo);
+            sOutputStream.close();
+        } catch (IOException e) {
+            logger.error("ServletOutputStream, IOException: {}", e);
+        }
     }
 
 }

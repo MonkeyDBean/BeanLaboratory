@@ -11,7 +11,9 @@
 
     <modules>
         <module>BootLabo</module>
+        <module>BootFlux</module>
         <module>LoadTest</module>
+        <module>DataAlgorithm</module>
     </modules>
 
     <properties>

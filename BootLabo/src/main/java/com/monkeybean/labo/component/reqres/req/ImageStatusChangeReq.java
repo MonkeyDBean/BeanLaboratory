@@ -1,5 +1,6 @@
 package com.monkeybean.labo.component.reqres.req;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
@@ -9,7 +10,10 @@ import java.util.List;
  */
 public class ImageStatusChangeReq {
 
-    @NotNull
+    /**
+     * 限制强度：NotBlank > NotEmpty > NotNull
+     */
+    @NotBlank
     private List<Integer> id;
 
     @Pattern(regexp = "^[012]$", message = "操作类型不合法")

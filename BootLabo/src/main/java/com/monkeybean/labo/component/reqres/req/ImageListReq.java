@@ -25,11 +25,6 @@ public class ImageListReq {
     @NotNull
     private String size;
 
-    @Pattern(regexp = ConstValue.LEGAL_UNSIGNED_INT, message = "总记录数，格式不合法")
-    @Max(Integer.MAX_VALUE)
-    @NotNull
-    private String total;
-
     public String getSharetype() {
         return sharetype;
     }
@@ -54,14 +49,6 @@ public class ImageListReq {
         this.size = size;
     }
 
-    public String getTotal() {
-        return total;
-    }
-
-    public void setTotal(String total) {
-        this.total = total;
-    }
-
     public int getSharetypeInt() {
         return Integer.parseInt(sharetype);
     }
@@ -72,9 +59,5 @@ public class ImageListReq {
 
     public int getSizeInt() {
         return Integer.parseInt(size);
-    }
-
-    public int getTotalInt() {
-        return Integer.parseInt(total);
     }
 }

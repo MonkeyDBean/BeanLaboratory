@@ -18,13 +18,11 @@ import java.util.*;
 public class PublicService {
 
     private static Logger logger = LoggerFactory.getLogger(PublicService.class);
-
+    private final LaboDoService laboDoService;
     /**
      * 存储预先生成的Id列表
      */
     private LinkedList<Integer> accountIds = new LinkedList<>();
-
-    private final LaboDoService laboDoService;
 
     @Autowired
     public PublicService(LaboDoService laboDoService) {
