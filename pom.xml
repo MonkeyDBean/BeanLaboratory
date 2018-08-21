@@ -14,6 +14,7 @@
         <module>BootFlux</module>
         <module>LoadTest</module>
         <module>DataAlgorithm</module>
+        <module>BallJump</module>
     </modules>
 
     <properties>

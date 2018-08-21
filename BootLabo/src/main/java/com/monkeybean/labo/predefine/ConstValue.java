@@ -79,7 +79,7 @@ public class ConstValue {
     /**
      * 请求的合法时间区间, 毫秒
      */
-    public static final long TIME_OUT = 60 * 1000;
+    public static final long TIME_OUT = 3 * 60 * 1000;
     /**
      * 初始账户id
      */

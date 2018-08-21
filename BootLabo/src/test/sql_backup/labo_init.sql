@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS `image_info` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `account_id_file_hash` (`account_id`,`file_hash`),
   KEY `file_hash` (`file_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='存储上传图片的信息表';
 

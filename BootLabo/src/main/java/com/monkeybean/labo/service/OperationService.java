@@ -197,7 +197,7 @@ public class OperationService {
      *
      * @param accountId   账户Id
      * @param imageIds    图片Id列表
-     * @param operateType 操作类型，0为取消共享，1为共享，2为删除
+     * @param operateType 操作类型，1为共享状态更改，2为删除
      */
     public Result<String> changeImageStatus(int accountId, List<Integer> imageIds, int operateType) {
         HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
@@ -208,7 +208,23 @@ public class OperationService {
         if (operateType == 2) {
             laboDoService.removeImages(imageIds, accountId);
         } else {
-            laboDoService.changeImageShareStatus(imageIds, accountId, operateType);
+            List<HashMap<String, Object>> imageStatusList = laboDoService.queryImageShareStatusList(imageIds, accountId);
+            List<Integer> shareImageIds = new ArrayList<>();
+            List<Integer> unShareImageIds = new ArrayList<>();
+            for (HashMap<String, Object> eachImage : imageStatusList) {
+                Integer imageId = Integer.valueOf(eachImage.get("id").toString());
+                if (Boolean.parseBoolean(eachImage.get("is_share").toString())) {
+                    unShareImageIds.add(imageId);
+                } else {
+                    shareImageIds.add(imageId);
+                }
+            }
+            if (!unShareImageIds.isEmpty()) {
+                laboDoService.changeImageShareStatus(imageIds, accountId, ConstValue.IMAGE_ACCESS_PRIVATE);
+            }
+            if (!shareImageIds.isEmpty()) {
+                laboDoService.changeImageShareStatus(imageIds, accountId, ConstValue.IMAGE_ACCESS_SHARE);
+            }
         }
         return new Result<>(ReturnCode.SUCCESS);
     }

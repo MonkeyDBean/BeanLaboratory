@@ -10,6 +10,11 @@ import com.monkeybean.labo.util.ReCaptchaUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,11 +110,38 @@ public class TestController {
         for (String phone : phoneArray) {
             phoneList.add(phone);
         }
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("table", "account");
-        param.put("array", phoneList);
-        List<HashMap<String, Object>> resultList = laboDataDao.queryListByArray(param);
+        List<HashMap<String, Object>> resultList = null;
+        if (!phoneList.isEmpty()) {
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("table", "account");
+            param.put("array", phoneList);
+            resultList = laboDataDao.queryListByArray(param);
+        }
         return new Result<>(ReturnCode.SUCCESS, resultList);
+    }
+
+    /**
+     * 测试解析excel
+     */
+    @ApiOperation(value = "测试获取excel单元格数据集合")
+    @PostMapping(path = "data/excel/get")
+    public Result<List<Long>> testGetExcelData(@RequestParam(value = "excel") MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+
+        //excel 97-07
+        Workbook workbook = new HSSFWorkbook(inputStream);
+
+        //excel 07+
+//        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheetAt(0);
+        List<Long> data = new ArrayList<>();
+        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+            Cell cell = sheet.getRow(i).getCell(0);
+            if (cell != null && cell.getCellTypeEnum() == CellType.NUMERIC) {
+                data.add((long) cell.getNumericCellValue());
+            }
+        }
+        return new Result<>(ReturnCode.SUCCESS, data);
     }
 
 }

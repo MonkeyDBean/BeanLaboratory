@@ -149,4 +149,25 @@ public class DateUtil {
         return Calendar.getInstance().before(sCalendar);
     }
 
+    /**
+     * 校验给定日期是否在时间间隔内，包含左右边界
+     *
+     * @param startStr 开始时间(格式: yyyy-MM-dd)
+     * @param endStr   结束时间(格式: yyyy-MM-dd)
+     * @param dataStr  待校验时间(格式: yyyy-MM-dd)
+     * @return 在时间间隔内则返回true
+     */
+    public static boolean checkDateInterval(String startStr, String endStr, String dataStr) {
+        Date startDate = DateUtil.dateStr2Date(startStr);
+        Date endDate = DateUtil.dateStr2Date(endStr);
+        Date checkDate = DateUtil.dateStr2Date(dataStr);
+        Calendar sCalendar = Calendar.getInstance(TimeZone.getDefault());
+        sCalendar.setTime(startDate);
+        Calendar eCalendar = Calendar.getInstance(TimeZone.getDefault());
+        eCalendar.setTime(endDate);
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault());
+        cal.setTime(checkDate);
+        return !cal.before(sCalendar) && !cal.after(eCalendar);
+    }
+
 }

@@ -155,6 +155,324 @@ public class DataUtil {
         return result;
     }
 
-    //去重
+    /**
+     * 循环双向链表
+     */
+    public class DbLinkedList<T> {
+
+        /**
+         * 头元素引用
+         */
+        private Node<T> head;
+
+        /**
+         * 尾元素引用
+         */
+        private Node<T> tail;
+
+        /**
+         * 链表长度
+         */
+        private int size;
+
+        public DbLinkedList() {
+            this.head = this.tail = null;
+            this.size = 0;
+        }
+
+        public DbLinkedList(Collection<T> collection) {
+            this();
+            addMultiX(collection);
+        }
+
+        /**
+         * 头部添加元素
+         */
+        public void pushX(Node<T> node) {
+            if (this.head == null) {
+                this.head = this.tail = node;
+            } else {
+                this.tail.next = this.head.pre = node;
+            }
+            node.pre = this.tail;
+            node.next = this.head;
+            this.head = node;
+            this.size++;
+        }
+
+        /**
+         * 尾部添加元素
+         */
+        public void addX(Node<T> node) {
+            if (this.tail == null) {
+                this.head = this.tail = node;
+            } else {
+                this.tail.next = this.head.pre = node;
+            }
+            node.pre = this.tail;
+            node.next = this.head;
+            this.tail = node;
+            this.size++;
+        }
+
+        /**
+         * 添加多个元素
+         */
+        public void addMultiX(Collection<T> collection) {
+            if (collection == null || collection.isEmpty()) {
+                return;
+            }
+            Iterator<T> it = collection.iterator();
+            while (it.hasNext()) {
+                this.addX(new Node<>(it.next()));
+            }
+        }
+
+        /**
+         * 头部删除元素
+         *
+         * @return 删除成功返回原头部元素值，失败返回null
+         */
+        public T popX() {
+            if (this.size > 0) {
+                T element = this.head.value;
+                this.head.next.pre = this.head.pre;
+                this.head.pre.next = this.head.next;
+                Node<T> tmp = this.head.next;
+                this.head.next = this.head.pre = null;
+                this.head = tmp;
+                this.size--;
+                if (this.size == 0) {
+                    this.head = this.tail = null;
+                }
+                return element;
+            }
+            return null;
+        }
+
+        /**
+         * 尾部删除元素
+         *
+         * @return 删除成功返回原尾部元素值，失败返回null
+         */
+        public T removeX() {
+            if (this.size > 0) {
+                T element = this.tail.value;
+                this.tail.pre.next = this.tail.next;
+                this.tail.next.pre = this.tail.pre;
+                Node<T> tmp = this.tail.pre;
+                this.tail.next = this.tail.pre = null;
+                this.tail = tmp;
+                this.size--;
+                if (this.size == 0) {
+                    this.head = this.tail = null;
+                }
+                return element;
+            }
+            return null;
+        }
+
+        /**
+         * 删除索引位置元素
+         *
+         * @return 删除成功返回true, 索引超出链表长度返回false
+         */
+        public boolean deleteX(int index) {
+            if (index >= this.size || index < 0) {
+                return false;
+            }
+            if (index == 0) { //头元素
+                this.popX();
+            } else if (index == this.size - 1) { //尾元素
+                this.removeX();
+            } else {
+                Node<T> temp;
+                if (index < this.size / 2) { //前1/2元素
+                    temp = this.head;
+                    while (index-- > 0) {
+                        temp = temp.next;
+                    }
+                } else { //后1/2元素
+                    temp = this.tail;
+                    index = this.size - 1 - index;
+                    while (index-- > 0) {
+                        temp = temp.pre;
+                    }
+                }
+                temp.next.pre = temp.pre;
+                temp.pre.next = temp.next;
+                temp.pre = temp.next = null;
+                this.size--;
+            }
+            return true;
+        }
+
+        /**
+         * 去重
+         */
+        public void filterDuplicate() {
+            if (this.size <= 1) {
+                return;
+            }
+            Node<T> node = this.head;
+            do {
+                T nodeValue = node.value;
+                int index = indexOf(nodeValue);
+                int lastIndex = lastIndexOf(nodeValue);
+                while (lastIndex != index) {
+                    deleteX(lastIndex);
+                    lastIndex = lastIndexOf(nodeValue);
+                }
+                node = node.next;
+            } while (node != this.head);
+        }
+
+        /**
+         * 获取索引位置元素
+         *
+         * @return 索引超出链表长度则返回null
+         */
+        public T get(int index) {
+            if (index >= this.size || index < 0) {
+                return null;
+            }
+            Node<T> temp = this.head;
+            while (index-- > 0) {
+                temp = temp.next;
+            }
+            return temp.value;
+        }
+
+        /**
+         * 判断某个元素是否存在
+         */
+        public boolean isExist(T x) {
+            if (this.size == 0) {
+                return false;
+            }
+            Node<T> temp = this.head;
+            do {
+                if (temp.value == x) {
+                    return true;
+                }
+                temp = temp.next;
+            } while (temp != this.head);
+            return false;
+        }
+
+        /**
+         * 获取某个元素首次出现的的索引位置
+         *
+         * @return 返回-1为元素不存在
+         */
+        public int indexOf(T x) {
+            if (this.size == 0) {
+                return -1;
+            }
+            Node<T> temp = this.head;
+            int index = 0;
+            do {
+                if (temp.value == x) {
+                    return index;
+                }
+                temp = temp.next;
+                index++;
+            } while (temp != this.head);
+            return -1;
+        }
+
+        /**
+         * 获取某个元素最后一次出现的的索引位置
+         *
+         * @return 返回-1为元素不存在
+         */
+        public int lastIndexOf(T x) {
+            if (this.size == 0) {
+                return -1;
+            }
+            Node<T> temp = this.tail;
+            int index = this.size - 1;
+            do {
+                if (temp.value == x) {
+                    return index;
+                }
+                temp = temp.pre;
+                index--;
+            } while (temp != this.tail);
+            return -1;
+        }
+
+        /**
+         * 列表翻转
+         */
+        public void reverse() {
+            if (this.size > 1) {
+                Node<T> temp = this.head;
+                do {
+                    Node<T> nextTemp = temp.next;
+                    Node<T> curTemp = temp;
+                    temp.next = temp.pre;
+                    temp.pre = curTemp;
+                    temp = nextTemp;
+                } while (temp != this.head);
+                Node<T> tempRef = this.head;
+                this.head = this.tail;
+                this.tail = tempRef;
+            }
+        }
+
+        /**
+         * 输出元素
+         */
+        public void print() {
+            if (this.size == 0) {
+                return;
+            }
+            Node<T> temp = this.head;
+            System.out.println("list size is " + this.size);
+            do {
+                System.out.println(temp.value);
+                temp = temp.next;
+            } while (temp != this.head);
+        }
+
+        /**
+         * 获取链表长度
+         */
+        public int size() {
+            return this.size;
+        }
+
+        /**
+         * 清空链表
+         */
+        public void clear() {
+            if (this.size == 0) {
+                return;
+            }
+            Node<T> temp = this.head.next;
+            while (temp != this.head) {
+                Node<T> nextTemp = temp.next;
+                temp.next = temp.pre = null;
+                temp = nextTemp;
+            }
+            this.tail = this.head = this.head.next = this.head.pre = null;
+            this.size = 0;
+        }
+
+    }
+
+    /**
+     * 链表节点
+     */
+    public class Node<T> {
+        private Node<T> pre;
+        private Node<T> next;
+        private T value;
+
+        public Node(T value) {
+            this.value = value;
+        }
+    }
 
 }

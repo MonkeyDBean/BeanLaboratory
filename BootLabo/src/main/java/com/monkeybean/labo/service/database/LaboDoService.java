@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -264,6 +265,22 @@ public class LaboDoService {
     }
 
     /**
+     * 查询图片列表的共享类型
+     *
+     * @param idList    图片Id列表
+     * @param accountId 账户Id
+     */
+    public List<HashMap<String, Object>> queryImageShareStatusList(List<Integer> idList, Integer accountId) {
+        if (!idList.isEmpty()) {
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("idList", idList);
+            param.put("accountId", accountId);
+            return laboDao.queryImageShareStatusList(param);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
      * 更新图片信息
      *
      * @param accountId 账户Id
@@ -285,11 +302,13 @@ public class LaboDoService {
      * @param accountId 账户Id
      */
     public void removeImages(List<Integer> idList, Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("idList", idList);
-        param.put("accountId", accountId);
-        param.put("isDelete", 1);
-        laboDao.updateImageListStatus(param);
+        if (!idList.isEmpty()) {
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("idList", idList);
+            param.put("accountId", accountId);
+            param.put("isDelete", 1);
+            laboDao.updateImageListStatus(param);
+        }
     }
 
     /**
@@ -330,10 +349,12 @@ public class LaboDoService {
      * 多张图片入库
      */
     public void addMultiImage(Integer accountId, List<HashMap<String, Object>> imageList) {
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
-        param.put("imageList", imageList);
-        laboDao.addMultiImage(param);
+        if (!imageList.isEmpty()) {
+            HashMap<String, Object> param = new HashMap<>();
+            param.put("accountId", accountId);
+            param.put("imageList", imageList);
+            laboDao.addMultiImage(param);
+        }
     }
 
     /**

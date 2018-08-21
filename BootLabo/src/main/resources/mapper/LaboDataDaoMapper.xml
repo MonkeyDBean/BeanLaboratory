@@ -193,6 +193,20 @@
         </where>
     </select>
 
+    <select id="queryImageShareStatusList" parameterType="HashMap" resultType="HashMap">
+        select
+        id, is_share
+        from
+        image_info
+        <where>
+            is_delete = 0 and account_id = #{accountId}
+            and id in
+            <foreach collection="idList" index = "index" item = "item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </where>
+    </select>
+
     <update id="updateImageInfo" parameterType="HashMap">
         update
         image_info

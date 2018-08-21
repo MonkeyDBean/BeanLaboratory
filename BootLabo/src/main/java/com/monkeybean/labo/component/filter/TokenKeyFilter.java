@@ -128,7 +128,6 @@ public class TokenKeyFilter implements Filter {
                 logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
                 if (!paramSign.equalsIgnoreCase(sign)) {
                     logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
-                    chain.doFilter(httpServletRequest, httpServletResponse);
                     httpServletResponse.setStatus(401);
                     return;
                 }

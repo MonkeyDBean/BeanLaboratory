@@ -14,6 +14,7 @@ public class ImageUploadReq {
 
     /**
      * base64编码的图片
+     * 限制强度：NotBlank > NotEmpty > NotNull
      */
     @NotBlank
     private String file64;

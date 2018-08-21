@@ -77,6 +77,8 @@ public interface LaboDataDao {
 
     Integer queryImageInfoCount(HashMap<String, Object> param);
 
+    List<HashMap<String, Object>> queryImageShareStatusList(HashMap<String, Object> param);
+
     /**
      * image_info表，update
      */

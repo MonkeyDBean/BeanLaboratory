@@ -67,10 +67,10 @@ public class OperationController {
         return operationService.changeImageInfo(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getIdInt(), reqModel.getName(), reqModel.getDes());
     }
 
-    @ApiOperation(value = "图片状态更改：共享或取消共享或删除")
+    @ApiOperation(value = "图片状态更改：共享状态更改或删除")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "图片Id", required = true, allowMultiple = true, dataType = "int", paramType = "query"),
-            @ApiImplicitParam(name = "operate", value = "操作类型，0为取消共享，1为共享，2为删除", required = true, dataType = "int", paramType = "query")
+            @ApiImplicitParam(name = "operate", value = "操作类型，1为共享状态更改，2为删除", required = true, dataType = "int", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/status/change")
