@@ -23,7 +23,7 @@ public class UserController {
         User user = new User();
         user.setName(name);
         if (userRepository.save(user)) {
-            System.out.println("用户对象：% 存储成功! \n" + user);
+            System.out.printf("用户对象：%s 存储成功!\n", user);
         }
         return user;
     }
