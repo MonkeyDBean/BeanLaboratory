@@ -3,5 +3,5 @@
 **/target
 **/log_path_IS_UNDEFINED
 **/labo_release
-**/application-*.properties
+**/application-d*.properties
 **/info_config.json

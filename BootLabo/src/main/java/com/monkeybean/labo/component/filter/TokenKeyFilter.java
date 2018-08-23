@@ -80,7 +80,8 @@ public class TokenKeyFilter implements Filter {
                 || servletPath.contains("view/display")) {
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;
-        } else if (servletPath.contains("sniff/status") || servletPath.contains("util/use") || servletPath.contains("testtest")) { //校验嗅探等特殊接口token
+        } else if (servletPath.contains("sniff/status") || servletPath.contains("util/use")
+                || servletPath.contains("testtest") || servletPath.contains("monitor/actuator")) { //校验嗅探等特殊接口token
             if (httpServletRequest.getQueryString() != null && httpServletRequest.getQueryString().toLowerCase().contains(sniffKey)) {
                 chain.doFilter(httpServletRequest, httpServletResponse);
             } else {
