@@ -13,6 +13,23 @@ public class DataUtilTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
+    @Test
+    public void testBinarySearch() {
+        int n = 50;
+        int[] array = new int[n];
+        for (int i = 0; i < array.length; i++) {
+            if (i < 40) {
+                array[i] = i;
+            } else {
+                array[i] = 40;
+            }
+        }
+        int data = 40;
+        logger.info("binarySearch, data is: {}, index is: {}", data, DataUtil.binarySearch(array, data));
+        logger.info("findFirstEqual, data is: {}, index is: {}", data, DataUtil.findFirstEqual(array, data));
+        logger.info("findLastEqualSmaller, data is: {}, index is: {}", data, DataUtil.findLastEqualSmaller(array, data));
+    }
+
     //    @Test
     public void arrayShuffle() throws Exception {
         int n = 200000;
@@ -99,7 +116,7 @@ public class DataUtilTest {
         }
     }
 
-    @Test
+    //    @Test
     public void testDbLinkedList() {
         DataUtil dataUtil = new DataUtil();
         Collection<Integer> collection = new ArrayList<>();
@@ -127,7 +144,6 @@ public class DataUtilTest {
         dbLinkedList.print();
         dbLinkedList.filterDuplicate();
         dbLinkedList.print();
-
     }
 
 }

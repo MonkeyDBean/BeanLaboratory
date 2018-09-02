@@ -15,6 +15,7 @@
         <module>LoadTest</module>
         <module>DataAlgorithm</module>
         <module>BallJump</module>
+        <module>HeartMaze</module>
     </modules>
 
     <properties>

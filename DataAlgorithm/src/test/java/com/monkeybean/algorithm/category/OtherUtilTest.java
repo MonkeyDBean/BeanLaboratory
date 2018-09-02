@@ -40,4 +40,11 @@ public class OtherUtilTest {
         System.out.println("sum is: " + origin.stream().mapToInt(e -> e).distinct().sum());
     }
 
+    @Test
+    public void testForceCast() {
+        Object b = null;
+        Integer value = (Integer) b;
+        System.out.println("testForceCast, value: " + value);
+    }
+
 }

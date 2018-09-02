@@ -10,6 +10,143 @@ import java.util.*;
 public class DataUtil {
 
     /**
+     * 二分查找
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int binarySearch(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] == key) {
+                return mid;
+            } else if (array[mid] < key) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找变种，查找第一个与key相等的元素
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int findFirstEqual(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] >= key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        if (left < array.length && array[left] == key) {
+            return left;
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找变种，查找第一个大于等于key的元素
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int findFirstEqualLarger(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] >= key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        if (left < array.length) {
+            return left;
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找变种，查找第一个大于key的元素
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int findFirstLarger(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] > key) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        if (left < array.length) {
+            return left;
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找变种，查找最后一个与key相等的元素
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int findLastEqual(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] <= key) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (right >= 0 && array[right] == key) {
+            return right;
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找变种，查找最后一个小于key的元素
+     *
+     * @param array 有序源数组
+     * @param key   要查找的元素
+     * @return 元素存在，则返回下标索引，不存在则返回-1
+     */
+    public static int findLastEqualSmaller(int[] array, int key) {
+        int left = 0, right = array.length - 1;
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (array[mid] < key) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        if (right >= 0) {
+            return right;
+        }
+        return -1;
+    }
+
+    /**
      * 列表元素乱序，抽取元素
      *
      * @param origin 原数组列表
