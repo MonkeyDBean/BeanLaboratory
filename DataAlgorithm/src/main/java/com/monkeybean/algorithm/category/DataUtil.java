@@ -293,6 +293,112 @@ public class DataUtil {
     }
 
     /**
+     * 获取传入时间与基准时间的相差天数, 基准时间设为1970-01-01; 传入时间在基准时间之后
+     *
+     * @param year  年
+     * @param month 月
+     * @param day   日
+     * @return 返回相差天数，-1为参数不合法
+     */
+    public static int getIntervalDays(int year, int month, int day) {
+
+        //参数合法性判断
+        if (year >= 1970 && month > 0 && month <= 12 && day > 0 && day <= 31) {
+
+            //小月份30天
+            int[] minMonths = {4, 6, 9, 11};
+            for (int element : minMonths) {
+                if (month == element && day == 31) {
+                    return -1;
+                }
+            }
+
+            //闰年, 判断二月份天数
+            boolean isLeap = year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+            if (month == 2) {
+                if (day > 29) {
+                    return -1;
+                }
+                if (isLeap && day == 29) {
+                    return -1;
+                }
+            }
+
+            //获取年间隔天数
+            int yearDays = 0, monthDays = 0;
+            if (year != 1970) {
+                yearDays = getYearIntervalDays(year - 1);
+            }
+            if (month != 1) {
+                monthDays = getMonthIntervalDays(month - 1, isLeap);
+            }
+            return yearDays + monthDays + day - 1;
+        }
+        return -1;
+    }
+
+    /**
+     * 获取传入年与基准年相差天数
+     *
+     * @param year 年
+     */
+    private static int getYearIntervalDays(int year) {
+        if (year < 1970) {
+            return 0;
+        }
+        return getYearDays(year) + getYearIntervalDays(year - 1);
+    }
+
+    /**
+     * 获取某一年的总天数
+     *
+     * @param year 年
+     */
+    private static int getYearDays(int year) {
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {
+            return 366;
+        } else {
+            return 365;
+        }
+    }
+
+    /**
+     * 获取传入月份与基准月相差天数
+     *
+     * @param month  月
+     * @param isLeap 是否为闰年
+     */
+    private static int getMonthIntervalDays(int month, boolean isLeap) {
+        if (month < 1) {
+            return 0;
+        }
+        return getMonthDays(month, isLeap) + getMonthIntervalDays(month - 1, isLeap);
+    }
+
+    /**
+     * 获取某一月的总天数
+     *
+     * @param month  月
+     * @param isLeap 是否为闰年
+     */
+    private static int getMonthDays(int month, boolean isLeap) {
+        if (month == 2) {
+            if (isLeap) {
+                return 29;
+            } else {
+                return 28;
+            }
+        }
+        int[] maxMonths = {1, 3, 5, 7, 8, 10, 12};
+        for (int element : maxMonths) {
+            if (month == element) {
+                return 31;
+            }
+        }
+        return 30;
+    }
+
+    /**
      * 循环双向链表
      */
     public class DbLinkedList<T> {
