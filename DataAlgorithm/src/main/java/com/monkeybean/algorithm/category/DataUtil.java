@@ -71,7 +71,7 @@ public class DataUtil {
                 left = mid + 1;
             }
         }
-        if (left < array.length) {
+        if (left < array.length && array[left] >= key) {
             return left;
         }
         return -1;
@@ -94,7 +94,7 @@ public class DataUtil {
                 left = mid + 1;
             }
         }
-        if (left < array.length) {
+        if (left < array.length && array[left] > key) {
             return left;
         }
         return -1;
@@ -140,7 +140,7 @@ public class DataUtil {
                 right = mid - 1;
             }
         }
-        if (right >= 0) {
+        if (right >= 0 && array[right] < key) {
             return right;
         }
         return -1;
