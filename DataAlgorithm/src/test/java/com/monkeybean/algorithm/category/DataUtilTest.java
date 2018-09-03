@@ -13,7 +13,7 @@ public class DataUtilTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
-    @Test
+    //    @Test
     public void testBinarySearch() {
         int n = 50;
         int[] array = new int[n];
@@ -144,6 +144,18 @@ public class DataUtilTest {
         dbLinkedList.print();
         dbLinkedList.filterDuplicate();
         dbLinkedList.print();
+    }
+
+    @Test
+    public void testTwoDateInterval() {
+        int year1 = 2018, month1 = 9, day1 = 3;
+        int year2 = 2016, month2 = 12, day2 = 12;
+        int date1Days = DataUtil.getIntervalDays(year1, month1, day1);
+        int date2Days = DataUtil.getIntervalDays(year2, month2, day2);
+        System.out.println("date1Days: " + date1Days);
+        System.out.println("date2Days: " + date2Days);
+        int intervalDays = date1Days - date2Days;
+        System.out.println("intervalDays: " + (intervalDays >= 0 ? intervalDays : -intervalDays));
     }
 
 }
