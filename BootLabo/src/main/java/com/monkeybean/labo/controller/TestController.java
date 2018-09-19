@@ -1,5 +1,7 @@
 package com.monkeybean.labo.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.dao.LaboDataDao;
@@ -24,10 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.net.URLDecoder;
+import java.util.*;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -142,6 +142,36 @@ public class TestController {
             }
         }
         return new Result<>(ReturnCode.SUCCESS, data);
+    }
+
+    /**
+     * 测试特殊请求的参数处理，get参数放到json中，post有效参数的key在get中申明
+     */
+    @ApiOperation(value = "特殊参数请求处理, 失败返回null")
+    @PostMapping(path = "special")
+    @SuppressWarnings("unchecked")
+    public String testParam(HttpServletRequest request) throws UnsupportedEncodingException {
+
+        //get json参数放到map中
+        String queryString = request.getQueryString();
+        JSONObject json = JSONObject.parseObject(URLDecoder.decode(queryString, "UTF-8"));
+        Map<String, Object> map = JSONObject.toJavaObject(json, Map.class);
+        if (!map.containsKey("postField")) {
+            return null;
+        }
+        String[] postFields = map.get("postField").toString().split(",");
+        List<String> postFieldList = Arrays.asList(postFields);
+
+        //post参数校验并放到map中
+        Enumeration<String> requestParamNames = request.getParameterNames();
+        while (requestParamNames.hasMoreElements()) {
+            String paramName = requestParamNames.nextElement();
+            if (postFieldList.contains(paramName)) {
+                map.put(paramName, request.getParameter(paramName));
+            }
+        }
+        map.remove("postField");
+        return JSON.toJSONString(map);
     }
 
 }

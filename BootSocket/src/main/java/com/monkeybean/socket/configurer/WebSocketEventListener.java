@@ -23,11 +23,15 @@ public class WebSocketEventListener {
 
     private static int CONNECTED_NUM = 0;
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
+
+    private final ChatRecordService chatRecordService;
 
     @Autowired
-    private ChatRecordService chatRecordService;
+    public WebSocketEventListener(SimpMessageSendingOperations messagingTemplate, ChatRecordService chatRecordService) {
+        this.messagingTemplate = messagingTemplate;
+        this.chatRecordService = chatRecordService;
+    }
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -36,7 +40,7 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        if (--WebSocketEventListener.CONNECTED_NUM < 0) {
+        if (-- WebSocketEventListener.CONNECTED_NUM < 0) {
             WebSocketEventListener.CONNECTED_NUM = 0;
         }
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

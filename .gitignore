@@ -2,6 +2,7 @@
 **/*.iml
 **/target
 **/log_path_IS_UNDEFINED
+**/logs_file
 **/labo_release
-**/application-d*.properties
+**/application-d*.*
 **/info_config.json

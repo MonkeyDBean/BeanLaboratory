@@ -1,43 +1,29 @@
 package com.monkeybean.flux.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
+
 /**
- * 用户模型
+ * 用户模型，持久化存储
  * <p>
- * Created by MonkeyBean on 2018/8/24.
+ * Created by MonkeyBean on 2018/9/13.
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Document
 public class User {
-
-    /**
-     * 自增Id
-     */
-    private int id;
-
-    /**
-     * 昵称
-     */
-    private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    @Id
+    private String id;
+    @Indexed(unique = true)
+    private String username;
+    private String phone;
+    private String email;
+    private Date birthday;
 }

@@ -70,7 +70,7 @@ public class PublicService {
     /**
      * 生成不连续的账户ID列表
      */
-    private void initRandomAccountIds() {
+    private synchronized void initRandomAccountIds() {
 
         //已使用的id最大上限
         Integer idBaseSeed = laboDoService.queryIdBaseSeed();
@@ -98,13 +98,13 @@ public class PublicService {
             temp.add(idBaseSeed + scale * i);
         }
         Collections.shuffle(temp);
-        accountIds.clear();
+        this.accountIds.clear();
         for (int accountId : temp) {
-            if (accountIds.size() >= threshold) {
+            if (this.accountIds.size() >= threshold) {
                 break;
             }
             if (conformIdRule(accountId)) {
-                accountIds.add(accountId);
+                this.accountIds.add(accountId);
             }
         }
 
@@ -117,19 +117,19 @@ public class PublicService {
      * 获取新账户Id
      */
     public synchronized int getNewAccountId() {
-        while (accountIds.isEmpty()) {
+        while (this.accountIds.isEmpty()) {
             initRandomAccountIds();
         }
-        return accountIds.pop();
+        return this.accountIds.pop();
     }
 
     /**
      * 获取当前使用的Id列表
      */
-    public List<Integer> getNowIds() {
-        while (accountIds.isEmpty()) {
+    public synchronized List<Integer> getNowIds() {
+        while (this.accountIds.isEmpty()) {
             initRandomAccountIds();
         }
-        return accountIds;
+        return this.accountIds;
     }
 }

@@ -1,30 +1,44 @@
 package com.monkeybean.flux.controller;
 
 import com.monkeybean.flux.model.User;
-import com.monkeybean.flux.repository.UserRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.monkeybean.flux.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
- * Created by MonkeyBean on 2018/8/24.
+ * Created by MonkeyBean on 2018/9/13.
  */
 @RestController
+@RequestMapping("/user/repo")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("user/add")
-    public User save(@RequestParam String name) {
-        User user = new User();
-        user.setName(name);
-        if (userRepository.save(user)) {
-            System.out.printf("用户对象：%s 存储成功!\n", user);
-        }
-        return user;
+    @PostMapping("/add")
+    @ResponseBody
+    public Mono<User> save(@RequestBody User user) {
+        return this.userService.save(user);
+    }
+
+    @DeleteMapping("remove/{username}")
+    public Mono<Long> deleteByUsername(@PathVariable String username) {
+        return this.userService.deleteByUsername(username);
+    }
+
+    @GetMapping("/get/{username}")
+    public Mono<User> findByUsername(@PathVariable String username) {
+        return this.userService.findByUsername(username);
+    }
+
+    @GetMapping("/all")
+    public Flux<User> findAll() {
+        return this.userService.findAll().log();
     }
 }

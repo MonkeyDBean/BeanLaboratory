@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
-    <!--<property name="log_path" value="./../../log/"/>-->
+    <property name="log_path" value="./logs_file/"/>
     <property name="log_name" value="BootLabo"/>
 
     <!-- 控制台输出日志 -->

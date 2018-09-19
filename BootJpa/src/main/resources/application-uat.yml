@@ -1,0 +1,22 @@
+# 数据源配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/monkey_jpa?useUnicode=true&characterEncoding=utf8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username:
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ## ddl-auto 属性说明：
+      ## create： 每次运行程序时，都会重新创建表，故而数据会丢失
+      ## create-drop： 每次运行程序时会先创建表结构，然后待程序结束时清空表
+      ## update: 每次运行程序，没有表时会创建表，如果对象发生改变会更新表结构，原有数据不会清空，只会更新（推荐使用）
+      ## validate: 运行程序会校验数据与数据库的字段类型是否相同，字段不同会报错
+      ddl-auto: update
+    show-sql: true
+    database: mysql
+
+# 自定义配置
+monkey:
+  common:
+    boss: test

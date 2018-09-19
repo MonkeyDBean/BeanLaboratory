@@ -17,6 +17,7 @@
         <module>BallJump</module>
         <module>HeartMaze</module>
         <module>BootSocket</module>
+        <module>BootJpa</module>
     </modules>
 
     <properties>
