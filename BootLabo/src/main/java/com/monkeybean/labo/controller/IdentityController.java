@@ -81,7 +81,7 @@ public class IdentityController {
         return new Result<>(ReturnCode.IMAGE_CODE_INCORRECT);
     }
 
-    @ApiOperation(value = "账号登录")
+    @ApiOperation(value = "账号登录,允许多终端/浏览器登录(当前账户若已在手机端登录，登录pc端后，与手机端同时在线)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "user", value = "账号(手机号或邮箱)", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "pwd", value = "密码, 明文密码的n+1次md5摘要", required = true, dataType = "string", paramType = "query"),
