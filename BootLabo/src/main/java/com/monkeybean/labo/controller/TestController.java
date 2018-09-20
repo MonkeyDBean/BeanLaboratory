@@ -173,5 +173,49 @@ public class TestController {
         map.remove("postField");
         return JSON.toJSONString(map);
     }
+    
+    /**
+     * 存储已登录账户的session, 通过以下三个接口验证强制单终端在线机制：cookie/diff、session/login、session/info
+     * key为账户Id, value为账户最后一次登录的session
+     */
+    private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
+
+    /**
+     * 不同浏览器的cookie不共享，因为每个浏览器存储的cookie路径不一样
+     * 通过cookie中的jsessionid验证
+     */
+    @GetMapping(path = "cookie/diff")
+    public String testDiffCookie(HttpSession session){
+        return session.getId();
+    }
+
+    /**
+     * 强制下线(登陆有效性局限于单个终端/浏览器)
+     */
+    @GetMapping(path = "session/login")
+    public String testSessionLogin(HttpSession session){
+        int accountId = 1;
+        HttpSession oldSession = tempCache.get(accountId);
+        if(oldSession != null){
+            if(oldSession.getAttribute("accountId") != null){
+                oldSession.invalidate();
+            }
+        }
+        session.setAttribute("accountId", accountId);
+        tempCache.put(accountId, session);
+        return session.getId();
+    }
+
+    /**
+     * 模拟登陆后的接口
+     */
+    @GetMapping(path = "session/info")
+    public String getSessionInfo(HttpSession session){
+        if(session.getAttribute("accountId") != null){
+            return session.getId();
+        }else{
+            return "no info in session";
+        }
+    }
 
 }
