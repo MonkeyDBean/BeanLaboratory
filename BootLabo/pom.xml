@@ -256,8 +256,22 @@
 
     <build>
         <finalName>${packageName}</finalName>
-        <plugins>
 
+        <!-- 打包时，指明包含的资源，与如下插件maven-jar-plugin的exclude作用相同 -->
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<includes>-->
+                    <!--<include>mapper/**</include>-->
+                    <!--<include>public/**</include>-->
+                    <!--<include>templates/**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
+
+        <plugins>
+            <!-- actuator info 可获取git版本信息 -->
             <!-- https://mvnrepository.com/artifact/pl.project13.maven/git-commit-id-plugin -->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
@@ -275,6 +289,7 @@
                 </configuration>
             </plugin>
 
+            <!-- 打包时，跳过单元测试 -->
             <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
