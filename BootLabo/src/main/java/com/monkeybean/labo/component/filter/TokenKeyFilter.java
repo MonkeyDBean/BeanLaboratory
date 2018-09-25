@@ -89,7 +89,7 @@ public class TokenKeyFilter implements Filter {
                 httpServletResponse.setStatus(401);
             }
             return;
-        } else { //安全验证
+        } else { //安全校验
 
             //是否校验签名及session(文件上传接口不校验签名，未登录的接口不校验session)
             boolean checkSign = true, checkSession = true;
@@ -99,39 +99,8 @@ public class TokenKeyFilter implements Filter {
             } else if (servletPath.contains("avatar/upload") || servletPath.contains("image/multi/upload")) {
                 checkSign = false;
             }
-            if (checkSign) {
-
-                //访问时间校验
-                String sTimeStr = httpServletRequest.getParameter("stime");
-                String sign = httpServletRequest.getParameter("sign");
-                if (sTimeStr == null || sign == null || !LegalUtil.isLegalTimestamp(sTimeStr)) {
-                    logger.warn("safe param lack or illegal");
-                    httpServletResponse.setStatus(401);
-                    return;
-                }
-                long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(sTimeStr));
-                if (internalTime > ConstValue.TIME_OUT) {
-                    logger.warn("stime is illegal, stime is: {}, internalTime is: {}", sTimeStr, internalTime);
-                    httpServletResponse.setStatus(401);
-                    return;
-                }
-
-                //签名校验
-                String signOriginData = "";
-                Enumeration<String> paramNames = httpServletRequest.getParameterNames();
-                while (paramNames.hasMoreElements()) {
-                    String eachParam = paramNames.nextElement();
-                    if (!eachParam.equals("sign")) {
-                        signOriginData += httpServletRequest.getParameter(eachParam);
-                    }
-                }
-                String paramSign = DigestUtils.md5Hex(signOriginData);
-                logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
-                if (!paramSign.equalsIgnoreCase(sign)) {
-                    logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
-                    httpServletResponse.setStatus(401);
-                    return;
-                }
+            if (checkSign && !checkSignLegal(httpServletRequest, httpServletResponse)) {
+                return;
             }
             if (checkSession) {
                 logger.debug("filter sessionId: {}", httpServletRequest.getSession().getId());
@@ -148,6 +117,49 @@ public class TokenKeyFilter implements Filter {
     @Override
     public void init(FilterConfig arg0) throws ServletException {
         // TODO Auto-generated method stub
+    }
+
+    /**
+     * 签名合法性校验
+     *
+     * @param request  请求
+     * @param response 响应
+     * @return 校验通过返回true, 失败返回false
+     */
+    private boolean checkSignLegal(HttpServletRequest request, HttpServletResponse response) {
+
+        //访问时间校验
+        String sTimeStr = request.getParameter("stime");
+        String sign = request.getParameter("sign");
+        if (sTimeStr == null || sign == null || !LegalUtil.isLegalTimestamp(sTimeStr)) {
+            logger.warn("safe param lack or illegal");
+            response.setStatus(401);
+            return false;
+        }
+        long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(sTimeStr));
+        if (internalTime > ConstValue.TIME_OUT) {
+            logger.warn("stime is illegal, stime is: {}, internalTime is: {}", sTimeStr, internalTime);
+            response.setStatus(401);
+            return false;
+        }
+
+        //签名比对
+        String signOriginData = "";
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String eachParam = paramNames.nextElement();
+            if (!eachParam.equals("sign")) {
+                signOriginData += request.getParameter(eachParam);
+            }
+        }
+        String paramSign = DigestUtils.md5Hex(signOriginData);
+        logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
+        if (!paramSign.equalsIgnoreCase(sign)) {
+            logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
+            response.setStatus(401);
+            return false;
+        }
+        return true;
     }
 
 }
