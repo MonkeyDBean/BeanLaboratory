@@ -1,5 +1,6 @@
 package com.monkeybean.flux.config;
 
+import com.monkeybean.flux.config.filter.SimpleHandlerFilterFunction;
 import com.monkeybean.flux.handler.TimeHandler;
 import com.monkeybean.flux.model.SimpleUser;
 import com.monkeybean.flux.repository.SimpleUserRepository;
@@ -53,7 +54,7 @@ public class RouterFunctionConfiguration {
                     Collection<SimpleUser> users = simpleUserRepository.findAll();
                     Flux<SimpleUser> usersFlux = Flux.fromIterable(users);
                     return ServerResponse.ok().body(usersFlux, SimpleUser.class);
-                });
+                }).filter(new SimpleHandlerFilterFunction());
     }
 
     @Bean
