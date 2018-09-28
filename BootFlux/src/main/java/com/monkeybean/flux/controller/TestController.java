@@ -19,12 +19,12 @@ public class TestController {
 
     @GetMapping("/hello/before")
     public String helloBefore() {
-        return "Welcome to reactive world ~";
+        return "Welcome to reactive world ~ (Before)";
     }
 
     @GetMapping("/hello/after")
     public Mono<String> hello() {
-        return Mono.just("Welcome to reactive world ~");
+        return Mono.just("Welcome to reactive world ~ (After)");
     }
 
     @GetMapping("/url/db/get")
