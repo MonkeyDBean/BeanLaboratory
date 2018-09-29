@@ -1,6 +1,7 @@
 package com.monkeybean.labo.component.aspect;
 
 import com.monkeybean.labo.component.reqres.Result;
+import com.monkeybean.labo.predefine.ReturnCode;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -55,6 +56,11 @@ public class WebLogAspect {
             Result result = (Result) ret;
             logger.info("Response code is " + result.getCode());
             logger.info("Response message is " + result.getMsg());
+            if (result.getCode() != ReturnCode.SUCCESS.getCode()) {
+                ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+                HttpServletRequest request = attributes.getRequest();
+                logger.warn("request: {}, return code is not success: {}", request.getRequestURI(), result.getCode());
+            }
         }
         logger.info("method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
     }
