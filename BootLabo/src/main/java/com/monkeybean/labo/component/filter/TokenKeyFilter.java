@@ -54,6 +54,8 @@ public class TokenKeyFilter implements Filter {
             logger.info(eachParam + "=" + httpServletRequest.getParameter(eachParam));
         }
 
+        //若跨域，不拦截OPTIONS方法
+//        if (!isFilter || "OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
         if (!isFilter) {
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;
