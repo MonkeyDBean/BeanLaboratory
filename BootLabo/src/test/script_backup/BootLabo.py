@@ -22,7 +22,7 @@ java_param_debug = ''
 
 java_param_path = '-Dlog_path=' + log_path 
 
-java_param_gc="-XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xmn512M -XX:+PrintGCDetails -XX:+UseParNewGC -XX:MaxTenuringThreshold=5 -XX:ParallelGCThreads=8 -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=3 -XX:SurvivorRatio=4 -XX:CMSInitiatingOccupancyFraction=80 -XX:MetaspaceSize=32m -XX:MaxMetaspaceSize=68m -XX:+UseConcMarkSweepGC"
+java_param_gc="-XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xmn512M -XX:+PrintGCDetails -XX:+UseParNewGC -XX:MaxTenuringThreshold=5 -XX:ParallelGCThreads=8 -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=3 -XX:SurvivorRatio=4 -XX:CMSInitiatingOccupancyFraction=80 -XX:+UseConcMarkSweepGC"
 
 java_param_charset = '-Dfile.encoding=utf-8'
 java_param_jar='-server -cp ../dist/*:../lib/*:../resource '
