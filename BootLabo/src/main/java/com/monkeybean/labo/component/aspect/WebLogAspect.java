@@ -63,6 +63,7 @@ public class WebLogAspect {
             }
         }
         logger.info("method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
+        beginTime.remove();
     }
 
 //    /**
