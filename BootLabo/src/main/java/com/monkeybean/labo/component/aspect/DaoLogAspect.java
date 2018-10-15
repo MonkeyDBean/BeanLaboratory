@@ -39,6 +39,7 @@ public class DaoLogAspect {
     public void doAfterReturning(Object ret) throws Throwable {
         logger.info("Dao Response is: " + ret);
         logger.info("Dao Method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
+        beginTime.remove();
     }
 
 }
