@@ -253,15 +253,15 @@
 
         <!-- 打包时，指明包含的资源，与如下插件maven-jar-plugin的exclude作用相同 -->
         <!--<resources>-->
-            <!--<resource>-->
-                <!--<directory>src/main/resources</directory>-->
-                <!--<filtering>true</filtering>-->
-                <!--<includes>-->
-                    <!--<include>mapper/**</include>-->
-                    <!--<include>public/**</include>-->
-                    <!--<include>templates/**</include>-->
-                <!--</includes>-->
-            <!--</resource>-->
+        <!--<resource>-->
+        <!--<directory>src/main/resources</directory>-->
+        <!--<filtering>true</filtering>-->
+        <!--<includes>-->
+        <!--<include>mapper/**</include>-->
+        <!--<include>public/**</include>-->
+        <!--<include>templates/**</include>-->
+        <!--</includes>-->
+        <!--</resource>-->
         <!--</resources>-->
 
         <plugins>
@@ -297,6 +297,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
             </plugin>
 
             <!-- 若打成war包，则需注释如下jar plugin -->
@@ -353,7 +356,7 @@
 
                                 <!-- python脚本 -->
                                 <copy file="${project.build.testSourceDirectory}/../script_backup/BootLabo.py"
-                                      tofile="${project.build.directory}/../labo_release/labo/bin/ServiceBus.py"/>
+                                      tofile="${project.build.directory}/../labo_release/labo/bin/BootLabo.py"/>
 
                                 <!-- jar包 -->
                                 <copy file="${project.build.directory}/${project.build.finalName}.jar"
@@ -367,12 +370,14 @@
                                 </copy>
 
                                 <!-- 外部依赖 -->
-                                <copy todir="${project.build.directory}/../labo_release/labo/lib">
-                                    <!--<fileset dir="${project.basedir}/src/main/java/lib">-->
-                                    <fileset dir="${project.build.sourceDirectory}/lib">
-                                        <include name="*.*"/>
-                                    </fileset>
-                                </copy>
+                                <mkdir dir="${project.build.directory}/../labo_release/labo/lib" />
+                                <!-- spring-boot-maven-plugin插件，includeSystemScope设为true， 本地jar包已整合，无需再单独提出 -->
+                                <!--<copy todir="${project.build.directory}/../labo_release/labo/lib">-->
+                                <!--&lt;!&ndash;<fileset dir="${project.basedir}/src/main/java/lib">&ndash;&gt;-->
+                                <!--<fileset dir="${project.build.sourceDirectory}/lib">-->
+                                <!--<include name="*.*"/>-->
+                                <!--</fileset>-->
+                                <!--</copy>-->
 
                                 <!-- 历史sql -->
                                 <copy todir="${project.build.directory}/../labo_release/labo/sql">

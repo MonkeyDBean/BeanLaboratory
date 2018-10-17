@@ -12,7 +12,7 @@ import time
 log_file_name="BootLabo"
 java_param_main_class="org.springframework.boot.loader.JarLauncher"
 java_param_server_name_id="BootLabo"
-java_param_server_mem="-Xmx2048m -Xms1024m -Xss256k -Duser.timezone=GMT+08"
+java_param_server_mem="-Xmx512m -Xms512m -Xss256k -Duser.timezone=GMT+08"
 
 log_path= os.path.dirname(os.getcwd()) + "/../log/"
 
@@ -20,9 +20,9 @@ java_param_product = '-Dlog_name=' + log_file_name
 java_param_mem="-XX:+HeapDumpOnOutOfMemoryError "+ java_param_server_mem
 java_param_debug = ''
 
-java_param_path = '-Dlog_path=' + log_path 
+java_param_path = '-Dlog_path=' + log_path
 
-java_param_gc="-XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xmn512M -XX:+PrintGCDetails -XX:+UseParNewGC -XX:MaxTenuringThreshold=5 -XX:ParallelGCThreads=8 -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=3 -XX:SurvivorRatio=4 -XX:CMSInitiatingOccupancyFraction=80 -XX:+UseConcMarkSweepGC"
+java_param_gc="-XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -Xmn192M -XX:+PrintGCDetails -XX:+UseParNewGC -XX:MaxTenuringThreshold=5 -XX:ParallelGCThreads=8 -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=3 -XX:SurvivorRatio=4 -XX:CMSInitiatingOccupancyFraction=80 -XX:+UseConcMarkSweepGC"
 
 java_param_charset = '-Dfile.encoding=utf-8'
 java_param_jar='-server -cp ../dist/*:../lib/*:../resource '
@@ -40,10 +40,10 @@ def runtime_limit_tuning(openfile,corefile):
             raise e
 
 def debug_mode(port):
-  if debug_port is not None:
-      global java_param_debug
-      java_param_debug = '-Xdebug -Xnopoker -Xrunjdwp:transport=dt_socket,address=' + debug_port + ',server=y,suspend=n'
-      print '-- Debug mode and debug port is -- ', debug_port
+    if debug_port is not None:
+        global java_param_debug
+        java_param_debug = '-Xdebug -Xnopoker -Xrunjdwp:transport=dt_socket,address=' + debug_port + ',server=y,suspend=n'
+        print '-- Debug mode and debug port is -- ', debug_port
 def make_logPath():
     if not os.path.exists(log_path):
         try:
@@ -56,11 +56,11 @@ def proc_start():
     if not os.path.exists(ppidfile_path):
         _str = ' '
         list = [
-                '/usr/bin/java',
-                java_param_product, java_param_mem, java_param_debug,
-                java_param_path, java_param_charset,java_param_gc, java_param_jar,
-                java_param_main_class
-                ]
+            '/usr/bin/java',
+            java_param_product, java_param_mem, java_param_debug,
+            java_param_path, java_param_charset,java_param_gc, java_param_jar,
+            java_param_main_class
+        ]
         cmd = _str.join(list)
         try:
             pid = os.fork()
