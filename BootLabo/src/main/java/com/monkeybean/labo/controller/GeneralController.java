@@ -7,11 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
@@ -25,17 +22,15 @@ import java.util.Properties;
 @RestController
 public class GeneralController {
 
-    private static Logger logger = LoggerFactory.getLogger(GeneralController.class);
-
     @ApiOperation(value = "嗅探服务器运行是否正常")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code：0")})
-    @RequestMapping(path = "sniff/status", method = RequestMethod.GET)
+    @GetMapping(path = "sniff/status")
     public Result<LinkedHashMap<String, Object>> sniffStatus() {
         LinkedHashMap<String, Object> data = new LinkedHashMap<>();
         data.put("SystemTime", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
 
         //系统总内存、最大可用内存、当前剩余可用内存
-        double mb2bt = 1024 * 1024;
+        double mb2bt = 1024 * 1024.0;
         Runtime rt = Runtime.getRuntime();
         data.put("totalMemorySize", String.format("%.2f", rt.totalMemory() / mb2bt) + "MB");
         data.put("maxMemorySiz", String.format("%.2f", rt.maxMemory() / mb2bt) + "MB");
