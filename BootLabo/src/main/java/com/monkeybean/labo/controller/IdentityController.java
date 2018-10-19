@@ -44,7 +44,7 @@ public class IdentityController {
 
     @ApiOperation(value = "获取用户图形验证码")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "png格式的图片")})
-    @RequestMapping(path = "/kapcha", method = RequestMethod.GET)
+    @GetMapping(path = "/kapcha")
     public void getKapcha(HttpSession session, HttpServletResponse response) {
         RandomStringUtil randomStr = new RandomStringUtil(4);//生成四位
         String code = randomStr.nextString(false);//字母数字混合
