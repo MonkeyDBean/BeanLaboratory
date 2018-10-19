@@ -106,7 +106,7 @@ public class TokenKeyFilter implements Filter {
             }
             if (checkSession) {
                 logger.debug("filter sessionId: {}", httpServletRequest.getSession().getId());
-                if (httpServletRequest.getSession().getAttribute("accountId") == null) {
+                if (httpServletRequest.getSession().getAttribute(ConstValue.ACCOUNT_IDENTITY) == null) {
                     logger.debug("session filter 403, param accountId is null");
                     httpServletResponse.setStatus(403);
                     return;

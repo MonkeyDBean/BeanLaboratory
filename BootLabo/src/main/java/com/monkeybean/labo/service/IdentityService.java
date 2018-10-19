@@ -172,7 +172,7 @@ public class IdentityService {
         //账户登录信息更新、身份信息写入session
         Integer accountId = Integer.valueOf(accountInfo.get("account_id").toString());
         laboDoService.updateLoginInfoById(ip, accountId);
-        request.getSession().setAttribute("accountId", accountId);
+        request.getSession().setAttribute(ConstValue.ACCOUNT_IDENTITY, accountId);
         if (stay) {
             request.getSession().setMaxInactiveInterval(ConstValue.MAX_SESSION_TIME);
         }
@@ -214,7 +214,7 @@ public class IdentityService {
         laboDoService.addAccountInfo(newAccountId, phone, dbPwd, name, ip);
 
         //身份信息写入session
-        request.getSession().setAttribute("accountId", newAccountId);
+        request.getSession().setAttribute(ConstValue.ACCOUNT_IDENTITY, newAccountId);
         return new Result<>(ReturnCode.SUCCESS);
     }
 

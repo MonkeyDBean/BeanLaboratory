@@ -20,9 +20,9 @@ public class ConstValue {
     public static final String LEGAL_TIME_FORMAT = "^((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]|[0-9][1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)) (([01]\\d)|(2[0123])):([0-5]\\d):([0-5]\\d)$";
 
     /**
-     * 合法大陆手机号正则
+     * 合法大陆手机号正则, 不采用较严格的"^1[3456789]\\d{9}$"
      */
-    public static final String LEGAL_PHONE = "^1[3456789]\\d{9}$";
+    public static final String LEGAL_PHONE = "^1\\d{10}$";
 
     /**
      * 合法邮箱正则
@@ -106,5 +106,9 @@ public class ConstValue {
     public static final int IMAGE_ACCESS_PRIVATE = 0;
     public static final int IMAGE_ACCESS_SHARE = 1;
     public static final int IMAGE_ACCESS_ALL = 2;
+    /**
+     * session存储的用户身份标志Key
+     */
+    public static final String ACCOUNT_IDENTITY = "accountId";
 
 }

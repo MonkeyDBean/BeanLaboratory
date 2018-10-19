@@ -43,19 +43,19 @@ public class WebLogAspect {
         beginTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        logger.info("Request Url: " + request.getRequestURL().toString());
-        logger.info("Http Method: " + request.getMethod());
-        logger.info("Class Method: " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        logger.info("Args: " + Arrays.toString(joinPoint.getArgs()));
+        logger.info("Request Url: {}", request.getRequestURL());
+        logger.info("Http Method: {}", request.getMethod());
+        logger.info("Class Method: {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+        logger.info("Args: {}", Arrays.toString(joinPoint.getArgs()));
     }
 
     @AfterReturning(returning = "ret", pointcut = "controllerPoint()")
     public void doAfterReturning(Object ret) throws Throwable {
-        logger.info("Response is: " + ret);
+        logger.info("Response is: {}", ret);
         if (ret instanceof Result) {
             Result result = (Result) ret;
-            logger.info("Response code is " + result.getCode());
-            logger.info("Response message is " + result.getMsg());
+            logger.info("Response code is {}", result.getCode());
+            logger.info("Response message is {}", result.getMsg());
             if (result.getCode() != ReturnCode.SUCCESS.getCode()) {
                 ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = attributes.getRequest();

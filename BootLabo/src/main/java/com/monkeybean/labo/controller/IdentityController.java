@@ -4,6 +4,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.component.reqres.req.*;
 import com.monkeybean.labo.component.reqres.res.AccountInfoRes;
+import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.util.RandomStringUtil;
@@ -111,7 +112,7 @@ public class IdentityController {
     @ApiOperation(value = "浏览器中，退出登录")
     @RequestMapping(path = "logout", method = RequestMethod.GET)
     public Result<Integer> logout(HttpServletRequest request) {
-        if (request.getSession().getAttribute("accountId") != null) {
+        if (request.getSession().getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
             request.getSession().invalidate();
         }
         return new Result<>(ReturnCode.SUCCESS);
@@ -121,14 +122,14 @@ public class IdentityController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code: 无特殊处理的返回码")})
     @RequestMapping(path = "info/account", method = RequestMethod.GET)
     public Result<AccountInfoRes> getAccountInfo(HttpSession session) {
-        return identityService.getAccountInfo(Integer.parseInt(session.getAttribute("accountId").toString()));
+        return identityService.getAccountInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()));
     }
 
     @ApiOperation(value = "上传头像")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "avatar/upload")
     public Result<String> avatarUpload(@RequestParam(value = "cover") MultipartFile file, HttpSession session) {
-        return identityService.avatarUpload(Integer.parseInt(session.getAttribute("accountId").toString()), file);
+        return identityService.avatarUpload(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), file);
     }
 
     @ApiOperation(value = "修改密码")
@@ -140,7 +141,7 @@ public class IdentityController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @RequestMapping(path = "password/update", method = RequestMethod.POST)
     public Result<Integer> updatePassword(@Valid @ModelAttribute PwdUpdateReq reqModel, HttpSession session) {
-        return identityService.updatePassword(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getOldpwd(), reqModel.getNewpwd(), reqModel.getStime());
+        return identityService.updatePassword(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getOldpwd(), reqModel.getNewpwd(), reqModel.getStime());
     }
 
     @ApiOperation(value = "忘记密码，设置新密码")
@@ -160,7 +161,7 @@ public class IdentityController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(path = "mail/bind")
     public Result<String> bindMail(@Valid @ModelAttribute BindMailReq reqModel, HttpSession session) {
-        return identityService.bindMail(Integer.parseInt(session.getAttribute("accountId").toString()), reqModel.getMail());
+        return identityService.bindMail(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getMail());
     }
 
 }

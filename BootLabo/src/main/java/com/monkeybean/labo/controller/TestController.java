@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.dao.LaboDataDao;
+import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.util.IpUtil;
@@ -46,6 +47,11 @@ public class TestController {
     private final IdentityService identityService;
 
     private final LaboDataDao laboDataDao;
+    /**
+     * 存储已登录账户的session, 通过以下三个接口验证强制单终端在线机制：cookie/diff、session/login、session/info
+     * key为账户Id, value为账户最后一次登录的session
+     */
+    private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
 
     @Autowired
     public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao) {
@@ -55,7 +61,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试reCaptcha")
-    @RequestMapping(path = "reCaptcha/verify", method = RequestMethod.POST)
+    @PostMapping(path = "reCaptcha/verify")
     public Result<Boolean> testVerifyReCaptcha(@RequestParam(value = "response") String response, HttpServletRequest request) {
         String ip = IpUtil.getIpAddress(request);
         boolean verifyStatus = ReCaptchaUtil.verifyReCaptcha(otherConfig.getReCaptchaSecretKey(), response, ip);
@@ -81,13 +87,14 @@ public class TestController {
 
         //校验文件
         UUID uuid = UUID.randomUUID();
-        String fileNewName = uuid + fileName.substring(fileName.lastIndexOf("."));
+        String fileNewName = uuid + fileName.substring(fileName.lastIndexOf('.'));
         String fileStorePath = rootPath.getPath() + "\\" + fileNewName;
         File imageFile = new File(fileStorePath);
 
         //解码
         byte[] fileBytes = Base64.decodeBase64(fileCode.getBytes());
-        logger.info("image file size: {} kb", String.format("%.2f", fileBytes.length / 1024.));
+        String formatSize = String.format("%.2f", fileBytes.length / 1024.);
+        logger.info("image file size: {} kb", formatSize);
 
         //流写入
         FileOutputStream outputStream = new FileOutputStream(imageFile);
@@ -154,14 +161,16 @@ public class TestController {
     @SuppressWarnings("unchecked")
     public String testParam(HttpServletRequest request) throws UnsupportedEncodingException {
 
+        final String postFieldKey = "postField";
+
         //get json参数放到map中
         String queryString = request.getQueryString();
         JSONObject json = JSONObject.parseObject(URLDecoder.decode(queryString, "UTF-8"));
         Map<String, Object> map = JSONObject.toJavaObject(json, Map.class);
-        if (!map.containsKey("postField")) {
+        if (!map.containsKey(postFieldKey)) {
             return null;
         }
-        String[] postFields = map.get("postField").toString().split(",");
+        String[] postFields = map.get(postFieldKey).toString().split(",");
         List<String> postFieldList = Arrays.asList(postFields);
 
         //post参数校验并放到map中
@@ -172,22 +181,16 @@ public class TestController {
                 map.put(paramName, request.getParameter(paramName));
             }
         }
-        map.remove("postField");
+        map.remove(postFieldKey);
         return JSON.toJSONString(map);
     }
-    
-    /**
-     * 存储已登录账户的session, 通过以下三个接口验证强制单终端在线机制：cookie/diff、session/login、session/info
-     * key为账户Id, value为账户最后一次登录的session
-     */
-    private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
 
     /**
      * 不同浏览器的cookie不共享，因为每个浏览器存储的cookie路径不一样
      * 通过cookie中的jsessionid验证
      */
     @GetMapping(path = "cookie/diff")
-    public String testDiffCookie(HttpSession session){
+    public String testDiffCookie(HttpSession session) {
         return session.getId();
     }
 
@@ -195,15 +198,13 @@ public class TestController {
      * 强制下线(登陆有效性局限于单个终端/浏览器)
      */
     @GetMapping(path = "session/login")
-    public String testSessionLogin(HttpSession session){
+    public String testSessionLogin(HttpSession session) {
         int accountId = 1;
         HttpSession oldSession = tempCache.get(accountId);
-        if(oldSession != null){
-            if(oldSession.getAttribute("accountId") != null){
-                oldSession.invalidate();
-            }
+        if (oldSession != null && oldSession.getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
+            oldSession.invalidate();
         }
-        session.setAttribute("accountId", accountId);
+        session.setAttribute(ConstValue.ACCOUNT_IDENTITY, accountId);
         tempCache.put(accountId, session);
         return session.getId();
     }
@@ -212,10 +213,10 @@ public class TestController {
      * 模拟登陆后的接口
      */
     @GetMapping(path = "session/info")
-    public String getSessionInfo(HttpSession session){
-        if(session.getAttribute("accountId") != null){
+    public String getSessionInfo(HttpSession session) {
+        if (session.getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
             return session.getId();
-        }else{
+        } else {
             return "no info in session";
         }
     }

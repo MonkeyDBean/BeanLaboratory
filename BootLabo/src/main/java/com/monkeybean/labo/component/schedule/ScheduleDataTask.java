@@ -30,6 +30,9 @@ public class ScheduleDataTask {
         return new ConcurrentTaskScheduler(); //single threaded by default
     }
 
+    //test, 每分钟执行一次
+//    @Scheduled(cron = "0 */1 * * * ?")
+
     /**
      * 每日凌晨四点清理数据库无用数据及缓存
      */

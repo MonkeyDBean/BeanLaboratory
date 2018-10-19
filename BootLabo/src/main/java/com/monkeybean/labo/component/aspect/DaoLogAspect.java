@@ -31,13 +31,13 @@ public class DaoLogAspect {
     @Before("daoPoint()")
     public void doBefore(JoinPoint joinPoint) {
         beginTime.set(System.currentTimeMillis());
-        logger.info("Dao Class Method: " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        logger.info("Dao Args: " + Arrays.toString(joinPoint.getArgs()));
+        logger.info("Dao Class Method: {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+        logger.info("Dao Args: {}", Arrays.toString(joinPoint.getArgs()));
     }
 
     @AfterReturning(returning = "ret", pointcut = "daoPoint()")
     public void doAfterReturning(Object ret) throws Throwable {
-        logger.info("Dao Response is: " + ret);
+        logger.info("Dao Response is: {}", ret);
         logger.info("Dao Method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
         beginTime.remove();
     }

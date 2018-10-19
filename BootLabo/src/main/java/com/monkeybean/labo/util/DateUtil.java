@@ -25,10 +25,19 @@ public class DateUtil {
     /**
      * 获取昨天日期的字符串格式，格式：yyyy-MM-dd
      */
-    public static String getLastDay() {
+    public static String getLastDayStr() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         calendar.add(Calendar.DATE, -1);
         return new DateTime(calendar.getTime()).toString(DATE_PATTERN);
+    }
+
+    /**
+     * 获取昨天的日期
+     */
+    public static Date getLastDay() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime();
     }
 
     /**
