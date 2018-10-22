@@ -216,7 +216,8 @@ public class SortUtil {
         if (data == null || data.length < 2) {
             return;
         }
-        int left = 0, right = data.length - 1;
+        int left = 0;
+        int right = data.length - 1;
         if (left < right) {
             int p = partition(data, left, right);
             quickSort(data, left, p - 1);
@@ -241,8 +242,9 @@ public class SortUtil {
      * @param last  要合并的结束索引
      * @param temp  临时数组
      */
-    private static void mergeArray(int data[], int first, int mid, int last, int temp[]) {
-        int i = first, j = mid + 1;
+    private static void mergeArray(int[] data, int first, int mid, int last, int[] temp) {
+        int i = first;
+        int j = mid + 1;
         int k = 0;
         while (i <= mid && j <= last) {
             if (data[i] <= data[j]) {

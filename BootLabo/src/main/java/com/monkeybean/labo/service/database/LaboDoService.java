@@ -2,13 +2,18 @@ package com.monkeybean.labo.service.database;
 
 import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -16,11 +21,43 @@ import java.util.List;
 @Service
 public class LaboDoService {
 
+    private static final String PARAM_PHONE = "phone";
+    private static final String PARAM_ACCOUNT_ID = "accountId";
+    private static final String PARAM_FILE_NAME = "fileName";
+    private static final String PARAM_IS_SHARE = "isShare";
+    private static final String PARAM_ID_LIST = "idList";
+    private static Logger logger = LoggerFactory.getLogger(LaboDoService.class);
     private final LaboDataDao laboDao;
+
+    /**
+     * 存储所有方法，key为方法名，value为Method
+     */
+    private final ConcurrentHashMap<String, Method> daoMethod = new ConcurrentHashMap<>();
 
     @Autowired
     public LaboDoService(LaboDataDao laboDao) {
         this.laboDao = laboDao;
+        for (Method method : laboDao.getClass().getDeclaredMethods()) {
+            this.daoMethod.put(method.getName(), method);
+        }
+    }
+
+    /**
+     * 测试反射机制调用方法
+     *
+     * @param params     请求参数
+     * @param methodName 方法名称
+     * @return 信息列表
+     */
+    @SuppressWarnings("unchecked")
+    public List<HashMap<String, Object>> testReflectionInvoke(HashMap<String, Object> params, String methodName) {
+        List<HashMap<String, Object>> result = null;
+        try {
+            result = (List<HashMap<String, Object>>) this.daoMethod.get(methodName).invoke(laboDao, params);
+        } catch (Exception e) {
+            logger.error("testReflectionInvoke, method reflect IllegalAccessException or InvocationTargetException: {}", e);
+        }
+        return result;
     }
 
     /**
@@ -31,7 +68,7 @@ public class LaboDoService {
      */
     public HashMap<String, Object> queryAccountInfoByPhone(String phone) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("phone", phone);
+        param.put(LaboDoService.PARAM_PHONE, phone);
         return laboDao.queryAccountInfo(param);
     }
 
@@ -55,7 +92,7 @@ public class LaboDoService {
      */
     public HashMap<String, Object> queryAccountInfoById(Integer accountId) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryAccountInfo(param);
     }
 
@@ -79,7 +116,7 @@ public class LaboDoService {
      * 通过账户id更新账户信息
      */
     private void updateAccountInfoById(Integer accountId, HashMap<String, Object> param) {
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         laboDao.updateAccountInfo(param);
     }
 
@@ -134,8 +171,8 @@ public class LaboDoService {
      */
     public void addAccountInfo(Integer accountId, String phone, String password, String nickname, String ipv4) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
-        param.put("phone", phone);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
+        param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("password", password);
         param.put("nickname", nickname);
         param.put("ipv4", ipv4);
@@ -150,7 +187,7 @@ public class LaboDoService {
      */
     public HashMap<String, Object> queryLatestMessageRecord(String phone, Boolean verifyStatus) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("phone", phone);
+        param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("verifyStatus", verifyStatus);
         return laboDao.queryLatestMessageRecord(param);
     }
@@ -179,7 +216,7 @@ public class LaboDoService {
      */
     public void addMessageRecord(String phone, String messageCode, String resCode, String resCustom) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("phone", phone);
+        param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("messageCode", messageCode);
         param.put("resCode", resCode);
         param.put("resCustom", resCustom);
@@ -189,7 +226,7 @@ public class LaboDoService {
     /**
      * 查询临时图片
      */
-    public HashMap<String, Object> queryTempAsset(String fileName) {
+    public Map<String, Object> queryTempAsset(String fileName) {
         return laboDao.queryTempAsset(fileName);
     }
 
@@ -198,8 +235,8 @@ public class LaboDoService {
      */
     public void addNewTempAsset(Integer accountId, String fileName, byte[] cover) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
-        param.put("fileName", fileName);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
+        param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("cover", cover);
         laboDao.addNewTempAsset(param);
     }
@@ -220,7 +257,7 @@ public class LaboDoService {
     public List<HashMap<String, Object>> queryImageById(Integer imageId, Integer accountId) {
         HashMap<String, Object> param = new HashMap<>();
         param.put("id", imageId);
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoList(param);
     }
 
@@ -233,7 +270,7 @@ public class LaboDoService {
     public List<HashMap<String, Object>> queryImageListByHash(String fileHash, Integer accountId) {
         HashMap<String, Object> param = new HashMap<>();
         param.put("fileHash", fileHash);
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoList(param);
     }
 
@@ -247,8 +284,8 @@ public class LaboDoService {
      */
     public List<HashMap<String, Object>> queryImageListByShareType(Integer isShare, Integer accountId, Integer limit, Integer offset) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("isShare", isShare);
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_IS_SHARE, isShare);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put("limit", limit);
         param.put("offset", offset);
         return laboDao.queryImageInfoList(param);
@@ -259,8 +296,8 @@ public class LaboDoService {
      */
     public Integer queryImageCountByShareType(Integer isShare, Integer accountId) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("isShare", isShare);
-        param.put("accountId", accountId);
+        param.put(LaboDoService.PARAM_IS_SHARE, isShare);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoCount(param);
     }
 
@@ -273,8 +310,8 @@ public class LaboDoService {
     public List<HashMap<String, Object>> queryImageShareStatusList(List<Integer> idList, Integer accountId) {
         if (!idList.isEmpty()) {
             HashMap<String, Object> param = new HashMap<>();
-            param.put("idList", idList);
-            param.put("accountId", accountId);
+            param.put(LaboDoService.PARAM_ID_LIST, idList);
+            param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             return laboDao.queryImageShareStatusList(param);
         }
         return new ArrayList<>();
@@ -289,8 +326,8 @@ public class LaboDoService {
      */
     public void updateImageInfo(Integer accountId, String fileName, String fileDes) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
-        param.put("fileName", fileName);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
+        param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("fileDes", fileDes);
         laboDao.updateImageInfo(param);
     }
@@ -304,8 +341,8 @@ public class LaboDoService {
     public void removeImages(List<Integer> idList, Integer accountId) {
         if (!idList.isEmpty()) {
             HashMap<String, Object> param = new HashMap<>();
-            param.put("idList", idList);
-            param.put("accountId", accountId);
+            param.put(LaboDoService.PARAM_ID_LIST, idList);
+            param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             param.put("isDelete", 1);
             laboDao.updateImageListStatus(param);
         }
@@ -320,9 +357,9 @@ public class LaboDoService {
      */
     public void changeImageShareStatus(List<Integer> idList, Integer accountId, Integer isShare) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("idList", idList);
-        param.put("accountId", accountId);
-        param.put("isShare", isShare);
+        param.put(LaboDoService.PARAM_ID_LIST, idList);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
+        param.put(LaboDoService.PARAM_IS_SHARE, isShare);
         laboDao.updateImageListStatus(param);
     }
 
@@ -337,8 +374,8 @@ public class LaboDoService {
      */
     public void addImageInfo(Integer accountId, String fileName, String fileHash, String storePath, String accessPath) {
         HashMap<String, Object> param = new HashMap<>();
-        param.put("accountId", accountId);
-        param.put("fileName", fileName);
+        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
+        param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("fileHash", fileHash);
         param.put("storePath", storePath);
         param.put("accessPath", accessPath);
@@ -351,7 +388,7 @@ public class LaboDoService {
     public void addMultiImage(Integer accountId, List<HashMap<String, Object>> imageList) {
         if (!imageList.isEmpty()) {
             HashMap<String, Object> param = new HashMap<>();
-            param.put("accountId", accountId);
+            param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             param.put("imageList", imageList);
             laboDao.addMultiImage(param);
         }

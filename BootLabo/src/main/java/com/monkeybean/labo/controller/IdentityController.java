@@ -70,7 +70,7 @@ public class IdentityController {
             @ApiImplicitParam(name = "code", value = "图形验证码", required = true, dataType = "string", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code: 无特殊处理的返回码")})
-    @RequestMapping(path = "message/apply", method = RequestMethod.GET)
+    @GetMapping(path = "message/apply")
     public Result<String> getValidCode(@Valid MessageApplyReq reqModel, HttpServletRequest request) {
         String codeKey = gKapcha.getConfig().getSessionKey();
         String verifyCode = request.getSession().getAttribute(codeKey) == null ? ""
@@ -91,7 +91,7 @@ public class IdentityController {
             @ApiImplicitParam(name = "stime", value = "访问时间,unix时间戳，毫秒级", required = true, dataType = "long", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code: 无特殊处理的返回码")})
-    @RequestMapping(path = "user/login", method = RequestMethod.POST)
+    @PostMapping(path = "user/login")
     public Result<Integer> userLogin(@Valid @ModelAttribute UserLoginReq reqModel, HttpServletRequest request) {
         return identityService.userLogin(reqModel.getUser(), reqModel.getPwd(), reqModel.getResponse(), reqModel.getStayBoolean(), reqModel.getStime(), request);
     }
@@ -109,20 +109,20 @@ public class IdentityController {
         return identityService.userRegister(reqModel.getPhone(), reqModel.getCode(), reqModel.getName(), reqModel.getPwd(), request);
     }
 
-    @ApiOperation(value = "浏览器中，退出登录")
-    @RequestMapping(path = "logout", method = RequestMethod.GET)
-    public Result<Integer> logout(HttpServletRequest request) {
-        if (request.getSession().getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
-            request.getSession().invalidate();
-        }
-        return new Result<>(ReturnCode.SUCCESS);
-    }
-
     @ApiOperation(value = "获取用户信息")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code: 无特殊处理的返回码")})
     @RequestMapping(path = "info/account", method = RequestMethod.GET)
     public Result<AccountInfoRes> getAccountInfo(HttpSession session) {
         return identityService.getAccountInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()));
+    }
+
+    @ApiOperation(value = "浏览器中，退出登录")
+    @GetMapping(path = "logout")
+    public Result<Integer> logout(HttpServletRequest request) {
+        if (request.getSession().getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
+            request.getSession().invalidate();
+        }
+        return new Result<>(ReturnCode.SUCCESS);
     }
 
     @ApiOperation(value = "上传头像")
@@ -139,7 +139,7 @@ public class IdentityController {
             @ApiImplicitParam(name = "stime", value = "访问时间", required = true, dataType = "long", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
-    @RequestMapping(path = "password/update", method = RequestMethod.POST)
+    @PostMapping(path = "password/update")
     public Result<Integer> updatePassword(@Valid @ModelAttribute PwdUpdateReq reqModel, HttpSession session) {
         return identityService.updatePassword(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getOldpwd(), reqModel.getNewpwd(), reqModel.getStime());
     }
@@ -151,7 +151,7 @@ public class IdentityController {
             @ApiImplicitParam(name = "pwd", value = "新密码(明文密码单次Md5摘要)", required = true, dataType = "string", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
-    @RequestMapping(path = "password/reset", method = RequestMethod.POST)
+    @PostMapping(path = "password/reset")
     public Result<Integer> resetPwd(@Valid @ModelAttribute PwdResetReq reqModel) {
         return identityService.resetPassword(reqModel.getPhone(), reqModel.getCode(), reqModel.getPwd());
     }

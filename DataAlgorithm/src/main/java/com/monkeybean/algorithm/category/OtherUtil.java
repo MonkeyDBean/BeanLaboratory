@@ -3,7 +3,9 @@ package com.monkeybean.algorithm.category;
 /**
  * Created by MonkeyBean on 2018/8/6.
  */
-public class OtherUtil {
+public final class OtherUtil {
+
+    private OtherUtil(){}
 
     /**
      * 字符打印，输出心形

@@ -36,8 +36,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -69,7 +69,7 @@ public class UtilController {
             @ApiImplicitParam(name = "bizId", value = "发送流水号", required = true, dataType = "string", paramType = "query")
     })
     @RequestMapping(path = "message/query", method = RequestMethod.GET)
-    public Result<HashMap<String, Object>> queryMessage(@RequestParam String phone, @RequestParam String bizId) {
+    public Result<Map<String, Object>> queryMessage(@RequestParam String phone, @RequestParam String bizId) {
         try {
             QuerySendDetailsResponse querySendDetailsResponse = AliYunUtil.querySendDetails(messageConfig.getAccessKeyId(), messageConfig.getAccessKeySecret(), phone, bizId);
             return new Result<>(ReturnCode.SUCCESS, AliYunUtil.printSendDetails(querySendDetailsResponse));

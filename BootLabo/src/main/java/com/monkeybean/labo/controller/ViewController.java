@@ -30,8 +30,8 @@ public class ViewController {
         String activeDes = "激活状态";
         String mapKey = request.getParameter("verify");
         if (mapKey != null && mapKey.length() > 11) {
-            String mapValue = CacheData.mailKeyMap.get(mapKey);
-            CacheData.mailKeyMap.remove(mapKey);
+            String mapValue = CacheData.MAIL_KEY_MAP.get(mapKey);
+            CacheData.MAIL_KEY_MAP.remove(mapKey);
             if (mapValue != null) {
                 String phone = mapValue.substring(0, 11);
                 String mail = mapValue.substring(11);

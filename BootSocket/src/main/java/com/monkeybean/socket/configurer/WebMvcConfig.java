@@ -89,7 +89,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 }
                 logger.error(message, e);
             }
-            logger.error("统一异常处理:" + JSONObject.toJSONString(result));
+            String resultStr = JSONObject.toJSONString(result);
+            logger.error("统一异常处理: {}", resultStr);
             responseResult(response, result);
             return new ModelAndView();
         });
@@ -154,7 +155,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         if (StringUtils.isEmpty(requestSign)) {
             return false;
         }
-        List<String> keys = new ArrayList<String>(request.getParameterMap().keySet());
+        List<String> keys = new ArrayList<>(request.getParameterMap().keySet());
         keys.remove("sign");//排除sign参数
         Collections.sort(keys);//排序
 
@@ -191,7 +192,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
         // 如果是多级代理，那么取第一个ip为客户端ip
         if (ip != null && ip.contains(",")) {
-            ip = ip.substring(0, ip.indexOf(",")).trim();
+            ip = ip.substring(0, ip.indexOf(',')).trim();
         }
         return ip;
     }

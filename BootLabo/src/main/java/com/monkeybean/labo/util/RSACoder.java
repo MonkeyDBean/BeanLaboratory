@@ -12,20 +12,22 @@ import java.util.Map;
 /**
  * Created by MonkeyBean on 2018/05/26.
  */
-public class RSACoder {
+public final class RSACoder {
     private static final String KEY_ALGORITHM = "RSA";
     private static final String SIGNATURE_ALGORITHM = "MD5withRSA";
 
     private static final String PUBLIC_KEY = "RSAPublicKey";
     private static final String PRIVATE_KEY = "RSAPrivateKey";
 
+    private RSACoder() {
+    }
+
     /**
      * 初始化密钥
      */
     public static Map<String, Object> initKey() throws Exception {
         KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM);
-        keyPairGen.initialize(512);
-
+        keyPairGen.initialize(2048);
         KeyPair keyPair = keyPairGen.generateKeyPair();
 
         // 公钥
@@ -34,8 +36,7 @@ public class RSACoder {
         // 私钥
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        Map<String, Object> keyMap = new HashMap<String, Object>(2);
-
+        Map<String, Object> keyMap = new HashMap<>(2);
         keyMap.put(PUBLIC_KEY, publicKey);
         keyMap.put(PRIVATE_KEY, privateKey);
         return keyMap;
@@ -44,7 +45,7 @@ public class RSACoder {
     /**
      * 取得私钥
      */
-    public static String getPrivateKey(Map<String, Object> keyMap) throws Exception {
+    public static String getPrivateKey(Map<String, Object> keyMap) {
         Key key = (Key) keyMap.get(PRIVATE_KEY);
         return Coder.encryptHex(key.getEncoded());
     }
@@ -52,7 +53,7 @@ public class RSACoder {
     /**
      * 取得公钥
      */
-    public static String getPublicKey(Map<String, Object> keyMap) throws Exception {
+    public static String getPublicKey(Map<String, Object> keyMap) {
         Key key = (Key) keyMap.get(PUBLIC_KEY);
         return Coder.encryptHex(key.getEncoded());
     }

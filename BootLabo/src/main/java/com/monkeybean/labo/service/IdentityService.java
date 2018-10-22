@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -90,7 +91,7 @@ public class IdentityService {
             return new Result<>(ReturnCode.SUCCESS, verifyCode);
         }
 
-        HashMap<String, Object> sendResult = AliYunUtil.sendMessage(messageConfig.getAccessKeyId(), messageConfig.getAccessKeySecret(), messageConfig.getSignName(), messageConfig.getTemplateId(), phone, verifyCode);
+        Map<String, Object> sendResult = AliYunUtil.sendMessage(messageConfig.getAccessKeyId(), messageConfig.getAccessKeySecret(), messageConfig.getSignName(), messageConfig.getTemplateId(), phone, verifyCode);
         if (ConstValue.SEND_SUCCESS.equals(sendResult.get("result").toString())) {
             SendSmsResponse sendSmsResponse = (SendSmsResponse) sendResult.get("response");
             String responseCode = sendSmsResponse.getCode();
@@ -382,7 +383,7 @@ public class IdentityService {
         }
 
         //邮箱的发送次数是否已达最大
-        if (CacheData.mailSendNumMap.getOrDefault(mail, 0) > otherConfig.getMailSendMaxNum()) {
+        if (CacheData.MAIL_SEND_NUM_MAP.getOrDefault(mail, 0) > otherConfig.getMailSendMaxNum()) {
             logger.warn("mail send count is up to max, accountId: {}, mail: {}", accountId, mail);
             return new Result<>(ReturnCode.MAIL_SEND_MAX);
         }
@@ -405,8 +406,8 @@ public class IdentityService {
         if (!sendMail(mail, activeUrl)) {
             return new Result<>(ReturnCode.SERVER_EXCEPTION);
         }
-        CacheData.mailKeyMap.put(mailKey, accountInfo.get("phone").toString() + mail);
-        CacheData.mailSendNumMap.put(mail, CacheData.mailSendNumMap.getOrDefault(mail, 0) + 1);
+        CacheData.MAIL_KEY_MAP.put(mailKey, accountInfo.get("phone").toString() + mail);
+        CacheData.MAIL_SEND_NUM_MAP.put(mail, CacheData.MAIL_SEND_NUM_MAP.getOrDefault(mail, 0) + 1);
         return new Result<>(ReturnCode.SUCCESS);
     }
 

@@ -13,10 +13,12 @@ import java.security.MessageDigest;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class Coder {
+public final class Coder {
     private static Logger logger = LoggerFactory.getLogger(Coder.class);
+    private static char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
-    private static char[] HEX_CHAR = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private Coder() {
+    }
 
     /**
      * 账户密码，DES算法盐作为密钥加密
@@ -90,8 +92,8 @@ public class Coder {
     public static String encryptHex(byte[] b) {
         StringBuilder sb = new StringBuilder(b.length * 2);
         for (int i = 0; i < b.length; i++) {
-            sb.append(HEX_CHAR[(b[i] & 0xf0) >>> 4]);
-            sb.append(HEX_CHAR[b[i] & 0x0f]);
+            sb.append(hexChar[(b[i] & 0xf0) >>> 4]);
+            sb.append(hexChar[b[i] & 0x0f]);
         }
         return sb.toString();
     }

@@ -17,9 +17,12 @@ import java.util.HashMap;
  * <p>
  * Created by MonkeyBean on 2018/7/19.
  */
-public class WeatherUtil {
+public final class WeatherUtil {
 
     private static Logger logger = LoggerFactory.getLogger(WeatherUtil.class);
+
+    private WeatherUtil() {
+    }
 
     /**
      * 获取天气信息，soJson免费接口
@@ -106,22 +109,11 @@ public class WeatherUtil {
      * @param location  位置
      * @return 成功则返回数据，失败返回null
      */
-    public static String getDailyWeather(String userId, String secretKey, String location) {
+    public static String getDailyWeather(String userId, String secretKey, String location) throws IOException, SignatureException {
         if (StringUtils.isAllBlank(userId, secretKey, location)) {
             return null;
         }
-        try {
-            String url = generateDiaryWeatherURL(userId, secretKey, location);
-            String res = null;
-            try {
-                res = OkHttpUtil.doGet(url);
-            } catch (IOException e) {
-                logger.error("getDailyWeather, IOException: {}", e);
-            }
-            return res;
-        } catch (SignatureException | UnsupportedEncodingException e) {
-            logger.error("getDailyWeather, exception: {}", e);
-        }
-        return null;
+        String url = generateDiaryWeatherURL(userId, secretKey, location);
+        return OkHttpUtil.doGet(url);
     }
 }

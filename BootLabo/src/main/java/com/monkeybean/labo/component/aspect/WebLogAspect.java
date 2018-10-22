@@ -50,7 +50,7 @@ public class WebLogAspect {
     }
 
     @AfterReturning(returning = "ret", pointcut = "controllerPoint()")
-    public void doAfterReturning(Object ret) throws Throwable {
+    public void doAfterReturning(Object ret) {
         logger.info("Response is: {}", ret);
         if (ret instanceof Result) {
             Result result = (Result) ret;

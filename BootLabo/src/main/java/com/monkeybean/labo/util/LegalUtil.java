@@ -8,17 +8,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * 合法性校验
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class LegalUtil {
+public final class LegalUtil {
 
     private static Logger logger = LoggerFactory.getLogger(LegalUtil.class);
-
     /**
      * <pre>
      *
@@ -34,12 +32,14 @@ public class LegalUtil {
      *     91 : 国外
      * </pre>
      */
-    private static String cityCode[] = {"11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", "44", "45", "46", "50", "51", "52", "53", "54",
+    private static String[] cityCode = {"11", "12", "13", "14", "15", "21", "22", "23", "31", "32", "33", "34", "35", "36", "37", "41", "42", "43", "44", "45", "46", "50", "51", "52", "53", "54",
             "61", "62", "63", "64", "65", "71", "81", "82", "91"};
     /**
      * 每位加权因子
      */
-    private static int power[] = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    private static int[] power = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    private LegalUtil() {
+    }
 
     /**
      * 判断是否为合法unix时间戳，毫秒级，到2030年
@@ -54,14 +54,14 @@ public class LegalUtil {
     /**
      * 手机号的合法性判断
      */
-    public static boolean isPhoneLegal(String str) throws PatternSyntaxException {
+    public static boolean isPhoneLegal(String str) {
         return isChinaPhoneLegal(str) || isHKPhoneLegal(str);
     }
 
     /**
      * 大陆手机号码11位数，匹配格式：简单匹配
      */
-    public static boolean isChinaPhoneLegal(String str) throws PatternSyntaxException {
+    public static boolean isChinaPhoneLegal(String str) {
         String regExp = "^1[3456789]\\d{9}$";
         Pattern p = Pattern.compile(regExp);
         Matcher m = p.matcher(str);
@@ -71,7 +71,7 @@ public class LegalUtil {
     /**
      * 香港手机号码8位数，5|6|8|9开头+7位任意数
      */
-    public static boolean isHKPhoneLegal(String str) throws PatternSyntaxException {
+    public static boolean isHKPhoneLegal(String str) {
         String regExp = "^(5|6|8|9)\\d{7}$";
         Pattern p = Pattern.compile(regExp);
         Matcher m = p.matcher(str);
@@ -230,8 +230,8 @@ public class LegalUtil {
 
         // 获取第18位
         String idCard18Code = idCard.substring(17, 18);
-        char c[] = idCard17.toCharArray();
-        int bit[] = convertCharToInt(c);
+        char[] c = idCard17.toCharArray();
+        int[] bit = convertCharToInt(c);
         int sum17 = getPowerSum(bit);
 
         // 将和值与11取模得到余数进行校验码判断
@@ -240,10 +240,7 @@ public class LegalUtil {
             return false;
         }
         // 将身份证的第18位与算出来的校码进行匹配，不相等就为假
-        if (!idCard18Code.equalsIgnoreCase(checkCode)) {
-            return false;
-        }
-        return true;
+        return idCard18Code.equalsIgnoreCase(checkCode);
     }
 
     /**
@@ -372,6 +369,7 @@ public class LegalUtil {
             case 0:
                 checkCode = "1";
                 break;
+            default:
         }
         return checkCode;
     }

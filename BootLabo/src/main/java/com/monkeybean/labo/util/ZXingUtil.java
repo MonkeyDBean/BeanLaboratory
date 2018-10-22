@@ -14,19 +14,23 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Created by MonkeyBean on 2018/7/12.
  * <p>
  * Google ZXing 二维码服务
  */
-public class ZXingUtil {
+public final class ZXingUtil {
 
     private static final int BLACK = 0xFF000000;
     private static final int WHITE = 0xFFFFFFFF;
     private static Logger logger = LoggerFactory.getLogger(ZXingUtil.class);
+
+    private ZXingUtil() {
+    }
 
     private static BufferedImage toBufferedImage(BitMatrix matrix) {
         int width = matrix.getWidth();
@@ -73,7 +77,7 @@ public class ZXingUtil {
     }
 
     private static BitMatrix generateBitMatrix(String content, Integer width, Integer height, boolean isFill) {
-        Hashtable<EncodeHintType, Object> hints = new Hashtable<>();
+        Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         if (isFill) {
             hints.put(EncodeHintType.MARGIN, 0);

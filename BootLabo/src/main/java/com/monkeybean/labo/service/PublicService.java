@@ -111,6 +111,7 @@ public class PublicService {
         //新id最大上限
         int newIdBaseSeed = idBaseSeed + randomCount;
         laboDoService.updateIdBaseSeed(newIdBaseSeed);
+        logger.info("generateRandomAccountIds, idArray size is: {}, newIdBaseSeed in db is: {}", this.accountIds.size(), newIdBaseSeed);
     }
 
     /**

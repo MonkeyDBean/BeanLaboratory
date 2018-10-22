@@ -11,9 +11,12 @@ import java.nio.ByteBuffer;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class FilterUtf8Mb4Util {
+public final class FilterUtf8Mb4Util {
 
     private static Logger logger = LoggerFactory.getLogger(FilterUtf8Mb4Util.class);
+
+    private FilterUtf8Mb4Util() {
+    }
 
     /**
      * 过滤非汉字的utf8的字符，如emoji

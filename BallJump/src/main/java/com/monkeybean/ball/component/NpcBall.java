@@ -32,15 +32,15 @@ public class NpcBall extends Ball implements Runnable {
     private void moving() {
         double gv = (v * k / Math.sin(Math.PI / 180 * 90) * Math.sin(Math.PI / 180 * (d)));
         ef = ef < (g / 2) ? 0 : ef;
-        double mg = ((g > gv && y > MyFrame.height - l / 2 - 35) ? gv : g) * gva;
-        gva = mg >= g ? y > MyFrame.height - l / 2 - 35 ? 1 : gva + 0.05 : 1;
+        double mg = ((g > gv && y > MyFrame.HEIGHT - l / 2 - 35) ? gv : g) * gva;
+        gva = mg >= g ? y > MyFrame.HEIGHT - l / 2 - 35 ? 1 : gva + 0.05 : 1;
         y = y + (d_u * (gv + ((d_u == 1 || ef != 0) ? mg : -mg)) - ef);
         x = x + (r_l * (v * k / Math.sin(Math.PI / 180 * 90) * Math.sin(Math.PI / 180 * (90 - d))));
         v *= av;
-        r_l = x < l / 2 ? 1 : x > MyFrame.width - l / 2 - 15 ? -1 : r_l;
-        d_u = y < l / 2 ? 1 : y > MyFrame.height - l / 2 - 35 ? -1 : d_u;
+        r_l = x < l / 2 ? 1 : x > MyFrame.WIDTH - l / 2 - 15 ? -1 : r_l;
+        d_u = y < l / 2 ? 1 : y > MyFrame.HEIGHT - l / 2 - 35 ? -1 : d_u;
         double kn = 1;
-        ef = y > MyFrame.height - l / 2 - 35 ? gv * kn : 0;
+        ef = y > MyFrame.HEIGHT - l / 2 - 35 ? gv * kn : 0;
         nowImg = nowImg >= img.size() - 0.8 ? 0 : nowImg + (Math.random() / 100);
     }
 

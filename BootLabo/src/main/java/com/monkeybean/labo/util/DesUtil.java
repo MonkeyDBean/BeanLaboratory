@@ -14,8 +14,12 @@ import java.security.SecureRandom;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class DesUtil {
+public final class DesUtil {
+    private static final String DES = "DES";
     private static Logger logger = LoggerFactory.getLogger(DesUtil.class);
+
+    private DesUtil() {
+    }
 
     /**
      * 加密
@@ -29,10 +33,10 @@ public class DesUtil {
             SecureRandom random = new SecureRandom();
             DESKeySpec desKey = new DESKeySpec(key.getBytes());
             //创建一个密匙工厂，然后用它把DESKeySpec转换成
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DesUtil.DES);
             SecretKey secureKey = keyFactory.generateSecret(desKey);
             //Cipher对象实际完成加密操作
-            Cipher cipher = Cipher.getInstance("DES");
+            Cipher cipher = Cipher.getInstance(DesUtil.DES);
             //用密匙初始化Cipher对象
             cipher.init(Cipher.ENCRYPT_MODE, secureKey, random);
             //现在，获取数据并加密
@@ -57,11 +61,11 @@ public class DesUtil {
         // 创建一个DESKeySpec对象
         DESKeySpec desKey = new DESKeySpec(key.getBytes());
         // 创建一个密匙工厂
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DesUtil.DES);
         // 将DESKeySpec对象转换成SecretKey对象
         SecretKey secureKey = keyFactory.generateSecret(desKey);
         // Cipher对象实际完成解密操作
-        Cipher cipher = Cipher.getInstance("DES");
+        Cipher cipher = Cipher.getInstance(DesUtil.DES);
         // 用密匙初始化Cipher对象
         cipher.init(Cipher.DECRYPT_MODE, secureKey, random);
         // 真正开始解密操作

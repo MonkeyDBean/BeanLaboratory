@@ -44,13 +44,13 @@ public class ScheduleDataTask {
         laboDoService.clearTempAssetBeforeDate(DateUtil.getOneMonthAgo());
 
         //清除邮件激活缓存key
-        CacheData.mailKeyMap.clear();
+        CacheData.MAIL_KEY_MAP.clear();
 
         //接口请求次数置空
-        CacheData.requestCountMap.clear();
+        CacheData.REQUEST_COUNT_MAP.clear();
 
         //邮件发送次数清空
-        CacheData.mailSendNumMap.clear();
+        CacheData.MAIL_SEND_NUM_MAP.clear();
     }
 
 }

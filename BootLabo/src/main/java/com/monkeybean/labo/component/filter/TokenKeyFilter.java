@@ -35,8 +35,13 @@ public class TokenKeyFilter implements Filter {
     }
 
     @Override
+    public void init(FilterConfig arg0) throws ServletException {
+        logger.info("TokenKeyFilter init, timestamp: {}", System.currentTimeMillis());
+    }
+
+    @Override
     public void destroy() {
-        // TODO Auto-generated method stub
+        logger.info("TokenKeyFilter destroy, timestamp: {}", System.currentTimeMillis());
     }
 
     @Override
@@ -51,7 +56,7 @@ public class TokenKeyFilter implements Filter {
         Enumeration<String> requestParamNames = httpServletRequest.getParameterNames();
         while (requestParamNames.hasMoreElements()) {
             String eachParam = requestParamNames.nextElement();
-            logger.info(eachParam + "=" + httpServletRequest.getParameter(eachParam));
+            logger.info("{} = {}", eachParam, httpServletRequest.getParameter(eachParam));
         }
 
         //若跨域，不拦截OPTIONS方法
@@ -63,7 +68,7 @@ public class TokenKeyFilter implements Filter {
         String servletPath = httpServletRequest.getServletPath().toLowerCase();
 
         //判断请求是否已达最大，请求次数写入缓存
-        int dailyCount = CacheData.requestCountMap.getOrDefault(servletPath, 0);
+        int dailyCount = CacheData.REQUEST_COUNT_MAP.getOrDefault(servletPath, 0);
         if (dailyCount < dailyRequestMaxNum) {
             if (dailyCount > dailyRequestWarnNum) {
                 logger.warn("today request: {}  is beyond the guard line, count is: {}, dailyRequestWarnNum: {}", servletPath, dailyCount, dailyRequestWarnNum);
@@ -73,7 +78,7 @@ public class TokenKeyFilter implements Filter {
             httpServletResponse.setStatus(401);
             return;
         }
-        CacheData.requestCountMap.put(servletPath, CacheData.requestCountMap.getOrDefault(servletPath, 0) + 1);
+        CacheData.REQUEST_COUNT_MAP.put(servletPath, CacheData.REQUEST_COUNT_MAP.getOrDefault(servletPath, 0) + 1);
 
         //无需安全校验的接口
         if (servletPath.contains("swagger") || servletPath.contains("api-docs")
@@ -94,7 +99,8 @@ public class TokenKeyFilter implements Filter {
         } else { //安全校验
 
             //是否校验签名及session(文件上传接口不校验签名，未登录的接口不校验session)
-            boolean checkSign = true, checkSession = true;
+            boolean checkSign = true;
+            boolean checkSession = true;
             if (servletPath.contains("message/apply") || servletPath.contains("user/login") || servletPath.contains("user/register")
                     || servletPath.contains("password/reset")) {
                 checkSession = false;
@@ -114,11 +120,6 @@ public class TokenKeyFilter implements Filter {
             }
         }
         chain.doFilter(httpServletRequest, httpServletResponse);
-    }
-
-    @Override
-    public void init(FilterConfig arg0) throws ServletException {
-        // TODO Auto-generated method stub
     }
 
     /**
@@ -146,14 +147,15 @@ public class TokenKeyFilter implements Filter {
         }
 
         //签名比对
-        String signOriginData = "";
+        StringBuilder signDataBuilder = new StringBuilder();
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
             String eachParam = paramNames.nextElement();
             if (!eachParam.equals("sign")) {
-                signOriginData += request.getParameter(eachParam);
+                signDataBuilder.append(request.getParameter(eachParam));
             }
         }
+        String signOriginData = signDataBuilder.toString();
         String paramSign = DigestUtils.md5Hex(signOriginData);
         logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
         if (!paramSign.equalsIgnoreCase(sign)) {

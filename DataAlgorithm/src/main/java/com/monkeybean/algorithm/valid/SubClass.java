@@ -9,7 +9,7 @@ public class SubClass extends Parent {
     /**
      * 静态变量
      */
-    public static String sStaticField = "子类静态变量";
+    public static final String sStaticField = "子类静态变量";
 
     static {
         System.out.println("子类静态初始化块1");
@@ -30,7 +30,8 @@ public class SubClass extends Parent {
 
     /**
      * 初始化块
-     */ {
+     */
+    {
         System.out.println("sField：" + sField);
         System.out.println("子类初始化块");
     }

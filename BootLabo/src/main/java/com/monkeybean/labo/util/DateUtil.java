@@ -17,10 +17,13 @@ import java.util.TimeZone;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class DateUtil {
+public final class DateUtil {
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     private static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static Logger logger = LoggerFactory.getLogger(DateUtil.class);
+
+    private DateUtil() {
+    }
 
     /**
      * 获取昨天日期的字符串格式，格式：yyyy-MM-dd

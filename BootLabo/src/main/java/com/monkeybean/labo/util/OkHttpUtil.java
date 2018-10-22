@@ -2,8 +2,6 @@ package com.monkeybean.labo.util;
 
 import com.monkeybean.labo.component.config.HttpProxyConfig;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,30 +18,26 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class OkHttpUtil {
-
-    public static final MediaType XML = MediaType.parse("application/xml; charset=utf-8");
+    private static final MediaType XML = MediaType.parse("application/xml; charset=utf-8");
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private final static int CONNECT_TIMEOUT = 10;
-    private final static int WRITE_TIMEOUT = 10;
-    private final static int READ_TIMEOUT = 30;
-    private static Logger logger = LoggerFactory.getLogger(OkHttpUtil.class);
-    private static OkHttpClient client;
+    private static final int CONNECT_TIMEOUT = 10;
+    private static final int WRITE_TIMEOUT = 10;
+    private static final int READ_TIMEOUT = 30;
+    private static OkHttpClient client = null;
 
     public OkHttpUtil(@Autowired HttpProxyConfig httpProxyConfig) {
-        if (client == null) {
 
-            //OkHttpClient, 默认连接、读写超时时间均为10s
-            OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                    .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)   //设置连接超时时间
-                    .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)   //设置写的超时时间
-                    .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);    //设置读取超时时间
-            if (httpProxyConfig.isEnableProxy()) {
+        //OkHttpClient, 默认连接、读写超时时间均为10s
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)   //设置连接超时时间
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)   //设置写的超时时间
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);    //设置读取超时时间
+        if (httpProxyConfig.isEnableProxy()) {
 
-                //设置本地代理，开发环境使用
-                builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyConfig.getProxyAddress(), httpProxyConfig.getProxyPort())));
-            }
-            client = builder.build();
+            //设置本地代理，开发环境使用
+            builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyConfig.getProxyAddress(), httpProxyConfig.getProxyPort())));
         }
+        OkHttpUtil.client = builder.build();
     }
 
     /**
@@ -68,8 +62,8 @@ public class OkHttpUtil {
      * 用于单元测试调用，初始化OkHttpClient
      */
     public static void initClient() {
-        if (client == null) {
-            client = new OkHttpClient.Builder().build();
+        if (OkHttpUtil.client == null) {
+            OkHttpUtil.client = new OkHttpClient.Builder().build();
         }
     }
 
@@ -83,7 +77,7 @@ public class OkHttpUtil {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = OkHttpUtil.client.newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
@@ -100,35 +94,7 @@ public class OkHttpUtil {
      */
     public static String doGet(String url, Map<String, Object> param) throws IOException {
         String requestUrl = url + mapToUrlParam(param);
-        Request request = new Request.Builder()
-                .url(requestUrl)
-                .build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Http Post 同步请求
-     *
-     * @param url   请求地址
-     * @param param 参数
-     * @throws IOException IO异常
-     */
-    public static String doPost(String url, Map<String, Object> param) throws IOException {
-        String requestUrl = url + mapToUrlParam(param);
-        Request request = new Request.Builder()
-                .url(requestUrl)
-                .build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            return null;
-        }
+        return doGet(requestUrl);
     }
 
     /**
@@ -144,7 +110,7 @@ public class OkHttpUtil {
                 .url(url)
                 .post(body)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = OkHttpUtil.client.newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
@@ -166,7 +132,7 @@ public class OkHttpUtil {
                 .url(url)
                 .post(body)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = OkHttpUtil.client.newCall(request).execute();
         if (response.isSuccessful()) {
             return response.body().string();
         } else {
@@ -179,13 +145,12 @@ public class OkHttpUtil {
      *
      * @param url      请求地址
      * @param callback 回调
-     * @throws IOException IO异常
      */
-    public static void doGetAsync(String url, Callback callback) throws IOException {
+    public static void doGetAsync(String url, Callback callback) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        client.newCall(request).enqueue(callback);
+        OkHttpUtil.client.newCall(request).enqueue(callback);
     }
 
     /**
@@ -194,15 +159,14 @@ public class OkHttpUtil {
      * @param url      请求地址
      * @param json     json类型的body数据
      * @param callback 回调
-     * @throws IOException IO异常
      */
-    public static void doPostAsyn(String url, String json, Callback callback) throws IOException {
+    public static void doPostAsyn(String url, String json, Callback callback) {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
-        client.newCall(request).enqueue(callback);
+        OkHttpUtil.client.newCall(request).enqueue(callback);
     }
 
     /**
@@ -212,15 +176,14 @@ public class OkHttpUtil {
      * @param req      body数据
      * @param type     body数据类型
      * @param callback 回调
-     * @throws IOException IO异常
      */
-    public static void doPostAsyn(String url, String req, MediaType type, Callback callback) throws IOException {
+    public static void doPostAsyn(String url, String req, MediaType type, Callback callback) {
         RequestBody body = RequestBody.create(type, req);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
-        client.newCall(request).enqueue(callback);
+        OkHttpUtil.client.newCall(request).enqueue(callback);
     }
 
 }

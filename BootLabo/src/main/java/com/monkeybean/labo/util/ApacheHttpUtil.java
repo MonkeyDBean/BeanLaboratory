@@ -20,21 +20,23 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by MonkeyBean on 2018/9/12.
  */
-public class ApacheHttpUtil {
+public final class ApacheHttpUtil {
 
     private static Logger logger = LoggerFactory.getLogger(ApacheHttpUtil.class);
+
+    private ApacheHttpUtil() {
+    }
 
     /**
      * Map参数转为Json格式
      */
-    private static String mapToUrl(HashMap<String, Object> param) {
+    private static String mapToUrl(Map<String, Object> param) {
         ObjectMapper mapper = new ObjectMapper();
         String url = null;
         try {
@@ -53,29 +55,20 @@ public class ApacheHttpUtil {
      * @param url 请求地址
      */
     private static String doGet(String url) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-        String result = "{ \"result\" : -1 }";
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            response = httpclient.execute(httpGet);
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            String result = "{ \"result\" : -1 }";
+            HttpGet httpGet = new HttpGet(url);
+            CloseableHttpResponse response = httpclient.execute(httpGet);
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
                 result = EntityUtils.toString(entity);
                 EntityUtils.consume(entity);
             }
-        } catch (Exception e) {
-            logger.error("doGet Exception ->{}", e);
-        } finally {
-            try {
-                if (response != null)
-                    response.close();
-                httpclient.close();
-            } catch (IOException e) {
-                logger.error("doGet IOException ->{}", e);
-            }
+            response.close();
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
-        return result;
     }
 
     /**
@@ -85,17 +78,15 @@ public class ApacheHttpUtil {
      * @param params post参数
      */
     private static String doPostForm(String url, Map<String, Object> params) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        CloseableHttpResponse response = null;
-        HttpPost post = new HttpPost(url);
-        String result = "-1";
-        List<NameValuePair> valuePairs = new ArrayList<>();
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            valuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
-        }
-        try {
+        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(url);
+            String result = "-1";
+            List<NameValuePair> valuePairs = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                valuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
+            }
             post.setEntity(new UrlEncodedFormEntity(valuePairs, "UTF-8"));
-            response = httpclient.execute(post);
+            CloseableHttpResponse response = httpclient.execute(post);
             logger.info("post request, url: {}, params: {}, response: {}", url, params, response.getStatusLine());
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
@@ -103,18 +94,11 @@ public class ApacheHttpUtil {
                 result = EntityUtils.toString(entity, "UTF-8");
                 EntityUtils.consume(entity);
             }
-        } catch (Exception e) {
-            logger.error("send post error, url: {}, params: {}", url, params);
-        } finally {
-            try {
-                if (response != null)
-                    response.close();
-                httpclient.close();
-            } catch (IOException e) {
-                logger.error("doPostForm IOException ->{}", e);
-            }
+            response.close();
+            return result;
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
         }
-        return result;
     }
 
     /**
@@ -124,10 +108,10 @@ public class ApacheHttpUtil {
      * @param address 请求地址, 包含路径
      * @return 请求结果字符串
      */
-    public static String getRequest(HashMap<String, Object> param, String address) {
+    public static String getRequest(Map<String, Object> param, String address) {
         String getJsonParam = mapToUrl(param);
         String requestUrl = address + "?" + getJsonParam;
-        logger.info("getRequest requestUrl: {}" + requestUrl);
+        logger.info("getRequest requestUrl: {}", requestUrl);
         return doGet(requestUrl);
     }
 
@@ -139,10 +123,11 @@ public class ApacheHttpUtil {
      * @param address   请求地址, 包含路径
      * @return 请求结果字符串
      */
-    public static String postRequest(HashMap<String, Object> paramGet, HashMap<String, Object> paramPost, String address) {
+    public static String postRequest(Map<String, Object> paramGet, Map<String, Object> paramPost, String address) {
         String getJsonParam = mapToUrl(paramGet);
         String requestUrl = address + "?" + getJsonParam;
-        logger.info("postRequest, requestUrl: {}, paramPost: {}", requestUrl, JSON.toJSONString(paramPost));
+        String postStr = JSON.toJSONString(paramPost);
+        logger.info("postRequest, requestUrl: {}, paramPost: {}", requestUrl, postStr);
         return doPostForm(requestUrl, paramPost);
     }
 

@@ -17,30 +17,24 @@ import java.util.concurrent.Executors;
 public class MainApplication {
 
     private static void callRequest(String url) {
-        try {
-            OkHttpUtil.doGetAsync(url, new Callback() {
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                    System.out.println("request failed, call: " + call.toString() + "exception is: " + e.toString());
-                }
+        OkHttpUtil.doGetAsync(url, new Callback() {
+            public void onFailure(Call call, IOException e) {
+                System.out.println("request failed, call: " + call.toString() + ", exception is: " + e.toString() + ", details: " + e);
+            }
 
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        if (response != null && response.isSuccessful()) {
-                            String responseStr = response.body().string();
-                            System.out.println("request success, responseStr is: " + responseStr);
-                        }
-                    } catch (Exception e) {
-                        Util.closeQuietly(response);
-                        e.printStackTrace();
-                        System.out.println("process server response error: " + e.toString());
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    if (response != null && response.isSuccessful()) {
+                        String responseStr = response.body().string();
+                        System.out.println("request success, responseStr is: " + responseStr);
                     }
+                } catch (Exception e) {
+                    Util.closeQuietly(response);
+                    e.printStackTrace();
+                    System.out.println("process server response error: " + e.toString());
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("callRequest IOException: " + e.toString());
-        }
+            }
+        });
     }
 
     public static void main(String[] args) {

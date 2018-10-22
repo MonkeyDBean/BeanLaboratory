@@ -13,9 +13,12 @@ import java.util.HashMap;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class ReCaptchaUtil {
+public final class ReCaptchaUtil {
     private static final String VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static Logger logger = LoggerFactory.getLogger(ReCaptchaUtil.class);
+
+    private ReCaptchaUtil() {
+    }
 
     /**
      * 验证reCaptcha
@@ -32,12 +35,12 @@ public class ReCaptchaUtil {
         requestParam.put("remoteip", ip);
         String resultStr = null;
         try {
-            resultStr = OkHttpUtil.doPost(VERIFY_URL, requestParam);
+            resultStr = OkHttpUtil.doGet(VERIFY_URL, requestParam);
             logger.info("verifyReCaptcha resultStr: {}", resultStr);
         } catch (IOException e) {
             logger.error("OkHttpClient IOException: {}", e);
         }
-        return JSONObject.parseObject(resultStr).getBooleanValue("success");
+        return resultStr != null && JSONObject.parseObject(resultStr).getBooleanValue("success");
     }
 
 }

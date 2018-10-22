@@ -32,8 +32,8 @@ public class MainApplication {
         for (int i = 0; i < 20; i++) {
             int ballSize = (int) (Math.random() * (500 - 10) + 10);
             balls.add(new NpcBall(
-                            (int) (Math.random() * (MyFrame.width - ballSize / 2 - 15 - ballSize / 2) + ballSize / 2),
-                            (int) (Math.random() * (MyFrame.height - ballSize / 2 - 35 - ballSize / 2) + ballSize / 2),
+                            (int) (Math.random() * (MyFrame.WIDTH - ballSize / 2 - 15 - ballSize / 2) + ballSize / 2),
+                            (int) (Math.random() * (MyFrame.HEIGHT - ballSize / 2 - 35 - ballSize / 2) + ballSize / 2),
                             ballImg, ballSize,
                             (int) (Math.random() * (5 - 1) + 1),
                             Math.random() * (90),

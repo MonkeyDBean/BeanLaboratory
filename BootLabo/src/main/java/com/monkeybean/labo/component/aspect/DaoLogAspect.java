@@ -36,7 +36,7 @@ public class DaoLogAspect {
     }
 
     @AfterReturning(returning = "ret", pointcut = "daoPoint()")
-    public void doAfterReturning(Object ret) throws Throwable {
+    public void doAfterReturning(Object ret) {
         logger.info("Dao Response is: {}", ret);
         logger.info("Dao Method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
         beginTime.remove();

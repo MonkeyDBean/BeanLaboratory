@@ -12,26 +12,30 @@ import java.io.IOException;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class IpUtil {
+public final class IpUtil {
 
     private static Logger logger = LoggerFactory.getLogger(WeatherUtil.class);
+
+    private IpUtil() {
+    }
 
     /**
      * 获取请求ip地址
      */
     public static String getIpAddress(HttpServletRequest request) {
         String ips = request.getHeader("x-forwarded-for");
-        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase("unknown"))
+        final String unknownStr = "unknown";
+        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
             ips = request.getHeader("Proxy-Client-IP");
-        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase("unknown"))
+        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
             ips = request.getHeader("WL-Proxy-Client-IP");
-        if (ips == null || ips.length() == 0 || "unknown".equalsIgnoreCase(ips))
+        if (ips == null || ips.length() == 0 || unknownStr.equalsIgnoreCase(ips))
             ips = request.getHeader("HTTP_CLIENT_IP");
         if (ips == null || ips.length() == 0 || "unknown".equalsIgnoreCase(ips))
             ips = request.getHeader("HTTP_X_FORWARDED_FOR");
-        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase("unknown"))
+        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
             ips = request.getRemoteAddr();
-        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase("unknown"))
+        if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
             ips = "0.0.0.0";
         return ips.split(",")[0];
     }

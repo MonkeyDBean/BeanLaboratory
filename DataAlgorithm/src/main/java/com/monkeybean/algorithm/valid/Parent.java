@@ -10,7 +10,7 @@ public class Parent {
     /**
      * 静态变量
      */
-    public static String pStaticField = "父类静态变量";
+    public static final String pStaticField = "父类静态变量";
 
     /**
      * 静态初始化块
@@ -29,7 +29,8 @@ public class Parent {
 
     /**
      * 初始化块
-     */ {
+     */
+    {
         System.out.println("pField：" + pField);
         System.out.println("父类初始化块");
     }

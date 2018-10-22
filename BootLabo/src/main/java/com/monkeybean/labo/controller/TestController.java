@@ -8,6 +8,7 @@ import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
+import com.monkeybean.labo.service.database.LaboDoService;
 import com.monkeybean.labo.util.IpUtil;
 import com.monkeybean.labo.util.ReCaptchaUtil;
 import io.swagger.annotations.Api;
@@ -47,6 +48,9 @@ public class TestController {
     private final IdentityService identityService;
 
     private final LaboDataDao laboDataDao;
+
+    private final LaboDoService laboDoService;
+
     /**
      * 存储已登录账户的session, 通过以下三个接口验证强制单终端在线机制：cookie/diff、session/login、session/info
      * key为账户Id, value为账户最后一次登录的session
@@ -54,10 +58,11 @@ public class TestController {
     private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
 
     @Autowired
-    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao) {
+    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao, LaboDoService laboDoService) {
         this.otherConfig = otherConfig;
         this.identityService = identityService;
         this.laboDataDao = laboDataDao;
+        this.laboDoService = laboDoService;
     }
 
     @ApiOperation(value = "测试reCaptcha")
@@ -116,9 +121,7 @@ public class TestController {
     public Result<List<HashMap<String, Object>>> testSqlArray(@RequestParam(value = "phone") String phoneStr) {
         String[] phoneArray = phoneStr.split(",");
         List<String> phoneList = new ArrayList<>();
-        for (String phone : phoneArray) {
-            phoneList.add(phone);
-        }
+        Collections.addAll(phoneList, phoneArray);
         List<HashMap<String, Object>> resultList = null;
         if (!phoneList.isEmpty()) {
             HashMap<String, Object> param = new HashMap<>();
@@ -189,6 +192,7 @@ public class TestController {
      * 不同浏览器的cookie不共享，因为每个浏览器存储的cookie路径不一样
      * 通过cookie中的jsessionid验证
      */
+    @ApiOperation(value = "测试不同浏览器的cookie不共享")
     @GetMapping(path = "cookie/diff")
     public String testDiffCookie(HttpSession session) {
         return session.getId();
@@ -197,6 +201,7 @@ public class TestController {
     /**
      * 强制下线(登陆有效性局限于单个终端/浏览器)
      */
+    @ApiOperation(value = "登录有效性验证")
     @GetMapping(path = "session/login")
     public String testSessionLogin(HttpSession session) {
         int accountId = 1;
@@ -212,6 +217,7 @@ public class TestController {
     /**
      * 模拟登陆后的接口
      */
+    @ApiOperation(value = "获取session信息")
     @GetMapping(path = "session/info")
     public String getSessionInfo(HttpSession session) {
         if (session.getAttribute(ConstValue.ACCOUNT_IDENTITY) != null) {
@@ -219,6 +225,15 @@ public class TestController {
         } else {
             return "no info in session";
         }
+    }
+
+    @ApiOperation(value = "测试反射调用")
+    @GetMapping(path = "method/invoke")
+    public List<HashMap<String, Object>> testInvokeMethod() {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("limit", 20);
+        params.put("offset", 0);
+        return laboDoService.testReflectionInvoke(params, "queryProjectInfoList");
     }
 
 }

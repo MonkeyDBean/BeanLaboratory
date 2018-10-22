@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 阿里云短信服务
@@ -24,14 +25,18 @@ import java.util.List;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class AliYunUtil {
-
+public final class AliYunUtil {
     /**
      * 云通信短信API产品及产品域名,开发者无需替换
      */
-    private static final String product = "Dysmsapi";
-    private static final String domain = "dysmsapi.aliyuncs.com";
+    private static final String PRODUCT = "Dysmsapi";
+    private static final String DOMAIN = "dysmsapi.aliyuncs.com";
+    private static final String END_POINT_AREA = "cn-beijing";
+    private static final String TIMEOUT_STR = "10000";
     private static Logger logger = LoggerFactory.getLogger(AliYunUtil.class);
+
+    private AliYunUtil() {
+    }
 
     /**
      * 短信验证码接口
@@ -45,20 +50,21 @@ public class AliYunUtil {
      * @param code            验证码
      * @return 接口的调用状态
      */
-    public static HashMap<String, Object> sendMessage(String accessKeyId, String accessKeySecret, String signName, String templateCode, String phone, String code) {
+    public static Map<String, Object> sendMessage(String accessKeyId, String accessKeySecret, String signName, String templateCode, String phone, String code) {
         HashMap<String, Object> result = new HashMap<>();
+        final String sendResultKey = "result";
 
         //设置超时时间-可自行调整
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+        System.setProperty("sun.net.client.defaultConnectTimeout", AliYunUtil.TIMEOUT_STR);
+        System.setProperty("sun.net.client.defaultReadTimeout", AliYunUtil.TIMEOUT_STR);
 
         //初始化acsClient,暂不支持region化
-        IClientProfile profile = DefaultProfile.getProfile("cn-beijing", accessKeyId, accessKeySecret);
+        IClientProfile profile = DefaultProfile.getProfile(AliYunUtil.END_POINT_AREA, accessKeyId, accessKeySecret);
         try {
-            DefaultProfile.addEndpoint("cn-beijing", "cn-beijing", product, domain);
+            DefaultProfile.addEndpoint(AliYunUtil.END_POINT_AREA, AliYunUtil.END_POINT_AREA, AliYunUtil.PRODUCT, AliYunUtil.DOMAIN);
         } catch (ClientException e) {
             logger.error("ali yun sendMessage, ClientException: {}", e);
-            result.put("result", ConstValue.SEND_FAIL);
+            result.put(sendResultKey, ConstValue.SEND_FAIL);
             return result;
         }
         IAcsClient acsClient = new DefaultAcsClient(profile);
@@ -80,10 +86,10 @@ public class AliYunUtil {
             sendSmsResponse = acsClient.getAcsResponse(request);
         } catch (ClientException e) {
             logger.error("ali yun sendMessage, ClientException: {}", e);
-            result.put("result", ConstValue.SEND_FAIL);
+            result.put(sendResultKey, ConstValue.SEND_FAIL);
             return result;
         }
-        result.put("result", ConstValue.SEND_SUCCESS);
+        result.put(sendResultKey, ConstValue.SEND_SUCCESS);
         result.put("response", sendSmsResponse);
         return result;
     }
@@ -101,12 +107,12 @@ public class AliYunUtil {
     public static QuerySendDetailsResponse querySendDetails(String accessKeyId, String accessKeySecret, String phone, String bizId) throws ClientException {
 
         //设置超时时间-可自行调整
-        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+        System.setProperty("sun.net.client.defaultConnectTimeout", AliYunUtil.TIMEOUT_STR);
+        System.setProperty("sun.net.client.defaultReadTimeout", AliYunUtil.TIMEOUT_STR);
 
         //初始化acsClient,暂不支持region化
-        IClientProfile profile = DefaultProfile.getProfile("cn-beijing", accessKeyId, accessKeySecret);
-        DefaultProfile.addEndpoint("cn-beijing", "cn-beijing", product, domain);
+        IClientProfile profile = DefaultProfile.getProfile(AliYunUtil.END_POINT_AREA, accessKeyId, accessKeySecret);
+        DefaultProfile.addEndpoint(AliYunUtil.END_POINT_AREA, AliYunUtil.END_POINT_AREA, AliYunUtil.PRODUCT, AliYunUtil.DOMAIN);
         IAcsClient acsClient = new DefaultAcsClient(profile);
 
         //组装请求对象
@@ -135,7 +141,7 @@ public class AliYunUtil {
     /**
      * 输出短信明细
      */
-    public static HashMap<String, Object> printSendDetails(QuerySendDetailsResponse querySendDetailsResponse) {
+    public static Map<String, Object> printSendDetails(QuerySendDetailsResponse querySendDetailsResponse) {
         HashMap<String, Object> result = new HashMap<>();
         List<HashMap<String, Object>> recordList = new ArrayList<>();
         for (QuerySendDetailsResponse.SmsSendDetailDTO smsSendDetailDTO : querySendDetailsResponse.getSmsSendDetailDTOs()) {

@@ -50,14 +50,14 @@ public enum ReturnCode {
         this.code = code;
         this.msg = msg;
         this.description = description;
-        CacheData.codeName.put(code, this.name());
+        CacheData.CODE_NAME.put(code, this.name());
     }
 
     public int getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    void setCode(int code) {
         this.code = code;
     }
 
@@ -65,7 +65,7 @@ public enum ReturnCode {
         return msg;
     }
 
-    public void setMsg(String msg) {
+    void setMsg(String msg) {
         this.msg = msg;
     }
 
@@ -73,7 +73,7 @@ public enum ReturnCode {
         return description;
     }
 
-    public void setDescription(String description) {
+    void setDescription(String description) {
         this.description = description;
     }
 

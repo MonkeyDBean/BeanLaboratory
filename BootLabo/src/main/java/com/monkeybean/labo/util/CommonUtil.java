@@ -1,8 +1,5 @@
 package com.monkeybean.labo.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.text.DecimalFormat;
 
 /**
@@ -10,9 +7,9 @@ import java.text.DecimalFormat;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class CommonUtil {
-
-    private static Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+public final class CommonUtil {
+    private CommonUtil() {
+    }
 
     /**
      * 获取数字某位的值

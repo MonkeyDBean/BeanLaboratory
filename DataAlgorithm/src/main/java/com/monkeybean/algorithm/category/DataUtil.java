@@ -17,7 +17,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int binarySearch(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] == key) {
@@ -39,7 +40,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int findFirstEqual(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] >= key) {
@@ -62,7 +64,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int findFirstEqualLarger(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] >= key) {
@@ -85,7 +88,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int findFirstLarger(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] > key) {
@@ -108,7 +112,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int findLastEqual(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] <= key) {
@@ -131,7 +136,8 @@ public class DataUtil {
      * @return 元素存在，则返回下标索引，不存在则返回-1
      */
     public static int findLastEqualSmaller(int[] array, int key) {
-        int left = 0, right = array.length - 1;
+        int left = 0;
+        int right = array.length - 1;
         while (left <= right) {
             int mid = (left + right) / 2;
             if (array[mid] < key) {
@@ -154,8 +160,10 @@ public class DataUtil {
      */
     public static List<Integer> shufflePump(List<Integer> origin) {
         List<Integer> result = new ArrayList<>();
+        Random random = new Random(System.currentTimeMillis());
         for (int i = 0, tmpIndex, cycleNum = origin.size(); i < cycleNum; i++) {
-            tmpIndex = (int) (Math.random() * origin.size());
+//            tmpIndex = (int) (Math.random() * origin.size());
+            tmpIndex = random.nextInt(origin.size());
             result.add(origin.remove(tmpIndex));
         }
         return result;
@@ -169,8 +177,7 @@ public class DataUtil {
      */
     public static List<Integer> shuffleSwap(List<Integer> origin) {
         Random random = new Random(System.currentTimeMillis());
-        for (int i = 0, tmpIndex, tmpElement; i < origin.size(); i++) {
-            tmpIndex = random.nextInt(origin.size());
+        for (int i = 0, tmpElement, tmpIndex = random.nextInt(origin.size()); i < origin.size(); i++, tmpIndex = random.nextInt(origin.size())) {
             if (tmpIndex != i) {
                 tmpElement = origin.get(tmpIndex);
                 origin.set(tmpIndex, origin.get(i));
@@ -210,7 +217,7 @@ public class DataUtil {
      * @return 返回相除结果
      * @throws IllegalArgumentException 参数非法异常
      */
-    public static String getAccurateDivide(int a, int b, int n) throws IllegalArgumentException {
+    public static String getAccurateDivide(int a, int b, int n) {
         if (b == 0 || n < 0) {
             throw new IllegalArgumentException();
         }
@@ -325,7 +332,8 @@ public class DataUtil {
             }
 
             //获取年间隔天数
-            int yearDays = 0, monthDays = 0;
+            int yearDays = 0;
+            int monthDays = 0;
             if (year != 1970) {
                 yearDays = getYearIntervalDays(year - 1);
             }
