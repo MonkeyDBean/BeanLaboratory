@@ -1,5 +1,12 @@
 package com.monkeybean.labo.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 /**
@@ -8,6 +15,9 @@ import java.text.DecimalFormat;
  * Created by MonkeyBean on 2018/05/26.
  */
 public final class CommonUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+
     private CommonUtil() {
     }
 
@@ -58,5 +68,26 @@ public final class CommonUtil {
             }
         }
         return isDigit && isLetter;
+    }
+
+    /**
+     * 读取文件内容
+     *
+     * @param file 文件对象
+     * @return 成功返回字符串, 失败返回null
+     */
+    public static String getContent(File file) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            StringBuilder builder = new StringBuilder();
+            String line = "";
+            while (line != null) {
+                builder.append(line);
+                line = reader.readLine();
+            }
+            return builder.toString();
+        } catch (IOException e) {
+            logger.error("getReader IOException： {}", e);
+            return null;
+        }
     }
 }

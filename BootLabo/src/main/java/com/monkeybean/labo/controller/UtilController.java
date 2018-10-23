@@ -1,6 +1,5 @@
 package com.monkeybean.labo.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.aliyuncs.dysmsapi.model.v20170525.QuerySendDetailsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.monkeybean.labo.component.config.MessageConfig;
@@ -21,8 +20,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,9 +29,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -68,7 +62,7 @@ public class UtilController {
             @ApiImplicitParam(name = "phone", value = "手机号", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "bizId", value = "发送流水号", required = true, dataType = "string", paramType = "query")
     })
-    @RequestMapping(path = "message/query", method = RequestMethod.GET)
+    @GetMapping(path = "message/query")
     public Result<Map<String, Object>> queryMessage(@RequestParam String phone, @RequestParam String bizId) {
         try {
             QuerySendDetailsResponse querySendDetailsResponse = AliYunUtil.querySendDetails(messageConfig.getAccessKeyId(), messageConfig.getAccessKeySecret(), phone, bizId);
@@ -84,10 +78,11 @@ public class UtilController {
      */
     @ApiOperation(value = "密码生成")
     @ApiImplicitParam(name = "password", value = "明文密码", required = true, dataType = "string", paramType = "query")
-    @RequestMapping(path = "generatePwd", method = RequestMethod.GET)
+    @GetMapping(path = "generatePwd")
     public Result<LinkedHashMap<String, Object>> generatePassword(@RequestParam(value = "password") String password) {
         DateTime nowDateTime = new DateTime();
-        logger.info("interface \"generatePassword\" is invoked, time: {}, password: {}", nowDateTime.toString("yyyy-MM-dd HH:mm:ss"), password);
+        String nowDataTimeStr = nowDateTime.toString("yyyy-MM-dd HH:mm:ss");
+        logger.info("interface \"generatePassword\" is invoked, time: {}, password: {}", nowDataTimeStr, password);
 
         //检验密码合法性
         if (!Pattern.matches(ConstValue.LEGAL_PASSWORD, password)) {
@@ -108,31 +103,6 @@ public class UtilController {
         data.put("requestPwd", requestPwd);
         data.put("dbPwd", dbPwd);
         return new Result<>(ReturnCode.SUCCESS, data);
-    }
-
-    @ApiOperation(value = "获取json配置中的第n条数据")
-    @ApiImplicitParam(name = "order", value = "数据索引", required = true, dataType = "int", paramType = "query")
-    @RequestMapping(path = "getJsonData", method = RequestMethod.GET)
-    public Result<String> getJsonData(@RequestParam(value = "order") int order) {
-        try {
-            Resource resource = new ClassPathResource("info_config.json");
-            File file = resource.getFile();
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            StringBuilder builder = new StringBuilder();
-            String line = "";
-            while (line != null) {
-                builder.append(line);
-                line = reader.readLine();
-            }
-            JSONArray array = JSONArray.parseArray(builder.toString());
-            if (order > 0 && order <= array.size()) {
-                return new Result<>(ReturnCode.SUCCESS, array.getString(order - 1));
-            }
-            return new Result<>(ReturnCode.SUCCESS);
-        } catch (IOException e) {
-            logger.error("IOException, e: {}", e);
-            return new Result<>(ReturnCode.SERVER_EXCEPTION);
-        }
     }
 
     @ApiOperation(value = "生成二维码")

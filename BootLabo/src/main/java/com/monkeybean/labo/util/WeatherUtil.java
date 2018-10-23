@@ -19,6 +19,7 @@ import java.util.HashMap;
  */
 public final class WeatherUtil {
 
+    private static final String UTF8 = "UTF-8";
     private static Logger logger = LoggerFactory.getLogger(WeatherUtil.class);
 
     private WeatherUtil() {
@@ -52,10 +53,10 @@ public final class WeatherUtil {
     private static String generateSignature(String data, String key) throws SignatureException {
         String result;
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
+            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(WeatherUtil.UTF8), "HmacSHA1");
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(signingKey);
-            byte[] rawHmac = mac.doFinal(data.getBytes("UTF-8"));
+            byte[] rawHmac = mac.doFinal(data.getBytes(WeatherUtil.UTF8));
             result = new sun.misc.BASE64Encoder().encode(rawHmac);
         } catch (Exception e) {
             throw new SignatureException("Failed to generate HMAC : " + e.getMessage());
@@ -75,7 +76,7 @@ public final class WeatherUtil {
      */
     private static String generateDiaryWeatherURL(String userId, String secretKey, String location) throws SignatureException, UnsupportedEncodingException {
         String params = "ts=" + System.currentTimeMillis() + "&ttl=30&uid=" + userId;
-        String signature = URLEncoder.encode(generateSignature(params, secretKey), "UTF-8");
+        String signature = URLEncoder.encode(generateSignature(params, secretKey), WeatherUtil.UTF8);
         return "https://api.seniverse.com/v3/weather/daily.json?" + params + "&sig=" + signature + "&location=" + location + "&language=zh-Hans&&unit=c&&start=0";
     }
 

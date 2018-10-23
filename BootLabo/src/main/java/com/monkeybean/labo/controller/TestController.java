@@ -1,6 +1,7 @@
 package com.monkeybean.labo.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
@@ -9,20 +10,24 @@ import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.service.database.LaboDoService;
+import com.monkeybean.labo.util.CommonUtil;
 import com.monkeybean.labo.util.IpUtil;
 import com.monkeybean.labo.util.ReCaptchaUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -104,9 +110,9 @@ public class TestController {
         //流写入
         FileOutputStream outputStream = new FileOutputStream(imageFile);
         InputStream fileInputStream = new ByteArrayInputStream(fileBytes);
-        IOUtils.copy(fileInputStream, outputStream);
-        IOUtils.closeQuietly(fileInputStream);
-        IOUtils.closeQuietly(outputStream);
+        org.apache.tomcat.util.http.fileupload.IOUtils.copy(fileInputStream, outputStream);
+        org.apache.tomcat.util.http.fileupload.IOUtils.closeQuietly(fileInputStream);
+        org.apache.tomcat.util.http.fileupload.IOUtils.closeQuietly(outputStream);
 
         String fileAccessPath = otherConfig.getBaseAccessPath() + "/" + fileNewName;
         logger.info("fileStorePath is : {}, fileAccessPath: {}", fileStorePath, fileAccessPath);
@@ -234,6 +240,37 @@ public class TestController {
         params.put("limit", 20);
         params.put("offset", 0);
         return laboDoService.testReflectionInvoke(params, "queryProjectInfoList");
+    }
+
+    @ApiOperation(value = "获取json配置中的第n条数据")
+    @ApiImplicitParam(name = "order", value = "数据索引", required = true, dataType = "int", paramType = "query")
+    @GetMapping(path = "tmp/data/json")
+    public Result<String> getTmpJsonData(@RequestParam(value = "order") int order) {
+        try {
+            Resource resource = new ClassPathResource("info_config.json");
+            String content = CommonUtil.getContent(resource.getFile());
+            JSONArray array = JSONArray.parseArray(content);
+            if (order > 0 && order <= array.size()) {
+                return new Result<>(ReturnCode.SUCCESS, array.getString(order - 1));
+            }
+            return new Result<>(ReturnCode.SUCCESS);
+        } catch (IOException e) {
+            logger.error("getTmpJsonData, IOException, e: {}", e);
+            return new Result<>(ReturnCode.SERVER_EXCEPTION);
+        }
+    }
+
+    @ApiOperation(value = "获取json配置中的所有数据")
+    @GetMapping(path = "tmp/json/all")
+    public Result<JSONArray> getAllTmpJsonData() {
+        Resource resource = new ClassPathResource("info_config.json");
+        try (FileInputStream fis = new FileInputStream(resource.getFile())) {
+            String jsonStr = IOUtils.toString(fis, StandardCharsets.UTF_8);
+            return new Result<>(ReturnCode.SUCCESS, JSONObject.parseArray(jsonStr));
+        } catch (IOException e) {
+            logger.error("getAllTmpJsonData, IOException, e: {}", e);
+            return new Result<>(ReturnCode.SERVER_EXCEPTION);
+        }
     }
 
 }

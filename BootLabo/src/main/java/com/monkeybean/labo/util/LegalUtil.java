@@ -38,6 +38,7 @@ public final class LegalUtil {
      * 每位加权因子
      */
     private static int[] power = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+
     private LegalUtil() {
     }
 
