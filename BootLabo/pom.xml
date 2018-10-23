@@ -331,6 +331,7 @@
                                 <delete dir="${project.build.directory}/../labo_release"/>
                                 <delete dir="${project.build.directory}/../log_path_IS_UNDEFINED"/>
                                 <delete dir="${project.build.directory}/../../log_path_IS_UNDEFINED"/>
+                                <delete dir="${project.build.directory}/../logs_file"/>
                                 <delete dir="${project.build.directory}/../../logs_file"/>
                                 <delete dir="${basedir}/target"/>
                             </tasks>
