@@ -21,22 +21,29 @@ public class OkHttpUtil {
     private static final MediaType XML = MediaType.parse("application/xml; charset=utf-8");
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final int CONNECT_TIMEOUT = 10;
-    private static final int WRITE_TIMEOUT = 10;
-    private static final int READ_TIMEOUT = 30;
+    private static final int READ_TIMEOUT = 10;
+    private static final int WRITE_TIMEOUT = 20;
     private static OkHttpClient client = null;
 
     public OkHttpUtil(@Autowired HttpProxyConfig httpProxyConfig) {
 
         //OkHttpClient, 默认连接、读写超时时间均为10s
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)   //设置连接超时时间
-                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)   //设置写的超时时间
-                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS);    //设置读取超时时间
-        if (httpProxyConfig.isEnableProxy()) {
+                .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)  //设置连接超时时间
+                .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)       //设置读取超时时间
+                .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);   //设置写的超时时间
 
-            //设置本地代理，开发环境使用
+        //设置本地代理，开发环境使用
+        if (httpProxyConfig.isEnableProxy()) {
             builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpProxyConfig.getProxyAddress(), httpProxyConfig.getProxyPort())));
         }
+
+        //自定义Dispatcher(内部调度机制为final, 维护三个线程队列：readyAsyncCalls, runningAsyncCalls, runningSyncCalls), 设置maxRequests及maxRequestsPerHost
+//        Dispatcher dispatcher = new Dispatcher();
+//        dispatcher.setMaxRequestsPerHost(10);
+//        dispatcher.setMaxRequests(100);
+//        builder.dispatcher(dispatcher);
+
         OkHttpUtil.client = builder.build();
     }
 
