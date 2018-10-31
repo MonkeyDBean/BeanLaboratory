@@ -42,4 +42,10 @@ public class OtherTest {
             System.out.println("element" + i + ": " + list.get(i));
         }
     }
+    
+    @Test
+    public void testSplit() {
+        String testStr = "test";
+        System.out.println("split 0 is: \n" + testStr.split(",")[0]);
+    }
 }
