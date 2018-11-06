@@ -87,6 +87,20 @@ public final class DateUtil {
         calendar.add(Calendar.MONTH, -1);
         return new DateTime(calendar.getTime()).toString(DATE_PATTERN);
     }
+    
+    /**
+     * 以当前日期为基准，获取前后天数的日期
+     *
+     * @param n 正数为n天后，负数为n天前
+     * @return 时间格式为yyyy-MM-dd
+     */
+    public static String getNDay(int n) {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        if (n != 0) {
+            calendar.add(Calendar.DATE, n);
+        }
+        return new DateTime(calendar.getTime()).toString(DATE_PATTERN);
+    }
 
     /**
      * String类型日期（yyyy-MM-dd HH:mm:ss）转Calendar
