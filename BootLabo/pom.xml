@@ -338,6 +338,23 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="git">
+                                    <arg value="submodule" />
+                                    <arg value="update" />
+                                    <arg value="--init" />
+                                    <arg value="--recursive" />
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
                         <id>package</id>
                         <phase>package</phase>
                         <goals>
