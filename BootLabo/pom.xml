@@ -408,6 +408,42 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- 代码风格检查-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.0.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.11</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <!-- 自定义的规则文件 -->
+                            <configLocation>${basedir}/../StyleCheck/google_code_style_check.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <!-- 将检查结果打印到控制台 -->
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <failOnViolation>true</failOnViolation>
+                            <!-- 这里的 error 改成 warning 则有警告就编译不通过 -->
+                            <violationSeverity>error</violationSeverity>
+                            <!-- 忽略检查的文件 -->
+                            <!--<excludes></excludes>-->
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

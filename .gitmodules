@@ -1,0 +1,4 @@
+[submodule "StyleCheck"]
+	path = StyleCheck
+	url = https://github.com/MonkeyDBean/StyleCheck.git
+	branch = master
