@@ -56,9 +56,9 @@ public class IdentityController {
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/jpeg");
-            ServletOutputStream sOutputStream = response.getOutputStream();
-            ImageIO.write(image, "png", sOutputStream);
-            sOutputStream.close();
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            ImageIO.write(image, "png", servletOutputStream);
+            servletOutputStream.close();
         } catch (IOException e) {
             logger.error("getKapcha IOException: {}", e);
         }

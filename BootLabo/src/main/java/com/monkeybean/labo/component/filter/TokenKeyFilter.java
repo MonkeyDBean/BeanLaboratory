@@ -60,7 +60,7 @@ public class TokenKeyFilter implements Filter {
         }
 
         //若跨域，不拦截OPTIONS方法
-//        if (!isFilter || "OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
+        // if (!isFilter || "OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
         if (!isFilter) {
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;
@@ -132,16 +132,16 @@ public class TokenKeyFilter implements Filter {
     private boolean checkSignLegal(HttpServletRequest request, HttpServletResponse response) {
 
         //访问时间校验
-        String sTimeStr = request.getParameter("stime");
+        String timeParamStr = request.getParameter("stime");
         String sign = request.getParameter("sign");
-        if (sTimeStr == null || sign == null || !LegalUtil.isLegalTimestamp(sTimeStr)) {
+        if (timeParamStr == null || sign == null || !LegalUtil.isLegalTimestamp(timeParamStr)) {
             logger.warn("safe param lack or illegal");
             response.setStatus(401);
             return false;
         }
-        long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(sTimeStr));
+        long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(timeParamStr));
         if (internalTime > ConstValue.TIME_OUT) {
-            logger.warn("stime is illegal, stime is: {}, internalTime is: {}", sTimeStr, internalTime);
+            logger.warn("stime is illegal, stime is: {}, internalTime is: {}", timeParamStr, internalTime);
             response.setStatus(401);
             return false;
         }

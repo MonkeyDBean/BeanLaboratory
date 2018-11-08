@@ -62,7 +62,7 @@ public final class IpUtil {
             DbSearcher searcher = new DbSearcher(config, dbFilePath);
 
             //B树搜索
-//            DataBlock block = searcher.btreeSearch(ip);
+            // DataBlock block = searcher.btreeSearch(ip);
 
             //二分搜索
             DataBlock block = searcher.binarySearch(ip);

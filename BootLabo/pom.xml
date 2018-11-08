@@ -441,7 +441,7 @@
                             <!-- 这里的 error 改成 warning 则有警告就编译不通过 -->
                             <violationSeverity>error</violationSeverity>
                             <!-- 忽略检查的文件 -->
-                            <!--<excludes></excludes>-->
+                            <excludes>**/CrossOriginFilter.java,**/aspect/*</excludes>
                         </configuration>
                         <goals>
                             <goal>check</goal>

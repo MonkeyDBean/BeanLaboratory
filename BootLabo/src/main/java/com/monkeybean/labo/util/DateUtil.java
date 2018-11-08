@@ -87,7 +87,7 @@ public final class DateUtil {
         calendar.add(Calendar.MONTH, -1);
         return new DateTime(calendar.getTime()).toString(DATE_PATTERN);
     }
-    
+
     /**
      * 以当前日期为基准，获取前后天数的日期
      *
@@ -142,11 +142,12 @@ public final class DateUtil {
     /**
      * 判断日期间隔是否在最近n个月内
      *
-     * @param dateFrom 开始时间(格式: yyyy-MM-dd)
-     * @param dataTo   结束时间(格式: yyyy-MM-dd)
+     * @param dateFrom    开始时间(格式: yyyy-MM-dd)
+     * @param dataTo      结束时间(格式: yyyy-MM-dd)
+     * @param monthNumber 判断的月份区间
      * @return 后者日期在前者日期之前，且在最近n个月内返回true
      */
-    public static boolean checkNMonthLegal(String dateFrom, String dataTo, int nMonths) {
+    public static boolean checkNMonthLegal(String dateFrom, String dataTo, int monthNumber) {
         Calendar fromCalendar = Calendar.getInstance(TimeZone.getDefault());
         fromCalendar.setTime(DateUtil.dateStr2Date(dateFrom));
         Calendar endCalendar = Calendar.getInstance(TimeZone.getDefault());
@@ -154,7 +155,7 @@ public final class DateUtil {
         if (!fromCalendar.after(endCalendar)) {
             Calendar standardCalendar = Calendar.getInstance(TimeZone.getDefault());
             boolean endLegal = !endCalendar.after(standardCalendar);
-            standardCalendar.add(Calendar.MONTH, -nMonths);
+            standardCalendar.add(Calendar.MONTH, -monthNumber);
             boolean startLegal = !standardCalendar.after(fromCalendar);
             return endLegal && startLegal;
         }
@@ -170,9 +171,15 @@ public final class DateUtil {
         return dateNow.before(date);
     }
 
+    /**
+     * 判断当前日期是否在给定日期之前
+     *
+     * @param dateStr 日期字符串，格式：yyyy-MM-dd HH:mm:ss
+     * @return true为当前日期在给定日期之前
+     */
     public static boolean checkNowBeforeDate(String dateStr) {
-        Calendar sCalendar = DateUtil.strToCalendar(dateStr);
-        return Calendar.getInstance().before(sCalendar);
+        Calendar calendar = DateUtil.strToCalendar(dateStr);
+        return Calendar.getInstance().before(calendar);
     }
 
     /**
@@ -187,13 +194,13 @@ public final class DateUtil {
         Date startDate = DateUtil.dateStr2Date(startStr);
         Date endDate = DateUtil.dateStr2Date(endStr);
         Date checkDate = DateUtil.dateStr2Date(dataStr);
-        Calendar sCalendar = Calendar.getInstance(TimeZone.getDefault());
-        sCalendar.setTime(startDate);
-        Calendar eCalendar = Calendar.getInstance(TimeZone.getDefault());
-        eCalendar.setTime(endDate);
+        Calendar startCalendar = Calendar.getInstance(TimeZone.getDefault());
+        startCalendar.setTime(startDate);
+        Calendar endCalendar = Calendar.getInstance(TimeZone.getDefault());
+        endCalendar.setTime(endDate);
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         cal.setTime(checkDate);
-        return !cal.before(sCalendar) && !cal.after(eCalendar);
+        return !cal.before(startCalendar) && !cal.after(endCalendar);
     }
 
 }

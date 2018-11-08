@@ -55,13 +55,13 @@ public class OkHttpUtil {
         if (map == null) {
             return "";
         }
-        StringBuilder sBuilder = new StringBuilder();
-        sBuilder.append("?");
+        StringBuilder builder = new StringBuilder();
+        builder.append("?");
         for (Map.Entry<String, Object> entry : map.entrySet()) {
-            sBuilder.append(entry.getKey()).append("=").append(entry.getValue());
-            sBuilder.append("&");
+            builder.append(entry.getKey()).append("=").append(entry.getValue());
+            builder.append("&");
         }
-        String str = sBuilder.toString();
+        String str = builder.toString();
         return str.substring(0, str.length() - 1);
     }
 

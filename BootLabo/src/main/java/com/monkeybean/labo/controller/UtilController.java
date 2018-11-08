@@ -88,8 +88,8 @@ public class UtilController {
         if (!Pattern.matches(ConstValue.LEGAL_PASSWORD, password)) {
             return new Result<>(ReturnCode.PWD_SIMPLE);
         }
-        String sTimeStr = String.valueOf(nowDateTime.getMillis());
-        int loop = Integer.parseInt(sTimeStr.substring(sTimeStr.length() - 1));
+        String paramTimeStr = String.valueOf(nowDateTime.getMillis());
+        int loop = Integer.parseInt(paramTimeStr.substring(paramTimeStr.length() - 1));
         String singleMd5Pwd = DigestUtils.md5Hex(password);
         String dbPwd = Coder.encryptPassWithSlat(singleMd5Pwd, otherConfig.getSqlSalt());
         String requestPwd = singleMd5Pwd;
@@ -99,7 +99,7 @@ public class UtilController {
         LinkedHashMap<String, Object> data = new LinkedHashMap<>();
         data.put("originPwd", password);
         data.put("singleMd5Pwd", singleMd5Pwd);
-        data.put("requestSTime", sTimeStr);
+        data.put("requestSTime", paramTimeStr);
         data.put("requestPwd", requestPwd);
         data.put("dbPwd", dbPwd);
         return new Result<>(ReturnCode.SUCCESS, data);
@@ -131,9 +131,9 @@ public class UtilController {
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/" + request.getParameter("format"));
-            ServletOutputStream sOutputStream = response.getOutputStream();
-            ZXingUtil.generateQRCode(reqModel.getContent(), reqModel.getFormat(), reqModel.getWidth(), reqModel.getHeight(), sOutputStream, isFill, logo);
-            sOutputStream.close();
+            ServletOutputStream servletOutputStream = response.getOutputStream();
+            ZXingUtil.generateQRCode(reqModel.getContent(), reqModel.getFormat(), reqModel.getWidth(), reqModel.getHeight(), servletOutputStream, isFill, logo);
+            servletOutputStream.close();
         } catch (IOException e) {
             logger.error("ServletOutputStream, IOException: {}", e);
         }

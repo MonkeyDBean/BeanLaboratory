@@ -91,15 +91,19 @@ public class ConstValue {
     /**
      * 预留账户Id，尾数及位数和
      */
-    public static final HashSet<Integer> reservedIdTail = new HashSet<Integer>() {{
-        add(6);
-        add(8);
-    }};
-    public static final HashSet<Integer> reservedIdSum = new HashSet<Integer>() {{
-        add(6);
-        add(12);
-        add(24);
-    }};
+    public static final HashSet<Integer> reservedIdTail = new HashSet<Integer>() {
+        {
+            add(6);
+            add(8);
+        }
+    };
+    public static final HashSet<Integer> reservedIdSum = new HashSet<Integer>() {
+        {
+            add(6);
+            add(12);
+            add(24);
+        }
+    };
     /**
      * 图片访问权限类型，0为仅私有，1为共享, 2为所有
      */

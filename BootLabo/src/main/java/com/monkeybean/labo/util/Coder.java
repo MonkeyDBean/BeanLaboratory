@@ -65,7 +65,7 @@ public final class Coder {
      * @param loop            md5次数
      * @return 正确则返回true
      */
-    public static boolean nMd5PasswordCompare(String originPassword, String predictPassword, int loop) {
+    public static boolean manyMd5PasswordCompare(String originPassword, String predictPassword, int loop) {
         for (int i = 0; i < loop; i++) {
             originPassword = DigestUtils.md5Hex(originPassword);
         }

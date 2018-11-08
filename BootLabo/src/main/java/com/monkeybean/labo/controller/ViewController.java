@@ -62,8 +62,8 @@ public class ViewController {
         map.addAttribute("activeDes", activeDes);
         return "active";
 
-//        // 前后端完全分离，可跳转到前端地址
-//        String activeFrontUrl = "$http..." + "?" + "des=";
-//        response.sendRedirect(activeFrontUrl);
+        // 前后端完全分离，可跳转到前端地址
+        //String activeFrontUrl = "$http..." + "?" + "des=";
+        //response.sendRedirect(activeFrontUrl);
     }
 }

@@ -35,8 +35,8 @@ public class MainApplication {
         SpringApplicationBuilder builder = new SpringApplicationBuilder(MainApplication.class);
         builder.bannerMode(Banner.Mode.LOG).run(args);
 
-//        //若打成war包，已重写的SpringApplicationBuilder，直接起应用
-//        SpringApplication.run(MainApplication.class, args);
+        //若打成war包，已重写的SpringApplicationBuilder，直接起应用
+        // SpringApplication.run(MainApplication.class, args);
     }
 
 //    /**

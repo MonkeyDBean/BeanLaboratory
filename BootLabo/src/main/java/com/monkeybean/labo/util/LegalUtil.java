@@ -220,7 +220,9 @@ public final class LegalUtil {
         try {
             Date birthDate = sdf.parse(birthday);
             String tmpDate = sdf.format(birthDate);
-            if (!tmpDate.equals(birthday)) {// 出生年月日不正确
+
+            // 出生年月日不正确
+            if (!tmpDate.equals(birthday)) {
                 return false;
             }
 
@@ -276,7 +278,9 @@ public final class LegalUtil {
         try {
             Date birthDate = sdf.parse(birthday);
             String tmpDate = sdf.format(birthDate);
-            if (!tmpDate.equals(birthday)) {// 身份证日期错误
+
+            // 身份证日期错误
+            if (!tmpDate.equals(birthday)) {
                 return false;
             }
         } catch (ParseException e) {

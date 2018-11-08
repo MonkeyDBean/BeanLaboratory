@@ -65,6 +65,8 @@ public class IdentityService {
 
     /**
      * 申请短信验证码
+     *
+     * @param phone 手机号
      */
     public Result<String> getValidCode(String phone) {
 
@@ -117,12 +119,12 @@ public class IdentityService {
      *
      * @param md5PasswordOrigin 正确明文密码的单次md5摘要
      * @param passwordMd5       要比对的密码
-     * @param sTime             unix时间戳，字符串格式
+     * @param timeStr           unix时间戳，字符串格式
      * @return 成功则返回true
      */
-    private boolean isPasswordRight(String md5PasswordOrigin, String passwordMd5, String sTime) {
-        int loop = Integer.parseInt(sTime.substring(sTime.length() - 1));
-        return Coder.nMd5PasswordCompare(md5PasswordOrigin, passwordMd5, loop);
+    private boolean isPasswordRight(String md5PasswordOrigin, String passwordMd5, String timeStr) {
+        int loop = Integer.parseInt(timeStr.substring(timeStr.length() - 1));
+        return Coder.manyMd5PasswordCompare(md5PasswordOrigin, passwordMd5, loop);
     }
 
     /**
@@ -131,10 +133,10 @@ public class IdentityService {
      * @param user        账号（手机号）
      * @param passwordMd5 明文密码做了n + 1次md5, 首先进行单次md5，然后根据sTime尾数再进行n次md5
      * @param stay        是否保持登录
-     * @param sTime       前端请求时间
+     * @param timeStr     前端请求时间
      * @param request     http请求
      */
-    public Result<Integer> userLogin(String user, String passwordMd5, String token, boolean stay, String sTime, HttpServletRequest request) {
+    public Result<Integer> userLogin(String user, String passwordMd5, String token, boolean stay, String timeStr, HttpServletRequest request) {
 
         //google reCaptcha 身份认证
         String ip = IpUtil.getIpAddress(request);
@@ -161,7 +163,7 @@ public class IdentityService {
             return new Result<>(ReturnCode.LOGIN_ERROR);
         }
         String md5PwdOrigin = Coder.decryptPsWithSlat(accountInfo.get("password").toString(), otherConfig.getSqlSalt());
-        if (!isPasswordRight(md5PwdOrigin, passwordMd5, sTime)) {
+        if (!isPasswordRight(md5PwdOrigin, passwordMd5, timeStr)) {
             logger.info("phoneLogin, password is wrong, user: {}", user);
             return new Result<>(ReturnCode.LOGIN_ERROR);
         }
@@ -210,7 +212,7 @@ public class IdentityService {
         //添加新账户
         String dbPwd = Coder.encryptPassWithSlat(password, otherConfig.getSqlSalt());
         String ip = IpUtil.getIpAddress(request);
-//        Integer newAccountId = generateNewId();
+        // Integer newAccountId = generateNewId();
         Integer newAccountId = publicService.getNewAccountId();
         laboDoService.addAccountInfo(newAccountId, phone, dbPwd, name, ip);
 
@@ -327,9 +329,9 @@ public class IdentityService {
      * @param accountId       账户Id
      * @param oldPwdMd5       老密码做了n + 1次md5, 首先进行单次md5，然后根据sTime尾数再进行n次md5
      * @param newPwdSingleMd5 新密码单次md5摘要
-     * @param sTime           unix时间戳，字符串格式
+     * @param timeStr         unix时间戳，字符串格式
      */
-    public Result<Integer> updatePassword(int accountId, String oldPwdMd5, String newPwdSingleMd5, String sTime) {
+    public Result<Integer> updatePassword(int accountId, String oldPwdMd5, String newPwdSingleMd5, String timeStr) {
         HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("updatePassword, account is illegal, accountId: {}", accountId);
@@ -340,7 +342,7 @@ public class IdentityService {
             logger.info("updatePassword, new pwd can't be same as the old, accountId: {}", accountId);
             return new Result<>(ReturnCode.NEW_OLD_PWD_SAME);
         }
-        if (!isPasswordRight(md5PwdOrigin, oldPwdMd5, sTime)) {
+        if (!isPasswordRight(md5PwdOrigin, oldPwdMd5, timeStr)) {
             logger.info("updatePassword, password is wrong, accountId: {}", accountId);
             return new Result<>(ReturnCode.ERROR_PASSWORD);
         }

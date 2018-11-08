@@ -92,7 +92,8 @@ public class OperationController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @GetMapping(value = "info/project/other/get")
     public Result<HashMap<String, Object>> getOtherProjectInfo(@Valid OtherProjectInfoReq reqModel, HttpSession session) {
-        return operationService.getOtherProjectInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getTypeInt(), reqModel.getCurrentInt(), reqModel.getSizeInt(), reqModel.getTotalInt());
+        return operationService.getOtherProjectInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getTypeInt(),
+                reqModel.getCurrentInt(), reqModel.getSizeInt(), reqModel.getTotalInt());
     }
 
 }
