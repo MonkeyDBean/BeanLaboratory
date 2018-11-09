@@ -29,5 +29,39 @@
 
     <name>BeanLaboratory</name>
     <description>MonkeyBean Laboratory : Just for Exercise</description>
+    
+     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                            <target>
+                                <exec executable="git">
+                                    <arg value="submodule" />
+                                    <arg value="update" />
+                                    <arg value="--init" />
+                                    <arg value="--recursive" />
+                                </exec>
+                                <exec executable="git">
+                                    <arg value="submodule"/>
+                                    <arg value="update"/>
+                                    <arg value="--remote"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
