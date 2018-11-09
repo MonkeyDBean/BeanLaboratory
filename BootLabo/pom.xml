@@ -334,6 +334,7 @@
                                 <delete dir="${project.build.directory}/../logs_file"/>
                                 <delete dir="${project.build.directory}/../../logs_file"/>
                                 <delete dir="${basedir}/target"/>
+                                <delete dir="${basedir}/StyleCheck"/>
                             </tasks>
                         </configuration>
                     </execution>
@@ -342,17 +343,12 @@
                         <phase>validate</phase>
                         <configuration>
                             <target>
-                                <exec executable="git">
-                                    <arg value="submodule" />
-                                    <arg value="update" />
-                                    <arg value="--init" />
-                                    <arg value="--recursive" />
-                                </exec>
-                                <exec executable="git">
-                                    <arg value="submodule"/>
-                                    <arg value="update"/>
-                                    <arg value="--remote"/>
-                                </exec>
+                                <!-- copy代码检查目录到当前项目 -->
+                                <copy todir="${basedir}/StyleCheck">
+                                    <fileset dir="${basedir}/../StyleCheck">
+                                        <include name="**"/>
+                                    </fileset>
+                                </copy>
                             </target>
                         </configuration>
                         <goals>
@@ -432,7 +428,7 @@
                         <phase>validate</phase>
                         <configuration>
                             <!-- 自定义的规则文件 -->
-                            <configLocation>${basedir}/../StyleCheck/google_code_style_check.xml</configLocation>
+                            <configLocation>${basedir}/StyleCheck/google_code_style_check.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <!-- 将检查结果打印到控制台 -->
                             <consoleOutput>true</consoleOutput>
