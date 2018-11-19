@@ -1,6 +1,7 @@
 package com.monkeybean.labo.predefine;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 常量值
@@ -79,7 +80,7 @@ public class ConstValue {
     /**
      * 请求的合法时间区间, 毫秒
      */
-    public static final long TIME_OUT = 3 * 60 * 1000;
+    public static final long TIME_OUT = 3 * 60 * 1000L;
     /**
      * 初始账户id
      */
@@ -87,17 +88,17 @@ public class ConstValue {
     /**
      * 配置表，种子基数配置名称
      */
-    public static final String idBaseName = "idBaseSeed";
+    public static final String ID_BASE_NAME = "idBaseSeed";
     /**
      * 预留账户Id，尾数及位数和
      */
-    public static final HashSet<Integer> reservedIdTail = new HashSet<Integer>() {
+    public static final Set<Integer> reservedIdTail = new HashSet<Integer>() {
         {
             add(6);
             add(8);
         }
     };
-    public static final HashSet<Integer> reservedIdSum = new HashSet<Integer>() {
+    public static final Set<Integer> reservedIdSum = new HashSet<Integer>() {
         {
             add(6);
             add(12);

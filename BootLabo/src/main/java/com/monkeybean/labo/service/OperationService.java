@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -53,7 +54,7 @@ public class OperationService {
      * @return 成功返回图片url
      */
     public Result<String> imageUpload(int accountId, final String fileCode, String fileName) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("imageUpload, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -76,9 +77,9 @@ public class OperationService {
         }
 
         //md5相同的图片不重复存储
-        List<HashMap<String, Object>> dbImageInfoList = laboDoService.queryImageListByHash(fileMd5, null);
-        if (dbImageInfoList.size() > 0) {
-            HashMap<String, Object> dbImageInfo = dbImageInfoList.get(0);
+        List<Map<String, Object>> dbImageInfoList = laboDoService.queryImageListByHash(fileMd5, null);
+        if (!dbImageInfoList.isEmpty()) {
+            Map<String, Object> dbImageInfo = dbImageInfoList.get(0);
             accessPath = dbImageInfo.get("access_path").toString();
             storePath = dbImageInfo.get("store_path").toString();
         } else {
@@ -129,14 +130,14 @@ public class OperationService {
      * @param currentPage 当前页，首页为1
      * @param pageSize    每页记录数量
      */
-    public Result<HashMap<String, Object>> getImageList(int accountId, int shareType, int currentPage, int pageSize) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+    public Result<Map<String, Object>> getImageList(int accountId, int shareType, int currentPage, int pageSize) {
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("getImageList, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
         }
         List<ImageInfoRes> returnList = new ArrayList<>();
-        HashMap<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         Integer queryAccountId = accountId;
         Integer queryShareType = shareType;
         if (shareType == ConstValue.IMAGE_ACCESS_SHARE) {
@@ -152,8 +153,8 @@ public class OperationService {
             } else {
                 offset = pageSize * (currentPage - 1);
             }
-            List<HashMap<String, Object>> imageList = laboDoService.queryImageListByShareType(queryShareType, queryAccountId, pageSize, offset);
-            for (HashMap<String, Object> eachImage : imageList) {
+            List<Map<String, Object>> imageList = laboDoService.queryImageListByShareType(queryShareType, queryAccountId, pageSize, offset);
+            for (Map<String, Object> eachImage : imageList) {
                 ImageInfoRes eachImageRes = new ImageInfoRes();
                 eachImageRes.setId(Integer.parseInt(eachImage.get("id").toString()));
                 eachImageRes.setFileName(eachImage.get("file_name").toString());
@@ -178,12 +179,12 @@ public class OperationService {
      * @param fileDes   文件描述
      */
     public Result<String> changeImageInfo(int accountId, int imageId, String fileName, String fileDes) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("changeImageInfo, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
         }
-        List<HashMap<String, Object>> imageList = laboDoService.queryImageById(imageId, accountId);
+        List<Map<String, Object>> imageList = laboDoService.queryImageById(imageId, accountId);
         if (imageList.isEmpty()) {
             logger.warn("changeImageInfo, image: {} doesn't belong to accountId: {}", imageId, accountId);
             return new Result<>(ReturnCode.FILE_NOT_MINE);
@@ -200,7 +201,7 @@ public class OperationService {
      * @param operateType 操作类型，1为共享状态更改，2为删除
      */
     public Result<String> changeImageStatus(int accountId, List<Integer> imageIds, int operateType) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("changeImageStatus, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -208,10 +209,10 @@ public class OperationService {
         if (operateType == 2) {
             laboDoService.removeImages(imageIds, accountId);
         } else {
-            List<HashMap<String, Object>> imageStatusList = laboDoService.queryImageShareStatusList(imageIds, accountId);
+            List<Map<String, Object>> imageStatusList = laboDoService.queryImageShareStatusList(imageIds, accountId);
             List<Integer> shareImageIds = new ArrayList<>();
             List<Integer> unShareImageIds = new ArrayList<>();
-            for (HashMap<String, Object> eachImage : imageStatusList) {
+            for (Map<String, Object> eachImage : imageStatusList) {
                 Integer imageId = Integer.valueOf(eachImage.get("id").toString());
                 if (Boolean.parseBoolean(eachImage.get("is_share").toString())) {
                     unShareImageIds.add(imageId);
@@ -237,7 +238,7 @@ public class OperationService {
      * @return 图片访问路径列表
      */
     public Result<List<String>> uploadMultiImage(int accountId, MultipartFile[] fileImg) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("uploadMultiImage, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -248,7 +249,7 @@ public class OperationService {
             logger.warn("uploadMultiImage, fileImg is null");
             return new Result<>(ReturnCode.UPLOAD_FILE_IS_NULL);
         }
-        List<HashMap<String, Object>> imageDbList = new ArrayList<>();
+        List<Map<String, Object>> imageDbList = new ArrayList<>();
         List<String> successAccessPaths = new ArrayList<>();
         for (MultipartFile file : fileImg) {
             String fileName = file.getOriginalFilename();
@@ -267,11 +268,11 @@ public class OperationService {
                 String accessPath;
                 String storePath;
                 String fileMd5 = DigestUtils.md5Hex(Base64.encodeBase64(fileBytes));
-                List<HashMap<String, Object>> myImageDbList = laboDoService.queryImageListByHash(fileMd5, accountId);
+                List<Map<String, Object>> myImageDbList = laboDoService.queryImageListByHash(fileMd5, accountId);
                 if (myImageDbList.isEmpty()) {
-                    List<HashMap<String, Object>> dbImageInfoList = laboDoService.queryImageListByHash(fileMd5, null);
-                    if (dbImageInfoList.size() > 0) {
-                        HashMap<String, Object> dbImageInfo = dbImageInfoList.get(0);
+                    List<Map<String, Object>> dbImageInfoList = laboDoService.queryImageListByHash(fileMd5, null);
+                    if (!dbImageInfoList.isEmpty()) {
+                        Map<String, Object> dbImageInfo = dbImageInfoList.get(0);
                         accessPath = dbImageInfo.get("access_path").toString();
                         storePath = dbImageInfo.get("store_path").toString();
                     } else {
@@ -325,14 +326,14 @@ public class OperationService {
      * @param pageSize    每页记录数量
      * @param totalNum    查询的记录总数
      */
-    public Result<HashMap<String, Object>> getOtherProjectInfo(int accountId, int projectType, int currentPage, int pageSize, int totalNum) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+    public Result<Map<String, Object>> getOtherProjectInfo(int accountId, int projectType, int currentPage, int pageSize, int totalNum) {
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("getOtherProjectInfo, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
         }
         List<OtherProjectInfoRes> dataList = new ArrayList<>();
-        HashMap<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
 
         //多终端登录查询，数据记录可能增多；采取如下方案，查询第一条记录时，即确定要查询的总页数，保证数据正确性；适用于数据记录只增不减的情况
         Integer nowCount = laboDoService.queryProjectInfoCount(projectType);
@@ -346,8 +347,8 @@ public class OperationService {
                 totalCount = totalNum;
                 offset = nowCount - totalNum + pageSize * (currentPage - 1);
             }
-            List<HashMap<String, Object>> recordList = laboDoService.queryProjectInfoList(projectType, pageSize, offset);
-            for (HashMap<String, Object> eachRecord : recordList) {
+            List<Map<String, Object>> recordList = laboDoService.queryProjectInfoList(projectType, pageSize, offset);
+            for (Map<String, Object> eachRecord : recordList) {
                 OtherProjectInfoRes eachRecordRes = new OtherProjectInfoRes();
                 eachRecordRes.setName(eachRecord.get("project_name").toString());
                 eachRecordRes.setUrl(eachRecord.get("project_url").toString());

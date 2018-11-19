@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.monkeybean.labo.dao.LaboDataDao">
 
-    <select id="queryAccountInfo" resultType="HashMap" parameterType="HashMap">
+    <select id="queryAccountInfo" resultType="Map" parameterType="Map">
         select
         *, date_format(forbid_time, "%Y-%m-%d %T") as forbidTime_format
         from
@@ -29,7 +29,7 @@
         account;
     </select>
 
-    <select id="queryListByArray" parameterType="HashMap" resultType="HashMap">
+    <select id="queryListByArray" parameterType="Map" resultType="Map">
         select
         id, phone
         from
@@ -41,7 +41,7 @@
         </foreach>
     </select>
 
-    <update id="updateAccountInfo" parameterType="HashMap">
+    <update id="updateAccountInfo" parameterType="Map">
         update
         account
         <set>
@@ -76,14 +76,14 @@
         </where>
     </update>
 
-    <insert id="addAccountInfo" parameterType="HashMap">
+    <insert id="addAccountInfo" parameterType="Map">
         insert into
         account(account_id, phone, password, nickname, ipv4, login_time, create_time)
         values
         (#{accountId}, #{phone}, #{password}, #{nickname}, #{ipv4}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
     </insert>
 
-    <select id="queryLatestMessageRecord" resultType="HashMap" parameterType="HashMap">
+    <select id="queryLatestMessageRecord" resultType="Map" parameterType="Map">
         select
         *
         from
@@ -117,14 +117,14 @@
         limit 1;
     </update>
 
-    <insert id="addMessageRecord" parameterType="HashMap">
+    <insert id="addMessageRecord" parameterType="Map">
         insert into
         message_record(phone, message_code, res_code, res_custom, create_time)
         values
         (#{phone}, #{messageCode}, #{resCode}, #{resCustom}, CURRENT_TIMESTAMP);
     </insert>
 
-    <select id="queryTempAsset" parameterType="String" resultType="HashMap">
+    <select id="queryTempAsset" parameterType="String" resultType="Map">
         select
         *
         from
@@ -133,7 +133,7 @@
         file_name = #{fileName};
     </select>
 
-    <insert id="addNewTempAsset" parameterType="HashMap">
+    <insert id="addNewTempAsset" parameterType="Map">
         insert into
         asset_temp(account_id, file_name, cover)
         values
@@ -147,7 +147,7 @@
         date_format(create_time, "%Y-%m-%d") &lt; #{dateStr};
     </delete>
 
-    <select id="queryImageInfoList" parameterType="HashMap" resultType="HashMap">
+    <select id="queryImageInfoList" parameterType="Map" resultType="Map">
         select
         *, date_format(create_time,'%Y-%m-%d %T') as createTime_format
         from
@@ -174,7 +174,7 @@
         </if>
     </select>
 
-    <select id="queryImageInfoCount" parameterType="HashMap" resultType="Integer">
+    <select id="queryImageInfoCount" parameterType="Map" resultType="Integer">
         select
         count(*)
         from
@@ -193,7 +193,7 @@
         </where>
     </select>
 
-    <select id="queryImageShareStatusList" parameterType="HashMap" resultType="HashMap">
+    <select id="queryImageShareStatusList" parameterType="Map" resultType="Map">
         select
         id, is_share
         from
@@ -207,7 +207,7 @@
         </where>
     </select>
 
-    <update id="updateImageInfo" parameterType="HashMap">
+    <update id="updateImageInfo" parameterType="Map">
         update
         image_info
         <set>
@@ -221,7 +221,7 @@
         where account_id = #{accountId};
     </update>
 
-    <update id="updateImageListStatus" parameterType="HashMap">
+    <update id="updateImageListStatus" parameterType="Map">
         update
         image_info
         <set>
@@ -239,14 +239,14 @@
         </foreach>
     </update>
 
-    <insert id="addImageInfo" parameterType="HashMap">
+    <insert id="addImageInfo" parameterType="Map">
         insert into
         image_info(account_id, file_name, file_hash, store_path, access_path, create_time)
         values
         (#{accountId}, #{fileName}, #{fileHash}, #{storePath}, #{accessPath}, CURRENT_TIMESTAMP);
     </insert>
 
-    <insert id="addMultiImage" parameterType="HashMap">
+    <insert id="addMultiImage" parameterType="Map">
         insert into
         image_info(account_id, file_name, file_hash, store_path, access_path, create_time) VALUES
         <foreach collection="imageList" item="item" index="index" separator=",">
@@ -254,7 +254,7 @@
         </foreach>
     </insert>
 
-    <select id="queryProjectInfoList" parameterType="HashMap" resultType="HashMap">
+    <select id="queryProjectInfoList" parameterType="Map" resultType="Map">
         select
         *
         from
@@ -292,14 +292,14 @@
         config_name = #{configName};
     </select>
 
-    <update id="updateConfigValue" parameterType="HashMap">
+    <update id="updateConfigValue" parameterType="Map">
         update
         config_info
         set config_value = #{configValue}
         where config_name = #{configName};
     </update>
 
-    <insert id="addConfigInfo" parameterType="HashMap">
+    <insert id="addConfigInfo" parameterType="Map">
         insert into
         config_info(config_value, config_name, create_time)
         values

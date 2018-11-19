@@ -33,24 +33,24 @@ public class IdentityController {
 
     private static Logger logger = LoggerFactory.getLogger(IdentityController.class);
 
-    private final DefaultKaptcha gKapcha;
+    private final DefaultKaptcha dgKapCha;
 
     private final IdentityService identityService;
 
     @Autowired
-    public IdentityController(DefaultKaptcha gKapcha, IdentityService identityService) {
-        this.gKapcha = gKapcha;
+    public IdentityController(DefaultKaptcha dgKapCha, IdentityService identityService) {
+        this.dgKapCha = dgKapCha;
         this.identityService = identityService;
     }
 
     @ApiOperation(value = "获取用户图形验证码")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "png格式的图片")})
     @GetMapping(path = "/kapcha")
-    public void getKapcha(HttpSession session, HttpServletResponse response) {
+    public void getKapCha(HttpSession session, HttpServletResponse response) {
         RandomStringUtil randomStr = new RandomStringUtil(4);//生成四位
         String code = randomStr.nextString(false);//字母数字混合
-        BufferedImage image = gKapcha.createImage(code);
-        session.setAttribute(gKapcha.getConfig().getSessionKey(), code);
+        BufferedImage image = dgKapCha.createImage(code);
+        session.setAttribute(dgKapCha.getConfig().getSessionKey(), code);
         try {
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
@@ -60,7 +60,7 @@ public class IdentityController {
             ImageIO.write(image, "png", servletOutputStream);
             servletOutputStream.close();
         } catch (IOException e) {
-            logger.error("getKapcha IOException: {}", e);
+            logger.error("getKapCha IOException: {}", e);
         }
     }
 
@@ -72,7 +72,7 @@ public class IdentityController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code: 无特殊处理的返回码")})
     @GetMapping(path = "message/apply")
     public Result<String> getValidCode(@Valid MessageApplyReq reqModel, HttpServletRequest request) {
-        String codeKey = gKapcha.getConfig().getSessionKey();
+        String codeKey = dgKapCha.getConfig().getSessionKey();
         String verifyCode = request.getSession().getAttribute(codeKey) == null ? ""
                 : request.getSession().getAttribute(codeKey).toString();
         if (verifyCode.equals(reqModel.getCode())) {

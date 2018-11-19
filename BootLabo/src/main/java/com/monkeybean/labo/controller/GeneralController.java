@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -25,8 +26,8 @@ public class GeneralController {
     @ApiOperation(value = "嗅探服务器运行是否正常")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code：0")})
     @GetMapping(path = "sniff/status")
-    public Result<LinkedHashMap<String, Object>> sniffStatus() {
-        LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+    public Result<Map<String, Object>> sniffStatus() {
+        Map<String, Object> data = new LinkedHashMap<>();
         data.put("SystemTime", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
 
         //系统总内存、最大可用内存、当前剩余可用内存

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by MonkeyBean on 2018/06/02.
@@ -35,7 +35,7 @@ public class ViewController {
             if (mapValue != null) {
                 String phone = mapValue.substring(0, 11);
                 String mail = mapValue.substring(11);
-                HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoByPhone(phone);
+                Map<String, Object> accountInfo = laboDoService.queryAccountInfoByPhone(phone);
                 if (accountInfo == null) {
                     logger.warn("activeMail, account not exist in db, phone: {}", phone);
                     activeDes = "激活失败，账号不存在";

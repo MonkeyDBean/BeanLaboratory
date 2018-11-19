@@ -124,13 +124,13 @@ public class TestController {
      */
     @ApiOperation(value = "测试sql, sql参数为数组")
     @GetMapping(path = "sql/array/info")
-    public Result<List<HashMap<String, Object>>> testSqlArray(@RequestParam(value = "phone") String phoneStr) {
+    public Result<List<Map<String, Object>>> testSqlArray(@RequestParam(value = "phone") String phoneStr) {
         String[] phoneArray = phoneStr.split(",");
         List<String> phoneList = new ArrayList<>();
         Collections.addAll(phoneList, phoneArray);
-        List<HashMap<String, Object>> resultList = null;
+        List<Map<String, Object>> resultList = null;
         if (!phoneList.isEmpty()) {
-            HashMap<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
             param.put("table", "account");
             param.put("array", phoneList);
             resultList = laboDataDao.queryListByArray(param);
@@ -235,8 +235,8 @@ public class TestController {
 
     @ApiOperation(value = "测试反射调用")
     @GetMapping(path = "method/invoke")
-    public List<HashMap<String, Object>> testInvokeMethod() {
-        HashMap<String, Object> params = new HashMap<>();
+    public List<Map<String, Object>> testInvokeMethod() {
+        Map<String, Object> params = new HashMap<>();
         params.put("limit", 20);
         params.put("offset", 0);
         return laboDoService.testReflectionInvoke(params, "queryProjectInfoList");

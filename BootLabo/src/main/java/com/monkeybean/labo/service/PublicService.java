@@ -35,9 +35,9 @@ public class PublicService {
      * @param accountInfo 账户信息
      * @return 合法true, 非法返回false
      */
-    boolean checkAccountLegal(HashMap<String, Object> accountInfo) {
+    boolean checkAccountLegal(Map<String, Object> accountInfo) {
         if (accountInfo != null) {
-//            boolean hasForbidden = DateUtil.checkNowBeforeDate((Date)accountInfo.get("forbid_time"));
+            // boolean hasForbidden = DateUtil.checkNowBeforeDate((Date)accountInfo.get("forbid_time"));
             boolean hasForbidden = DateUtil.checkNowBeforeDate(accountInfo.get("forbidTime_format").toString());
             if (!hasForbidden) {
                 return true;

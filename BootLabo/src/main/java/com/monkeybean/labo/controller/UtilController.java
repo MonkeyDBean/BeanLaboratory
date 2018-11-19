@@ -79,7 +79,7 @@ public class UtilController {
     @ApiOperation(value = "密码生成")
     @ApiImplicitParam(name = "password", value = "明文密码", required = true, dataType = "string", paramType = "query")
     @GetMapping(path = "generatePwd")
-    public Result<LinkedHashMap<String, Object>> generatePassword(@RequestParam(value = "password") String password) {
+    public Result<Map<String, Object>> generatePassword(@RequestParam(value = "password") String password) {
         DateTime nowDateTime = new DateTime();
         String nowDataTimeStr = nowDateTime.toString("yyyy-MM-dd HH:mm:ss");
         logger.info("interface \"generatePassword\" is invoked, time: {}, password: {}", nowDataTimeStr, password);
@@ -96,7 +96,7 @@ public class UtilController {
         for (int i = 0; i < loop; i++) {
             requestPwd = DigestUtils.md5Hex(requestPwd);
         }
-        LinkedHashMap<String, Object> data = new LinkedHashMap<>();
+        Map<String, Object> data = new LinkedHashMap<>();
         data.put("originPwd", password);
         data.put("singleMd5Pwd", singleMd5Pwd);
         data.put("requestSTime", paramTimeStr);

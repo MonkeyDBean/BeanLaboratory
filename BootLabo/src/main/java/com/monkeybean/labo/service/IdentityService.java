@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +75,7 @@ public class IdentityService {
         }
 
         //申请时间是否合法
-        HashMap<String, Object> messageRecord = laboDoService.queryLatestMessageRecord(phone, null);
+        Map<String, Object> messageRecord = laboDoService.queryLatestMessageRecord(phone, null);
         if (messageRecord != null) {
             Timestamp lastSendTime = (Timestamp) messageRecord.get("create_time");
             long applyInterval = Math.abs(lastSendTime.getTime() - System.currentTimeMillis());
@@ -152,7 +151,7 @@ public class IdentityService {
         }
 
         //身份、密码校验
-        HashMap<String, Object> accountInfo;
+        Map<String, Object> accountInfo;
         if (LegalUtil.isChinaPhoneLegal(user)) {
             accountInfo = laboDoService.queryAccountInfoByPhone(user);
         } else {
@@ -209,11 +208,13 @@ public class IdentityService {
             return new Result<>(verifyResult);
         }
 
-        //添加新账户
-        String dbPwd = Coder.encryptPassWithSlat(password, otherConfig.getSqlSalt());
-        String ip = IpUtil.getIpAddress(request);
+        //生成新账户Id
         // Integer newAccountId = generateNewId();
         Integer newAccountId = publicService.getNewAccountId();
+        String dbPwd = Coder.encryptPassWithSlat(password, otherConfig.getSqlSalt());
+        String ip = IpUtil.getIpAddress(request);
+
+        //添加新账户
         laboDoService.addAccountInfo(newAccountId, phone, dbPwd, name, ip);
 
         //身份信息写入session
@@ -240,7 +241,7 @@ public class IdentityService {
      * @return 验证成功返回SUCCESS
      */
     private ReturnCode verifyMessageCode(String phone, String code) {
-        HashMap<String, Object> messageRecord = laboDoService.queryLatestMessageRecord(phone, false);
+        Map<String, Object> messageRecord = laboDoService.queryLatestMessageRecord(phone, false);
         if (messageRecord != null) {
             long lastSendTime = ((Timestamp) messageRecord.get("create_time")).getTime();
             long curlTime = System.currentTimeMillis();
@@ -264,7 +265,7 @@ public class IdentityService {
      * @param accountId 账户Id
      */
     public Result<AccountInfoRes> getAccountInfo(int accountId) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("getAccountInfo, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -283,7 +284,7 @@ public class IdentityService {
      * 上传头像到临时表
      */
     public Result<String> avatarUpload(int accountId, MultipartFile file) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("avatarUpload, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -332,7 +333,7 @@ public class IdentityService {
      * @param timeStr         unix时间戳，字符串格式
      */
     public Result<Integer> updatePassword(int accountId, String oldPwdMd5, String newPwdSingleMd5, String timeStr) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("updatePassword, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -358,7 +359,7 @@ public class IdentityService {
      * @param newPwdSingleMd5 明文密码单次Md5摘要
      */
     public Result<Integer> resetPassword(String phone, String code, String newPwdSingleMd5) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoByPhone(phone);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoByPhone(phone);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("resetPassword, account is illegal, phone: {}", phone);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
@@ -378,7 +379,7 @@ public class IdentityService {
      * @param mail      邮箱
      */
     public Result<String> bindMail(int accountId, String mail) {
-        HashMap<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("bindMail, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);

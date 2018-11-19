@@ -3,8 +3,8 @@ package com.monkeybean.labo.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by MonkeyBean on 2018/05/26.
@@ -15,29 +15,29 @@ public interface LaboDataDao {
     /**
      * account表, select
      */
-    HashMap<String, Object> queryAccountInfo(HashMap<String, Object> param);
+    Map<String, Object> queryAccountInfo(Map<String, Object> param);
 
     Integer queryMaxAccountId();
 
     /**
      * 测试，使用mybatis for each
      */
-    List<HashMap<String, Object>> queryListByArray(HashMap<String, Object> param);
+    List<Map<String, Object>> queryListByArray(Map<String, Object> param);
 
     /**
      * account表, update
      */
-    void updateAccountInfo(HashMap<String, Object> param);
+    void updateAccountInfo(Map<String, Object> param);
 
     /**
      * account表, insert
      */
-    void addAccountInfo(HashMap<String, Object> param);
+    void addAccountInfo(Map<String, Object> param);
 
     /**
      * message_record表, select
      */
-    HashMap<String, Object> queryLatestMessageRecord(HashMap<String, Object> param);
+    Map<String, Object> queryLatestMessageRecord(Map<String, Object> param);
 
     Integer queryTodayMessageApplyCount(@Param("phone") String phone);
 
@@ -49,21 +49,17 @@ public interface LaboDataDao {
     /**
      * message_record表, insert
      */
-    void addMessageRecord(HashMap<String, Object> param);
-
-    /**
-     * message_record表, delete
-     */
+    void addMessageRecord(Map<String, Object> param);
 
     /**
      * asset_temp表, select
      */
-    HashMap<String, Object> queryTempAsset(@Param("fileName") String fileName);
+    Map<String, Object> queryTempAsset(@Param("fileName") String fileName);
 
     /**
      * asset_temp表, insert
      */
-    void addNewTempAsset(HashMap<String, Object> param);
+    void addNewTempAsset(Map<String, Object> param);
 
     /**
      * asset_temp表, delete
@@ -73,30 +69,30 @@ public interface LaboDataDao {
     /**
      * image_info表, query
      */
-    List<HashMap<String, Object>> queryImageInfoList(HashMap<String, Object> param);
+    List<Map<String, Object>> queryImageInfoList(Map<String, Object> param);
 
-    Integer queryImageInfoCount(HashMap<String, Object> param);
+    Integer queryImageInfoCount(Map<String, Object> param);
 
-    List<HashMap<String, Object>> queryImageShareStatusList(HashMap<String, Object> param);
+    List<Map<String, Object>> queryImageShareStatusList(Map<String, Object> param);
 
     /**
      * image_info表，update
      */
-    void updateImageInfo(HashMap<String, Object> param);
+    void updateImageInfo(Map<String, Object> param);
 
-    void updateImageListStatus(HashMap<String, Object> param);
+    void updateImageListStatus(Map<String, Object> param);
 
     /**
      * image_info表，insert
      */
-    void addImageInfo(HashMap<String, Object> param);
+    void addImageInfo(Map<String, Object> param);
 
-    void addMultiImage(HashMap<String, Object> param);
+    void addMultiImage(Map<String, Object> param);
 
     /**
      * other_project_info表，query
      */
-    List<HashMap<String, Object>> queryProjectInfoList(HashMap<String, Object> param);
+    List<Map<String, Object>> queryProjectInfoList(Map<String, Object> param);
 
     Integer queryProjectInfoCount(@Param("projectType") Integer projectType);
 
@@ -108,11 +104,11 @@ public interface LaboDataDao {
     /**
      * config_info表，update
      */
-    void updateConfigValue(HashMap<String, Object> param);
+    void updateConfigValue(Map<String, Object> param);
 
     /**
      * config_info表，insert
      */
-    void addConfigInfo(HashMap<String, Object> param);
+    void addConfigInfo(Map<String, Object> param);
 
 }

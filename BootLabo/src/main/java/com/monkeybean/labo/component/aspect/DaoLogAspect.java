@@ -31,8 +31,9 @@ public class DaoLogAspect {
     @Before("daoPoint()")
     public void doBefore(JoinPoint joinPoint) {
         beginTime.set(System.currentTimeMillis());
+        String daoParam = Arrays.toString(joinPoint.getArgs());
         logger.info("Dao Class Method: {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
-        logger.info("Dao Args: {}", Arrays.toString(joinPoint.getArgs()));
+        logger.info("Dao Args: {}", daoParam);
     }
 
     @AfterReturning(returning = "ret", pointcut = "daoPoint()")

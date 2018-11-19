@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -32,7 +33,7 @@ public class LaboDoService {
     /**
      * 存储所有方法，key为方法名，value为Method
      */
-    private final ConcurrentHashMap<String, Method> daoMethod = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Method> daoMethod = new ConcurrentHashMap<>();
 
     @Autowired
     public LaboDoService(LaboDataDao laboDao) {
@@ -50,10 +51,10 @@ public class LaboDoService {
      * @return 信息列表
      */
     @SuppressWarnings("unchecked")
-    public List<HashMap<String, Object>> testReflectionInvoke(HashMap<String, Object> params, String methodName) {
-        List<HashMap<String, Object>> result = null;
+    public List<Map<String, Object>> testReflectionInvoke(Map<String, Object> params, String methodName) {
+        List<Map<String, Object>> result = null;
         try {
-            result = (List<HashMap<String, Object>>) this.daoMethod.get(methodName).invoke(laboDao, params);
+            result = (List<Map<String, Object>>) this.daoMethod.get(methodName).invoke(laboDao, params);
         } catch (Exception e) {
             logger.error("testReflectionInvoke, method reflect IllegalAccessException or InvocationTargetException: {}", e);
         }
@@ -66,8 +67,8 @@ public class LaboDoService {
      * @param phone 账户手机号
      * @return 账户信息
      */
-    public HashMap<String, Object> queryAccountInfoByPhone(String phone) {
-        HashMap<String, Object> param = new HashMap<>();
+    public Map<String, Object> queryAccountInfoByPhone(String phone) {
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_PHONE, phone);
         return laboDao.queryAccountInfo(param);
     }
@@ -78,8 +79,8 @@ public class LaboDoService {
      * @param email 账户邮箱
      * @return 账户信息
      */
-    public HashMap<String, Object> queryAccountInfoByEmail(String email) {
-        HashMap<String, Object> param = new HashMap<>();
+    public Map<String, Object> queryAccountInfoByEmail(String email) {
+        Map<String, Object> param = new HashMap<>();
         param.put("email", email);
         return laboDao.queryAccountInfo(param);
     }
@@ -90,8 +91,8 @@ public class LaboDoService {
      * @param accountId 账户Id
      * @return 账户信息
      */
-    public HashMap<String, Object> queryAccountInfoById(Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
+    public Map<String, Object> queryAccountInfoById(Integer accountId) {
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryAccountInfo(param);
     }
@@ -107,7 +108,7 @@ public class LaboDoService {
     /**
      * 通过手机号更新账户信息
      */
-    private void updateAccountInfoByPhone(String phone, HashMap<String, Object> param) {
+    private void updateAccountInfoByPhone(String phone, Map<String, Object> param) {
         param.put("phoneParam", phone);
         laboDao.updateAccountInfo(param);
     }
@@ -115,7 +116,7 @@ public class LaboDoService {
     /**
      * 通过账户id更新账户信息
      */
-    private void updateAccountInfoById(Integer accountId, HashMap<String, Object> param) {
+    private void updateAccountInfoById(Integer accountId, Map<String, Object> param) {
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         laboDao.updateAccountInfo(param);
     }
@@ -127,7 +128,7 @@ public class LaboDoService {
      * @param accountId 账户Id
      */
     public void updateLoginInfoById(String ipv4, Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("ipv4", ipv4);
         param.put("loginTime", new Timestamp(System.currentTimeMillis()));
         updateAccountInfoById(accountId, param);
@@ -137,7 +138,7 @@ public class LaboDoService {
      * 更新账户头像
      */
     public void updateAvatar(Integer accountId, byte[] avatar) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("avatar", avatar);
         updateAccountInfoById(accountId, param);
     }
@@ -146,7 +147,7 @@ public class LaboDoService {
      * 更新账户密码
      */
     public void updatePasswordById(Integer accountId, String password) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("password", password);
         updateAccountInfoById(accountId, param);
     }
@@ -155,7 +156,7 @@ public class LaboDoService {
      * 更新邮箱
      */
     public void updateEmail(String phone, String email) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put("email", email);
         updateAccountInfoByPhone(phone, param);
     }
@@ -170,7 +171,7 @@ public class LaboDoService {
      * @param ipv4      ip地址
      */
     public void addAccountInfo(Integer accountId, String phone, String password, String nickname, String ipv4) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("password", password);
@@ -185,8 +186,8 @@ public class LaboDoService {
      * @param phone        手机号
      * @param verifyStatus 验证码是否已使用；传null则不使用该参数查询数据
      */
-    public HashMap<String, Object> queryLatestMessageRecord(String phone, Boolean verifyStatus) {
-        HashMap<String, Object> param = new HashMap<>();
+    public Map<String, Object> queryLatestMessageRecord(String phone, Boolean verifyStatus) {
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("verifyStatus", verifyStatus);
         return laboDao.queryLatestMessageRecord(param);
@@ -215,7 +216,7 @@ public class LaboDoService {
      * 新增短信记录
      */
     public void addMessageRecord(String phone, String messageCode, String resCode, String resCustom) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_PHONE, phone);
         param.put("messageCode", messageCode);
         param.put("resCode", resCode);
@@ -234,7 +235,7 @@ public class LaboDoService {
      * 新增临时图片
      */
     public void addNewTempAsset(Integer accountId, String fileName, byte[] cover) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("cover", cover);
@@ -254,8 +255,8 @@ public class LaboDoService {
      * @param imageId   图片Id
      * @param accountId 账户Id
      */
-    public List<HashMap<String, Object>> queryImageById(Integer imageId, Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
+    public List<Map<String, Object>> queryImageById(Integer imageId, Integer accountId) {
+        Map<String, Object> param = new HashMap<>();
         param.put("id", imageId);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoList(param);
@@ -267,8 +268,8 @@ public class LaboDoService {
      * @param fileHash  文件hash
      * @param accountId 账户Id,传null则不按账户Id查询
      */
-    public List<HashMap<String, Object>> queryImageListByHash(String fileHash, Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
+    public List<Map<String, Object>> queryImageListByHash(String fileHash, Integer accountId) {
+        Map<String, Object> param = new HashMap<>();
         param.put("fileHash", fileHash);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoList(param);
@@ -282,8 +283,8 @@ public class LaboDoService {
      * @param limit     每一页的记录数
      * @param offset    查询记录的起始位，记录偏移量
      */
-    public List<HashMap<String, Object>> queryImageListByShareType(Integer isShare, Integer accountId, Integer limit, Integer offset) {
-        HashMap<String, Object> param = new HashMap<>();
+    public List<Map<String, Object>> queryImageListByShareType(Integer isShare, Integer accountId, Integer limit, Integer offset) {
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_IS_SHARE, isShare);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put("limit", limit);
@@ -295,7 +296,7 @@ public class LaboDoService {
      * 按访问权限类型查图片记录总数
      */
     public Integer queryImageCountByShareType(Integer isShare, Integer accountId) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_IS_SHARE, isShare);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         return laboDao.queryImageInfoCount(param);
@@ -307,9 +308,9 @@ public class LaboDoService {
      * @param idList    图片Id列表
      * @param accountId 账户Id
      */
-    public List<HashMap<String, Object>> queryImageShareStatusList(List<Integer> idList, Integer accountId) {
+    public List<Map<String, Object>> queryImageShareStatusList(List<Integer> idList, Integer accountId) {
         if (!idList.isEmpty()) {
-            HashMap<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
             param.put(LaboDoService.PARAM_ID_LIST, idList);
             param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             return laboDao.queryImageShareStatusList(param);
@@ -325,7 +326,7 @@ public class LaboDoService {
      * @param fileDes   文件描述
      */
     public void updateImageInfo(Integer accountId, String fileName, String fileDes) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("fileDes", fileDes);
@@ -340,7 +341,7 @@ public class LaboDoService {
      */
     public void removeImages(List<Integer> idList, Integer accountId) {
         if (!idList.isEmpty()) {
-            HashMap<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
             param.put(LaboDoService.PARAM_ID_LIST, idList);
             param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             param.put("isDelete", 1);
@@ -356,7 +357,7 @@ public class LaboDoService {
      * @param isShare   是否共享，1为共享，0为私有
      */
     public void changeImageShareStatus(List<Integer> idList, Integer accountId, Integer isShare) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ID_LIST, idList);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put(LaboDoService.PARAM_IS_SHARE, isShare);
@@ -373,7 +374,7 @@ public class LaboDoService {
      * @param accessPath 访问路径
      */
     public void addImageInfo(Integer accountId, String fileName, String fileHash, String storePath, String accessPath) {
-        HashMap<String, Object> param = new HashMap<>();
+        Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
         param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         param.put("fileHash", fileHash);
@@ -385,9 +386,9 @@ public class LaboDoService {
     /**
      * 多张图片入库
      */
-    public void addMultiImage(Integer accountId, List<HashMap<String, Object>> imageList) {
+    public void addMultiImage(Integer accountId, List<Map<String, Object>> imageList) {
         if (!imageList.isEmpty()) {
-            HashMap<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
             param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
             param.put("imageList", imageList);
             laboDao.addMultiImage(param);
@@ -401,8 +402,8 @@ public class LaboDoService {
      * @param limit       每一页的记录数
      * @param offset      查询记录的起始位，记录偏移量
      */
-    public List<HashMap<String, Object>> queryProjectInfoList(Integer projectType, Integer limit, Integer offset) {
-        HashMap<String, Object> param = new HashMap<>();
+    public List<Map<String, Object>> queryProjectInfoList(Integer projectType, Integer limit, Integer offset) {
+        Map<String, Object> param = new HashMap<>();
         param.put("projectType", projectType);
         param.put("limit", limit);
         param.put("offset", offset);
@@ -424,7 +425,7 @@ public class LaboDoService {
      * @return 不存在则返回null
      */
     public Integer queryIdBaseSeed() {
-        String configValue = laboDao.queryConfigValue(ConstValue.idBaseName);
+        String configValue = laboDao.queryConfigValue(ConstValue.ID_BASE_NAME);
         return configValue != null ? Integer.valueOf(configValue) : null;
     }
 
@@ -434,8 +435,8 @@ public class LaboDoService {
      * @param idSeed 种子基数
      */
     public void updateIdBaseSeed(Integer idSeed) {
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("configName", ConstValue.idBaseName);
+        Map<String, Object> param = new HashMap<>();
+        param.put("configName", ConstValue.ID_BASE_NAME);
         param.put("configValue", String.valueOf(idSeed));
         laboDao.updateConfigValue(param);
     }
@@ -444,8 +445,8 @@ public class LaboDoService {
      * 新增账户Id的种子基数配置
      */
     public void addIdBaseSeed(String configValue) {
-        HashMap<String, Object> param = new HashMap<>();
-        param.put("configName", ConstValue.idBaseName);
+        Map<String, Object> param = new HashMap<>();
+        param.put("configName", ConstValue.ID_BASE_NAME);
         param.put("configValue", configValue);
         laboDao.addConfigInfo(param);
     }
