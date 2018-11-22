@@ -1,8 +1,9 @@
 **/.idea
 **/*.iml
 **/target
-**/log_path_IS_UNDEFINED
+**/logs
 **/logs_file
+**/log_path_IS_UNDEFINED
 **/labo_release
 **/application-d*.*
 **/info_config.json

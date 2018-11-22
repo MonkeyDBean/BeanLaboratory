@@ -18,6 +18,7 @@
         <module>HeartMaze</module>
         <module>BootSocket</module>
         <module>BootJpa</module>
+        <module>MvcTest</module>
     </modules>
 
     <properties>

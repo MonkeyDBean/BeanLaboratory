@@ -5,40 +5,36 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
-
-
 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
-    <!-- dao的配置 -->
-    <!-- 数据源的配置 -->
+    <!-- 数据源配置 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-        <property name="url" value="jdbc:mysql:///cost_statistic?characterEncoding=utf8"></property>
+        <property name="url" value="jdbc:mysql:///monkey_test?characterEncoding=utf8"></property>
         <property name="username" value="root"></property>
-        <property name="password" value="Loho@2017"></property>
+        <property name="password" value="root"></property>
     </bean>
-    <!-- sessionFactory的配置 -->
+
+    <!-- sessionFactory配置 -->
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"></property>
-        <property name="typeAliasesPackage" value="com.loho.dingding.domain"></property>
-        <!-- 加载mybatis的配置文件 -->
-        <!--<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>-->
-
+        <property name="typeAliasesPackage" value="com.monkeybean.mvc.entity"></property>
     </bean>
-    <!-- 扫描dao的接口 -->
+
+    <!-- mapper路径 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="com.loho.dingding.mapper"></property>
+        <property name="basePackage" value="com.monkeybean.mvc.mapper"></property>
     </bean>
 
-    <!-- 业务层的配置 -->
-    <!-- 扫描业务类路径 -->
-    <context:component-scan base-package="com.loho.dingding.service"></context:component-scan>
+    <!-- Service路径 -->
+    <context:component-scan base-package="com.monkeybean.mvc.service"></context:component-scan>
+
     <!-- 事务的管理器 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
+
     <!-- 事务的注解驱动 -->
     <tx:annotation-driven/>
-
 
 </beans>

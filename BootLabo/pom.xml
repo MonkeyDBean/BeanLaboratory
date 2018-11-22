@@ -106,7 +106,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.12</version>
+            <version>8.0.13</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.webjars/datatables -->
@@ -134,6 +134,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <!-- 表示仅开发时引入，发布时不加载此包 -->
             <scope>test</scope>
         </dependency>
 
