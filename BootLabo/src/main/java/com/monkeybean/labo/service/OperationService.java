@@ -221,10 +221,10 @@ public class OperationService {
                 }
             }
             if (!unShareImageIds.isEmpty()) {
-                laboDoService.changeImageShareStatus(imageIds, accountId, ConstValue.IMAGE_ACCESS_PRIVATE);
+                laboDoService.changeImageShareStatus(unShareImageIds, accountId, ConstValue.IMAGE_ACCESS_PRIVATE);
             }
             if (!shareImageIds.isEmpty()) {
-                laboDoService.changeImageShareStatus(imageIds, accountId, ConstValue.IMAGE_ACCESS_SHARE);
+                laboDoService.changeImageShareStatus(shareImageIds, accountId, ConstValue.IMAGE_ACCESS_SHARE);
             }
         }
         return new Result<>(ReturnCode.SUCCESS);
