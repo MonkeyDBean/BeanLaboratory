@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+
+http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd" >
+    <context:property-placeholder location="classpath:config/application.properties" />
+    <!-- 扫描动作类 -->
+    <context:component-scan base-package="com.loho.dingding.controller"></context:component-scan>
+    <!-- mvc的适配器映射器 注解支持 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <!-- 视图解析器 -->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath">
+            <value>/view/</value>
+        </property>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="locale">zh_CN</prop>
+                <prop key="defaultEncoding">UTF-8</prop>
+                <!-- <prop key="date_format">yyyy-MM-dd</prop> -->
+                <!-- <prop key="time_format">HH:mm:ss</prop> -->
+                <!-- <prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop> -->
+                <!-- <prop key="number_format">0.################</prop> -->
+            </props>
+        </property>
+    </bean>
+    <bean id="htmlviewResolver"
+          class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="suffix" value=".html" />
+        <property name="order" value="0"></property>
+        <property name="contentType" value="text/html;charset=UTF-8"></property>
+
+    </bean>
+    <!-- 静态资源放行 -->
+    <mvc:default-servlet-handler/>
+</beans>

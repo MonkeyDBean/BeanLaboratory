@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>index</title>
+    <link rel="stylesheet" type="text/css" href="../css/index.css">
+</head>
+<body>
+<div class="authority" onclick="toWrite()">
+    <span>填写</span>
+</div>
+<div class="authority" onclick="toSend()">
+    <span>发送</span>
+</div>
+<div class="authority" onclick="toPersonalStatistic()">
+    <span>个人统计</span>
+</div>
+<div class="authority" onclick="toAllStatistic()">
+    <span>整体统计</span>
+</div>
+<div class="authority" onclick="toAuth()">
+    <span>权限</span>
+</div>
+<div class="authority" onclick="toTemplate()">
+    <span>模板</span>
+</div>
+<script>
+    function toTemplate() {
+        location.href="/toTemplate";
+    }
+    function toSend() {
+        location.href="/toSend";
+    }
+    function toWrite() {
+        location.href = "/toWrite";
+    }
+    function toAuth() {
+        location.href = "/toAuth";
+    }
+    function toPersonalStatistic() {
+        location.href = "/toPersonalStatistic";
+    }
+    function toAllStatistic() {
+        location.href = "/toAllStatistic";
+    }
+</script>
+</body>
+</html>
