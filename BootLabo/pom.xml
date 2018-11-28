@@ -27,6 +27,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <packageName>BootLabo</packageName>
+        <!--<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>-->
     </properties>
 
     <dependencies>
@@ -251,6 +252,7 @@
 
     <build>
         <finalName>${packageName}</finalName>
+        <!--<finalName>${packageName}-${maven.build.timestamp}</finalName>-->
 
         <!-- 打包时，指明包含的资源，与如下插件maven-jar-plugin的exclude作用相同 -->
         <!--<resources>-->
@@ -266,6 +268,28 @@
         <!--</resources>-->
 
         <plugins>
+
+            <!-- 获取maven构建时间 -->
+            <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/build-helper-maven-plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>current.time</name>
+                            <pattern>yyyyMMdd-HHmmss</pattern>
+                            <timeZone>GMT+8</timeZone>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- actuator info 可获取git版本信息 -->
             <!-- https://mvnrepository.com/artifact/pl.project13.maven/git-commit-id-plugin -->
             <plugin>
@@ -400,6 +424,8 @@
                                 <!--</copy>-->
 
                                 <!-- 历史sql -->
+                                <!-- 可拼接构建时间 -->
+                                <!--<copy todir="${project.build.directory}/../labo_release/labo/sql_${current.time}">-->
                                 <copy todir="${project.build.directory}/../labo_release/labo/sql">
                                     <fileset dir="${project.build.testSourceDirectory}/../sql_backup">
                                         <include name="labo*.sql"/>
