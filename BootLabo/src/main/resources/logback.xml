@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
+    <!-- 部署时去掉property声明，日志路径通过py脚本指定 -->
     <property name="log_path" value="./logs_file/"/>
     <property name="log_name" value="BootLabo"/>
 
