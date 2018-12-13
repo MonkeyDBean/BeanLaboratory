@@ -11,6 +11,7 @@ public class ImageInfoChangeReq {
 
     @Pattern(regexp = ConstValue.LEGAL_POSITIVE_INT, message = "图片id")
     @Max(Integer.MAX_VALUE)
+    @Min(1)
     @NotNull
     private String id;
 

@@ -93,10 +93,10 @@ public class OperationService {
             String fileStorePath = rootPathDir.getPath() + "/" + fileName;
             File imageFile = new File(fileStorePath);
             try {
-                FileOutputStream outputStream = new FileOutputStream(imageFile);
-                outputStream.write(fileBytes);
-                outputStream.flush();
-                outputStream.close();
+                try (FileOutputStream outputStream = new FileOutputStream(imageFile)) {
+                    outputStream.write(fileBytes);
+                    outputStream.flush();
+                }
                 logger.info("file store success, accountId: {}, fileName: {}, fileCode: {}", accountId, fileName, fileCode);
             } catch (IOException e) {
                 logger.error("file IOException: {}", e);
@@ -345,7 +345,12 @@ public class OperationService {
                 offset = 0;
             } else { //非首页的总记录数使用前端回传参数
                 totalCount = totalNum;
-                offset = nowCount - totalNum + pageSize * (currentPage - 1);
+                if (nowCount < totalNum) {
+                    offset = 0;
+                    logger.warn("getOtherProjectInfo, request param: the value of totalNum is wrong or database record is lack, nowCount: {}, totalNum: {}, accountId: {}", nowCount, totalNum, accountId);
+                } else {
+                    offset = nowCount - totalNum + pageSize * (currentPage - 1);
+                }
             }
             List<Map<String, Object>> recordList = laboDoService.queryProjectInfoList(projectType, pageSize, offset);
             for (Map<String, Object> eachRecord : recordList) {

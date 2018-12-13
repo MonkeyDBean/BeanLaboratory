@@ -284,6 +284,9 @@ public class LaboDoService {
      * @param offset    查询记录的起始位，记录偏移量
      */
     public List<Map<String, Object>> queryImageListByShareType(Integer isShare, Integer accountId, Integer limit, Integer offset) {
+
+        //兼容出错
+        offset = offset < 0 ? 0 : offset;
         Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_IS_SHARE, isShare);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
@@ -403,6 +406,9 @@ public class LaboDoService {
      * @param offset      查询记录的起始位，记录偏移量
      */
     public List<Map<String, Object>> queryProjectInfoList(Integer projectType, Integer limit, Integer offset) {
+
+        //兼容出错
+        offset = offset < 0 ? 0 : offset;
         Map<String, Object> param = new HashMap<>();
         param.put("projectType", projectType);
         param.put("limit", limit);

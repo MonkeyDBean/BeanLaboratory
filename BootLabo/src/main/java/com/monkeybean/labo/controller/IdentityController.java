@@ -156,7 +156,7 @@ public class IdentityController {
         return identityService.resetPassword(reqModel.getPhone(), reqModel.getCode(), reqModel.getPwd());
     }
 
-    @ApiOperation(value = "绑定邮箱")
+    @ApiOperation(value = "绑定或更新邮箱")
     @ApiImplicitParam(name = "mail", value = "邮箱", required = true, dataType = "string", paramType = "query")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(path = "mail/bind")

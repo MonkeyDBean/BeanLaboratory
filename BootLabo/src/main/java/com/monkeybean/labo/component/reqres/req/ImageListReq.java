@@ -3,6 +3,7 @@ package com.monkeybean.labo.component.reqres.req;
 import com.monkeybean.labo.predefine.ConstValue;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -17,11 +18,13 @@ public class ImageListReq {
 
     @Pattern(regexp = ConstValue.LEGAL_POSITIVE_INT, message = "当前页，格式不合法")
     @Max(Integer.MAX_VALUE)
+    @Min(1)
     @NotNull
     private String current;
 
     @Pattern(regexp = ConstValue.LEGAL_POSITIVE_INT, message = "每页记录数，格式不合法")
     @Max(Integer.MAX_VALUE)
+    @Min(1)
     @NotNull
     private String size;
 

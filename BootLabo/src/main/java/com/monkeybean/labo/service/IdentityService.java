@@ -376,7 +376,7 @@ public class IdentityService {
      * 绑定邮箱
      *
      * @param accountId 账户Id
-     * @param mail      邮箱
+     * @param mail      邮箱地址
      */
     public Result<String> bindMail(int accountId, String mail) {
         Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
@@ -391,15 +391,15 @@ public class IdentityService {
             return new Result<>(ReturnCode.MAIL_SEND_MAX);
         }
 
-        //账号是否已绑定邮箱
-        if (accountInfo.get("email") != null) {
-            logger.warn("account: {} has bind mail: {}", accountId, mail);
-            return new Result<>(ReturnCode.MAIL_BIND_BEFORE);
+        //新邮箱不可与旧邮箱相同
+        if (accountInfo.get("email") != null && mail.equals(accountInfo.get("email").toString())) {
+            logger.info("new mail is same as the old, accountId: {}, mail: {}", accountId, mail);
+            return new Result<>(ReturnCode.MAIL_SHOULD_DIFF);
         }
 
         //邮箱是否被其他账号使用
         if (laboDoService.queryAccountInfoByEmail(mail) != null) {
-            logger.warn("mail: {} has been used by others", mail);
+            logger.info("mail: {} has been used by others", mail);
             return new Result<>(ReturnCode.MAIL_HAS_USED);
         }
 

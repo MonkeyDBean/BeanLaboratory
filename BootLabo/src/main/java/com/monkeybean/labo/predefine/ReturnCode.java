@@ -37,7 +37,7 @@ public enum ReturnCode {
     FILE_NOT_EXIST(20043, "file doesn't exist", "文件不存在"),
     FILE_HAS_EXIST(20044, "file is exist", "文件已存在"),
     FILE_NOT_MINE(20045, "file isn't mine", "文件不属于当前用户, 无权限操作"),
-    MAIL_BIND_BEFORE(20050, "mail has bind before", "账户已绑定邮箱"),
+    MAIL_SHOULD_DIFF(20050, "new mail shouldn't be same as the old", "新旧邮箱地址不可相同"),
     MAIL_HAS_USED(20051, "mail has used by others", "邮箱已被其他账户绑定"),
     MAIL_KEY_HAS_EXPIRED(20052, "mail key is expired", "邮箱激活地址已失效，请重新申请"),
     MAIL_SEND_MAX(20053, "the number of mail send is up to top today", "今日邮件发送次数已达上限");
