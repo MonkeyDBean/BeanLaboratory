@@ -49,23 +49,28 @@ public class TokenKeyFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        String servletPath = httpServletRequest.getServletPath().toLowerCase();
 
-        logger.info("request param url: {}", httpServletRequest.getRequestURL());
-        logger.info("request param queryString: {}", httpServletRequest.getQueryString());
-        logger.info("request param, as follows");
-        Enumeration<String> requestParamNames = httpServletRequest.getParameterNames();
-        while (requestParamNames.hasMoreElements()) {
-            String eachParam = requestParamNames.nextElement();
-            logger.info("{} = {}", eachParam, httpServletRequest.getParameter(eachParam));
+        //嗅探接口和健康检查接口，外部脚本定时请求判断服务状态，日志级别单独设为debug
+        if (servletPath.contains("sniff/status") || servletPath.contains("health")) {
+            logger.debug("request param url: {}", httpServletRequest.getRequestURL());
+            logger.debug("request param queryString: {}", httpServletRequest.getQueryString());
+        } else {
+            logger.info("request param url: {}", httpServletRequest.getRequestURL());
+            logger.info("request param, as follows");
+            Enumeration<String> requestParamNames = httpServletRequest.getParameterNames();
+            while (requestParamNames.hasMoreElements()) {
+                String eachParam = requestParamNames.nextElement();
+                logger.info("{} = {}", eachParam, httpServletRequest.getParameter(eachParam));
+            }
         }
 
-        //若跨域，不拦截OPTIONS方法
+        //是否开启安全校验(若跨域，不拦截OPTIONS方法)
         // if (!isFilter || "OPTIONS".equalsIgnoreCase(httpServletRequest.getMethod())) {
         if (!isFilter) {
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;
         }
-        String servletPath = httpServletRequest.getServletPath().toLowerCase();
 
         //判断请求是否已达最大，请求次数写入缓存
         int dailyCount = CacheData.REQUEST_COUNT_MAP.getOrDefault(servletPath, 0);

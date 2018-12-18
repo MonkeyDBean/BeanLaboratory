@@ -79,6 +79,7 @@ public class IdentityController {
             request.getSession().removeAttribute(codeKey);
             return identityService.getValidCode(reqModel.getPhone());
         }
+        logger.debug("getMessageCode, imageCode is wrong, reqCode is: {}, rightCode is: {}", reqModel.getCode(), verifyCode);
         return new Result<>(ReturnCode.IMAGE_CODE_INCORRECT);
     }
 

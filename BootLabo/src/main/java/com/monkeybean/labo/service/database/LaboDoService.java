@@ -286,7 +286,9 @@ public class LaboDoService {
     public List<Map<String, Object>> queryImageListByShareType(Integer isShare, Integer accountId, Integer limit, Integer offset) {
 
         //兼容出错
-        offset = offset < 0 ? 0 : offset;
+        if (offset != null) {
+            offset = offset < 0 ? 0 : offset;
+        }
         Map<String, Object> param = new HashMap<>();
         param.put(LaboDoService.PARAM_IS_SHARE, isShare);
         param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
@@ -408,7 +410,9 @@ public class LaboDoService {
     public List<Map<String, Object>> queryProjectInfoList(Integer projectType, Integer limit, Integer offset) {
 
         //兼容出错
-        offset = offset < 0 ? 0 : offset;
+        if (offset != null) {
+            offset = offset < 0 ? 0 : offset;
+        }
         Map<String, Object> param = new HashMap<>();
         param.put("projectType", projectType);
         param.put("limit", limit);

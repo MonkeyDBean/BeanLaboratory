@@ -43,11 +43,16 @@ public class WebLogAspect {
         beginTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        String requestParam = Arrays.toString(joinPoint.getArgs());
-        logger.info("Request Url: {}", request.getRequestURL());
-        logger.info("Args: {}", requestParam);
-        logger.info("Http Method: {}", request.getMethod());
-        logger.info("Class Method: {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+
+        //日志过多，嗅探接口和健康检查接口, 不打印请求记录
+        String requestUrl = request.getRequestURL().toString();
+        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("health")) {
+            String requestParam = Arrays.toString(joinPoint.getArgs());
+            logger.info("Request Url: {}", request.getRequestURL());
+            logger.info("Args: {}", requestParam);
+            logger.info("Http Method: {}", request.getMethod());
+            logger.info("Class Method: {}.{}", joinPoint.getSignature().getDeclaringTypeName(), joinPoint.getSignature().getName());
+        }
     }
 
     @AfterReturning(returning = "ret", pointcut = "controllerPoint()")
