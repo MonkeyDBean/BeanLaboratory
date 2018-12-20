@@ -64,7 +64,7 @@ public interface LaboDataDao {
     /**
      * asset_temp表, delete
      */
-    void clearTempAssetBeforeDate(@Param("fileName") String dateStr);
+    void clearTempAssetBeforeDate(@Param("dateStr") String dateStr);
 
     /**
      * image_info表, query
