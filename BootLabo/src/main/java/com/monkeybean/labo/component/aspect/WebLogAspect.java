@@ -57,18 +57,21 @@ public class WebLogAspect {
 
     @AfterReturning(returning = "ret", pointcut = "controllerPoint()")
     public void doAfterReturning(Object ret) {
-        logger.info("Response is: {}", ret);
-        if (ret instanceof Result) {
-            Result result = (Result) ret;
-            logger.info("Response code is {}", result.getCode());
-            logger.info("Response message is {}", result.getMsg());
-            if (result.getCode() != ReturnCode.SUCCESS.getCode()) {
-                ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-                HttpServletRequest request = attributes.getRequest();
-                logger.warn("request: {}, return code is not success: {}", request.getRequestURI(), result.getCode());
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String requestUrl = request.getRequestURL().toString();
+        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("health")) {
+            logger.info("Response is: {}", ret);
+            if (ret instanceof Result) {
+                Result result = (Result) ret;
+                logger.info("Response code is {}", result.getCode());
+                logger.info("Response message is {}", result.getMsg());
+                if (result.getCode() != ReturnCode.SUCCESS.getCode()) {
+                    logger.warn("request: {}, return code is not success: {}", request.getRequestURI(), result.getCode());
+                }
             }
+            logger.info("method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
         }
-        logger.info("method execute takes: {} ms", System.currentTimeMillis() - beginTime.get());
         beginTime.remove();
     }
 
