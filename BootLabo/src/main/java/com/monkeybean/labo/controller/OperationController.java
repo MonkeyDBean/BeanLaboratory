@@ -32,7 +32,7 @@ public class OperationController {
     @ApiOperation(value = "上传单张图片, 返回图片url")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file64", value = "base64编码的图片文件", required = true, dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "name", value = "文件名, 合法格式为png, jpg, gif", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "name", value = "文件名, 合法格式为png, jpg, gif, jpeg", required = true, dataType = "string", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/upload")
@@ -56,7 +56,7 @@ public class OperationController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "图片Id", required = true, dataType = "int", paramType = "query"),
             @ApiImplicitParam(name = "name", value = "图片名称", required = true, dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "des", value = "图片描述", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "des", value = "图片描述", dataType = "string", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/info/change")

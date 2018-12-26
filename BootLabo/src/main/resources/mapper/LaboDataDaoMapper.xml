@@ -218,7 +218,7 @@
                 file_des = #{fileDes},
             </if>
         </set>
-        where account_id = #{accountId};
+        where id = #{id};
     </update>
 
     <update id="updateImageListStatus" parameterType="Map">

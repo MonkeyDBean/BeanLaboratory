@@ -70,7 +70,7 @@ public class OperationService {
         String storePath;
         String fileMd5 = DigestUtils.md5Hex(fileCode);
 
-        //限制：同账户md5相同的图片不入库
+        //限制：同一账户md5相同的图片不重复入库
         if (!laboDoService.queryImageListByHash(fileMd5, accountId).isEmpty()) {
             logger.info("imageUpload, file is exist, accountId: {}, fileMd5: {}", accountId, fileMd5);
             return new Result<>(ReturnCode.FILE_HAS_EXIST);
@@ -106,7 +106,8 @@ public class OperationService {
         }
 
         //入库
-        laboDoService.addImageInfo(accountId, fileName, fileMd5, storePath, accessPath);
+        String imageFileName = fileName.substring(0, fileName.lastIndexOf("."));
+        laboDoService.addImageInfo(accountId, imageFileName, fileMd5, storePath, accessPath);
         return new Result<>(ReturnCode.SUCCESS, accessPath);
     }
 
@@ -189,7 +190,7 @@ public class OperationService {
             logger.warn("changeImageInfo, image: {} doesn't belong to accountId: {}", imageId, accountId);
             return new Result<>(ReturnCode.FILE_NOT_MINE);
         }
-        laboDoService.updateImageInfo(accountId, fileName, fileDes);
+        laboDoService.updateImageInfo(imageId, fileName, fileDes);
         return new Result<>(ReturnCode.SUCCESS);
     }
 
@@ -284,6 +285,7 @@ public class OperationService {
                         String fileStorePath = rootPathDir.getPath() + "/" + fileName;
                         File imageFile = new File(fileStorePath);
                         try {
+
                             //使用工具类
                             FileUtils.copyInputStreamToFile(file.getInputStream(), imageFile);
 
@@ -299,8 +301,11 @@ public class OperationService {
                         }
                         accessPath = otherConfig.getBaseAccessPath() + "/" + fileMd5 + "/" + fileName;
                     }
+
+                    //入库文件名去除后缀
+                    String imageFileName = fileName.substring(0, fileName.lastIndexOf("."));
                     HashMap<String, Object> imageInfo = new HashMap<>();
-                    imageInfo.put("fileName", fileName);
+                    imageInfo.put("fileName", imageFileName);
                     imageInfo.put("fileHash", fileMd5);
                     imageInfo.put("storePath", storePath);
                     imageInfo.put("accessPath", accessPath);

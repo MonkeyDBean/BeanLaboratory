@@ -326,15 +326,15 @@ public class LaboDoService {
     /**
      * 更新图片信息
      *
-     * @param accountId 账户Id
-     * @param fileName  文件名
-     * @param fileDes   文件描述
+     * @param id       图片Id
+     * @param fileName 文件名
+     * @param fileDes  文件描述
      */
-    public void updateImageInfo(Integer accountId, String fileName, String fileDes) {
+    public void updateImageInfo(Integer id, String fileName, String fileDes) {
         Map<String, Object> param = new HashMap<>();
-        param.put(LaboDoService.PARAM_ACCOUNT_ID, accountId);
-        param.put(LaboDoService.PARAM_FILE_NAME, fileName);
+        param.put("id", id);
         param.put("fileDes", fileDes);
+        param.put(LaboDoService.PARAM_FILE_NAME, fileName);
         laboDao.updateImageInfo(param);
     }
 

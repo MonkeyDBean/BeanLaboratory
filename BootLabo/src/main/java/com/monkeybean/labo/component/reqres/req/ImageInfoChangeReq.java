@@ -19,7 +19,6 @@ public class ImageInfoChangeReq {
     @Size(max = 50)
     private String name;
 
-    @NotEmpty
     @Size(max = 50)
     private String des;
 

@@ -48,6 +48,13 @@ public class OtherTest {
         System.out.println("split 0 is: \n" + testStr.split(",")[0]);
     }
 
+//    @Test
+    public void testLastIndex(){
+        String origin = "file.11.jpg";
+        String result = origin.substring(0, origin.lastIndexOf("."));
+        System.out.println("origin: " + origin + "\nresult: " + result);
+    }
+
     @Test
     public void testMergeList() {
         List<Integer> list1 = new ArrayList<>();
@@ -80,4 +87,5 @@ public class OtherTest {
         String list4ResultStr = list4.stream().collect(Collectors.joining(","));
         System.out.println("list4Result: " + list4ResultStr);
     }
+
 }

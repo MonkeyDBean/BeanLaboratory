@@ -162,7 +162,7 @@ public class IdentityService {
             return new Result<>(ReturnCode.LOGIN_ERROR);
         }
         String md5PwdOrigin = Coder.decryptPsWithSlat(accountInfo.get("password").toString(), otherConfig.getSqlSalt());
-        if (!isPasswordRight(md5PwdOrigin, passwordMd5, timeStr)) {
+        if (!otherConfig.isSimulate() && !isPasswordRight(md5PwdOrigin, passwordMd5, timeStr)) {
             logger.info("phoneLogin, password is wrong, user: {}", user);
             return new Result<>(ReturnCode.LOGIN_ERROR);
         }
