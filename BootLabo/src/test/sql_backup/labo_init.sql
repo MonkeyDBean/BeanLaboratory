@@ -1,5 +1,5 @@
 -- 数据库若支持表情符号，编码方式设为utf8mb4, 否则设置为utf8_general_ci即可 --
-CREATE DATABASE IF NOT EXISTS `monkey_labo`;
+CREATE DATABASE IF NOT EXISTS `monkey_labo` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `monkey_labo`;
 
 -- 表 account --
