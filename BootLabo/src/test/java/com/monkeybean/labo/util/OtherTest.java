@@ -1,9 +1,13 @@
 package com.monkeybean.labo.util;
 
+import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static junit.framework.TestCase.assertTrue;
 
 /**
  * Created by MonkeyBean on 2018/7/26.
@@ -48,14 +52,14 @@ public class OtherTest {
         System.out.println("split 0 is: \n" + testStr.split(",")[0]);
     }
 
-//    @Test
-    public void testLastIndex(){
+    //    @Test
+    public void testLastIndex() {
         String origin = "file.11.jpg";
         String result = origin.substring(0, origin.lastIndexOf("."));
         System.out.println("origin: " + origin + "\nresult: " + result);
     }
 
-    @Test
+    //    @Test
     public void testMergeList() {
         List<Integer> list1 = new ArrayList<>();
         list1.add(1);
@@ -86,6 +90,27 @@ public class OtherTest {
         list4 = new ArrayList<>(new HashSet<>(list4));
         String list4ResultStr = list4.stream().collect(Collectors.joining(","));
         System.out.println("list4Result: " + list4ResultStr);
+    }
+
+    @Test
+    public void testLang3() {
+        String a = "testA";
+        String b = "testB";
+        String c = "";
+        String d = null;
+        assertTrue(StringUtils.isAnyEmpty(a, b, c));
+        assertTrue(StringUtils.isAnyEmpty(a, b, d));
+    }
+
+    @Test
+    public void testJsonMap() {
+        HashMap<String, Object> hm = new HashMap<>();
+        hm.put("a", "a123");
+        hm.put("c", "cc");
+        hm.put("b", 2456);
+        hm.put("d", "dd");
+        String result = JSON.toJSONString(hm);
+        System.out.println("JSON.toJSONString, result: " + result);
     }
 
 }

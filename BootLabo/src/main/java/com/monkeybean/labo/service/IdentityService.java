@@ -37,17 +37,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class IdentityService {
-
     private static Logger logger = LoggerFactory.getLogger(IdentityService.class);
 
     private final MessageConfig messageConfig;
-
     private final OtherConfig otherConfig;
-
     private final LaboDoService laboDoService;
-
     private final JavaMailSender mailSender;
-
     private final PublicService publicService;
 
     @Value("${spring.mail.username}")
