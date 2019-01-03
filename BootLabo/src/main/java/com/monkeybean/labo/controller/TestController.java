@@ -11,6 +11,7 @@ import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.service.database.LaboDoService;
 import com.monkeybean.labo.util.CommonUtil;
+import com.monkeybean.labo.util.ExcelUtil;
 import com.monkeybean.labo.util.IpUtil;
 import com.monkeybean.labo.util.ReCaptchaUtil;
 import io.swagger.annotations.Api;
@@ -28,10 +29,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLDecoder;
@@ -162,6 +165,41 @@ public class TestController {
         return new Result<>(ReturnCode.SUCCESS, data);
     }
 
+    @ApiOperation(value = "测试导出excel")
+    @GetMapping(path = "excel/data/achieve", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public void testAchieveExcel(HttpServletResponse response) {
+
+        //测试数据
+        int dataNum = 3;
+        String[] columnNames = {"id", "data"};
+        List<Map<String, Object>> originData = new ArrayList<>();
+        for (int i = 0; i < dataNum; i++) {
+            Map<String, Object> data = new HashMap<>();
+            data.put(columnNames[0], "test" + i);
+            data.put(columnNames[1], Math.random());
+            originData.add(data);
+        }
+
+        //application/octet-stream, 设置为二进制流的下载类型, 可实现任意格式的文件下载; ISO8859-1即Latin1, 单字节编码, 编码范围为0x00-0xFF, 向下兼容ASCII
+        response.setContentType("application/octet-stream;charset=ISO8859-1");
+
+        //Content-Disposition响应头, 设置文件在浏览器打开还是下载: inline为在页面内打开, attachment为弹出保存框下载
+        String fileName = "test.xls";
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+
+        //缓存控制，强制页面无缓存。Pragma:no-cache可以应用到http 1.0和http 1.1; 而Cache-Control:no-cache是http 1.1提供的, 只能应用于http 1.1
+        response.setHeader("Pragma", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        try {
+            OutputStream outputStream = response.getOutputStream();
+            ExcelUtil.createWorkBook(originData, "test_sheet", columnNames).write(outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            logger.error("testAchieveExcel, IOException: {}", e);
+        }
+    }
+
     /**
      * 测试特殊请求的参数处理，get参数放到json中，post有效参数的key在get中申明
      */
@@ -169,7 +207,6 @@ public class TestController {
     @PostMapping(path = "special")
     @SuppressWarnings("unchecked")
     public String testParam(HttpServletRequest request) throws UnsupportedEncodingException {
-
         final String postFieldKey = "postField";
 
         //get json参数放到map中
