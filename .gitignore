@@ -7,3 +7,14 @@
 **/labo_release
 **/application-d*.*
 **/info_config.json
+
+# 过滤规则
+## config.php      表示忽略当前路径的 config.php 文件
+## *.a             表示忽略所有 .a 结尾的文件
+## !lib.a          表示但lib.a除外
+## /test           表示仅仅忽略项目根目录下的 test 文件，不包括 subdir/test
+## build/          表示忽略 build/目录下的所有文件，过滤整个build文件夹；
+## doc/*.txt       表示会忽略doc/notes.txt但不包括 doc/server/arch.txt
+## **/foo:         表示忽略/foo,a/foo,a/b/foo等
+## a/**/b:         表示忽略a/b, a/x/b,a/x/y/b等
+## !/bin/run.sh    表示不忽略bin目录下的run.sh文件
