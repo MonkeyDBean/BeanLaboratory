@@ -46,7 +46,7 @@ public class WebLogAspect {
 
         //日志过多，嗅探接口和健康检查接口, 不打印请求记录
         String requestUrl = request.getRequestURL().toString();
-        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("health")) {
+        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("monitor/actuator")) {
             String requestParam = Arrays.toString(joinPoint.getArgs());
             logger.info("Request Url: {}", request.getRequestURL());
             logger.info("Args: {}", requestParam);
@@ -60,7 +60,7 @@ public class WebLogAspect {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String requestUrl = request.getRequestURL().toString();
-        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("health")) {
+        if (!requestUrl.contains("sniff/status") && !requestUrl.contains("monitor/actuator")) {
             logger.info("Response is: {}", ret);
             if (ret instanceof Result) {
                 Result result = (Result) ret;

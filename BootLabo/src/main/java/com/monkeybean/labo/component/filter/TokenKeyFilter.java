@@ -52,7 +52,7 @@ public class TokenKeyFilter implements Filter {
         String servletPath = httpServletRequest.getServletPath().toLowerCase();
 
         //嗅探接口和健康检查接口，外部脚本定时请求判断服务状态，日志级别单独设为debug
-        if (servletPath.contains("sniff/status") || servletPath.contains("health")) {
+        if (servletPath.contains("sniff/status") || servletPath.contains("monitor/actuator")) {
             logger.debug("request param url: {}", httpServletRequest.getRequestURL());
             logger.debug("request param queryString: {}", httpServletRequest.getQueryString());
         } else {
