@@ -30,8 +30,7 @@ public class SubClass extends Parent {
 
     /**
      * 初始化块
-     */
-    {
+     */ {
         System.out.println("sField：" + sField);
         System.out.println("子类初始化块");
     }

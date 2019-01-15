@@ -29,8 +29,7 @@ public class Parent {
 
     /**
      * 初始化块
-     */
-    {
+     */ {
         System.out.println("pField：" + pField);
         System.out.println("父类初始化块");
     }

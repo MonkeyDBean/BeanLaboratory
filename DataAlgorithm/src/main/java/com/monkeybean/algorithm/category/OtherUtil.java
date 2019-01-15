@@ -5,7 +5,8 @@ package com.monkeybean.algorithm.category;
  */
 public final class OtherUtil {
 
-    private OtherUtil(){}
+    private OtherUtil() {
+    }
 
     /**
      * 字符打印，输出心形

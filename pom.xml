@@ -15,7 +15,6 @@
         <module>LoadTest</module>
         <module>DataAlgorithm</module>
         <module>BallJump</module>
-        <module>HeartMaze</module>
         <module>BootSocket</module>
         <module>BootJpa</module>
         <module>MvcTest</module>
