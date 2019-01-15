@@ -40,7 +40,7 @@ public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        if (-- WebSocketEventListener.CONNECTED_NUM < 0) {
+        if (--WebSocketEventListener.CONNECTED_NUM < 0) {
             WebSocketEventListener.CONNECTED_NUM = 0;
         }
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());

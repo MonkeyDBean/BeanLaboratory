@@ -7,6 +7,7 @@ import com.monkeybean.socket.core.ResultGenerator;
 import com.monkeybean.socket.model.ChatRecord;
 import com.monkeybean.socket.service.ChatRecordService;
 import com.monkeybean.socket.vo.ChatRecordVo;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +31,14 @@ public class ChatRecordController {
 
     @GetMapping("/list")
     @SuppressWarnings("unchecked")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
-        List<ChatRecord> list = chatRecordService.findAll();
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size, @RequestParam(required = false) String name) {
+        List<ChatRecord> list;
+        if (StringUtils.isEmpty(name)) {
+            PageHelper.startPage(page, size);
+            list = chatRecordService.findAll();
+        } else {
+            list = chatRecordService.findRecordByUserName(name, page, size);
+        }
         PageInfo pageInfo = new PageInfo(list);
         List<ChatRecord> recordList = pageInfo.getList();
         List<ChatRecordVo> dataList = new ArrayList<>();
