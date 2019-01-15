@@ -50,7 +50,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("小系统接口")
-                .description("bored, just for kill time")
+                .description("just for kill time; 若按REST标准，url path is resource, distinct operation uses different http method")
                 .termsOfServiceUrl("http://127.0.0.1:8096/monkey/html/code.html")
                 .contact(contact)
                 .version("1.0.0")

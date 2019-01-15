@@ -16,6 +16,11 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * 若严格RestFul标准(Representational State Transfer)，请求路径为resource,名词。
+ * 通过请求方法区分不同操作，增删改查分别对应Http Method：POST、DELETE、PUT(or PATCH)、GET
+ * 参考文档：https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design
+ * 实际使用可灵活变换
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @Api(value = "通用api")
