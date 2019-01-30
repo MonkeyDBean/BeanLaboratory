@@ -90,4 +90,32 @@ public final class CommonUtil {
             return null;
         }
     }
+
+    /**
+     * 生成cron表达式字符串
+     *
+     * @param hour   时
+     * @param minute 分
+     * @param week   每周几
+     * @param day    每月几号
+     * @param type   类型, 1为每天定点执行, 2为每周定点执行, 3为每月定点执行
+     * @return cron表达式
+     */
+    public static String generateCronStr(int hour, int minute, int week, int day, int type) {
+        String cronStr;
+        switch (type) {
+            case 1:
+                cronStr = String.format("0 %s %s * * ?", minute, hour);
+                break;
+            case 2:
+                cronStr = String.format("0 %s %s ? * %s", minute, hour, week);
+                break;
+            case 3:
+                cronStr = String.format("0 %s %s %s * ?", minute, hour, day);
+                break;
+            default:
+                cronStr = "0 0 0 * * ?";
+        }
+        return cronStr;
+    }
 }

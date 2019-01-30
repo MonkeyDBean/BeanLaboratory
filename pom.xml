@@ -18,6 +18,8 @@
         <module>BootSocket</module>
         <module>BootJpa</module>
         <module>MvcTest</module>
+        <module>BootSchedule</module>
+        <module>BootQuartz</module>
     </modules>
 
     <properties>

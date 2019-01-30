@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 控制台输出日志 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d [Thread:%thread] %-36logger{36} L%-4line %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 全局日志级别 -->
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+    </root>
+
+</configuration>
