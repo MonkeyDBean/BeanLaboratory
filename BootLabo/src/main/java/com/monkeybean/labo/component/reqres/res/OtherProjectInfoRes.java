@@ -6,6 +6,11 @@ package com.monkeybean.labo.component.reqres.res;
 public class OtherProjectInfoRes {
 
     /**
+     * 记录标识
+     */
+    private int id;
+
+    /**
      * 名称
      */
     private String name;
@@ -24,6 +29,14 @@ public class OtherProjectInfoRes {
      * 简介
      */
     private String des;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

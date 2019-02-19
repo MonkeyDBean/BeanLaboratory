@@ -22,7 +22,7 @@ public class ImageUploadReq {
     /**
      * 文件名
      */
-    @Pattern(regexp = ConstValue.LEGAL_IMAGE_NAME, message = "必须为合法图片名")
+    @Pattern(regexp = ConstValue.LEGAL_IMAGE_NAME, flags = Pattern.Flag.CASE_INSENSITIVE, message = "必须为合法图片名")
     @NotNull
     @Size(max = 50)
     private String name;

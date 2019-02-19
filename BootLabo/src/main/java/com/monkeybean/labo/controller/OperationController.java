@@ -32,7 +32,7 @@ public class OperationController {
     @ApiOperation(value = "上传单张图片, 返回图片url")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "file64", value = "base64编码的图片文件", required = true, dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "name", value = "文件名, 合法格式为png, jpg, gif, jpeg", required = true, dataType = "string", paramType = "query")
+            @ApiImplicitParam(name = "name", value = "文件名, 合法格式为png, jpg, gif, jpeg, 不区分大小写", required = true, dataType = "string", paramType = "query")
     })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/upload")
@@ -75,7 +75,7 @@ public class OperationController {
         return operationService.changeImageStatus(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getId(), reqModel.getOperateInt());
     }
 
-    @ApiOperation(value = "多张图片上传, 最多9张")
+    @ApiOperation(value = "多张图片上传, 前端可限制一次最多上传9张")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "image/multi/upload")
     public Result<List<String>> uploadMultiImage(@RequestParam(value = "fileImg") MultipartFile[] fileImg, HttpSession session) {
@@ -96,4 +96,25 @@ public class OperationController {
                 reqModel.getCurrentInt(), reqModel.getSizeInt(), reqModel.getTotalInt());
     }
 
+    @ApiOperation(value = "新增项目记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "type", value = "项目类型，0为个人项目，1为工具类网站，2为创意类网站，3为技术类网站", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "name", value = "项目名称", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "url", value = "访问链接", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "image", value = "缩略图url，可不传", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "des", value = "项目描述，可不传", dataType = "string", paramType = "query")
+    })
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
+    @PostMapping(value = "info/project/other")
+    public Result<String> addOtherProjectInfo(@Valid @ModelAttribute OtherProjectInfoAddReq reqModel, HttpSession session) {
+        return operationService.addOtherProjectInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getType(), reqModel.getName(),
+                reqModel.getUrl(), reqModel.getImage(), reqModel.getDes());
+    }
+
+    @ApiOperation(value = "删除某个项目记录")
+    @DeleteMapping(value = "info/project/other/{id}")
+    public Result<String> deleteOtherProjectInfo(@PathVariable int id, HttpSession session) {
+        int accountId = Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString());
+        return operationService.deleteOtherProjectInfo(accountId, id);
+    }
 }

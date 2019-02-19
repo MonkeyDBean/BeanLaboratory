@@ -23,4 +23,7 @@ public interface OperationService {
 
     Result<Map<String, Object>> getOtherProjectInfo(int accountId, int projectType, int currentPage, int pageSize, int totalNum);
 
+    Result<String> addOtherProjectInfo(int accountId, int type, String name, String url, String image, String des);
+
+    Result<String> deleteOtherProjectInfo(int accountId, int id);
 }

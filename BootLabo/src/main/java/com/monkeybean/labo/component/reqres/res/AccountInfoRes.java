@@ -25,14 +25,20 @@ public class AccountInfoRes {
      */
     private String avatar;
 
+    /**
+     * 是否为管理员
+     */
+    private boolean admin;
+
     public AccountInfoRes() {
     }
 
-    public AccountInfoRes(String phone, String nickname, String email, String avatar) {
+    public AccountInfoRes(String phone, String nickname, String email, String avatar, boolean admin) {
         this.phone = phone;
         this.nickname = nickname;
         this.email = email;
         this.avatar = avatar;
+        this.admin = admin;
     }
 
     public String getPhone() {
@@ -65,5 +71,13 @@ public class AccountInfoRes {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

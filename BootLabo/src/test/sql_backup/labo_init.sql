@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `account` (
   `nickname` varchar(20) NOT NULL COMMENT '用户昵称',
   `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
   `avatar` mediumblob COMMENT '头像',
+  `is_admin` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为管理员',
   `ipv4` varchar(20) NOT NULL COMMENT '最近一次登录的ipv4地址',
   `login_time` datetime NOT NULL COMMENT '最近一次登录时间',
   `forbid_time` datetime NOT NULL DEFAULT '1970-01-01 08:00:00' COMMENT '封号到期时间',
@@ -74,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `other_project_info` (
   `project_url` varchar(255) NOT NULL COMMENT '链接',
   `project_image` varchar(255) DEFAULT NULL COMMENT '预览图',
   `project_des` varchar(255) DEFAULT NULL COMMENT '简介',
+  `is_delete` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否为删除记录，1为标记删除',
   `create_time` datetime NOT NULL COMMENT '记录添加时间',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '记录更新时间',
   PRIMARY KEY (`id`)

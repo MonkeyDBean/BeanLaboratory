@@ -260,6 +260,7 @@
         from
         other_project_info
         <where>
+            is_delete = 0
             <if test="projectType != null">
                 and project_type = #{projectType}
             </if>
@@ -277,11 +278,26 @@
         from
         other_project_info
         <where>
+            is_delete = 0
             <if test="projectType != null">
                 and project_type = #{projectType}
             </if>
         </where>
     </select>
+
+    <update id="removeProjectInfoById" parameterType="Integer">
+        update
+        other_project_info
+        set is_delete = 1
+        where id = #{id};
+    </update>
+
+    <insert id="addProjectInfo" parameterType="Map">
+        insert into
+        other_project_info(project_type, project_name, project_url, project_image, project_des, create_time)
+        values
+        (#{projectType}, #{projectName}, #{projectUrl}, #{projectImage}, #{projectDes}, CURRENT_TIMESTAMP);
+    </insert>
 
     <select id="queryConfigValue" parameterType="String" resultType="String">
         select

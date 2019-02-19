@@ -14,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
+ * Restful Reference: https://docs.microsoft.com/en-us/azure/architecture/best-practices/api-design
  * 访问http://127.0.0.1:8096/monkey/swagger-ui.html
  * 有如下接口请求：
  * http://127.0.0.1:8096/monkey/swagger-resources/configuration/ui
@@ -49,7 +50,7 @@ public class Swagger2 {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("小系统接口")
+                .title("小系统接口，非严格Rest")
                 .description("just for kill time; 若按REST标准，url path is resource, distinct operation uses different http method")
                 .termsOfServiceUrl("http://127.0.0.1:8096/monkey/html/code.html")
                 .contact(contact)

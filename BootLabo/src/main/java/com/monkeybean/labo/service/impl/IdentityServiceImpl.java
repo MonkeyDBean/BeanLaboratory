@@ -279,6 +279,7 @@ public class IdentityServiceImpl implements IdentityService {
         accountInfoRes.setPhone(accountInfo.get("phone").toString());
         accountInfoRes.setNickname(accountInfo.get("nickname").toString());
         accountInfoRes.setEmail((String) accountInfo.get("email"));
+        accountInfoRes.setAdmin(Boolean.parseBoolean(accountInfo.get("is_admin").toString()));
         if (accountInfo.get("avatar") != null) {
             accountInfoRes.setAvatar(Base64.encodeBase64String((byte[]) accountInfo.get("avatar")));
         }

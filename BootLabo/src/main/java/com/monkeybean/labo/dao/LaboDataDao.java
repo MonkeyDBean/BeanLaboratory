@@ -97,6 +97,16 @@ public interface LaboDataDao {
     Integer queryProjectInfoCount(@Param("projectType") Integer projectType);
 
     /**
+     * other_project_info表，伪删除，update
+     */
+    void removeProjectInfoById(@Param("id") Integer id);
+
+    /**
+     * other_project_info表，insert
+     */
+    void addProjectInfo(Map<String, Object> param);
+
+    /**
      * config_info表，query
      */
     String queryConfigValue(@Param("configName") String configName);

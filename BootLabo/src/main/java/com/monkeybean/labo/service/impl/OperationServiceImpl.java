@@ -58,10 +58,19 @@ public class OperationServiceImpl implements OperationService {
      */
     public Result<String> imageUpload(int accountId, final String fileCode, String fileName) {
         Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+
+        //校验账户合法性
         if (!publicService.checkAccountLegal(accountInfo)) {
             logger.warn("imageUpload, account is illegal, accountId: {}", accountId);
             return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
         }
+
+        //图片格式统一为小写
+        String imageFileName = fileName.substring(0, fileName.lastIndexOf("."));
+        String formatSuffix = fileName.substring(fileName.lastIndexOf("."));
+        fileName = imageFileName + formatSuffix.toLowerCase();
+
+        //文件大小校验
         byte[] fileBytes = Base64.decodeBase64(fileCode.getBytes());
         String fileSizeKb = String.format("%.2f", fileBytes.length / 1024.) + " kb";
         logger.info("imageUpload, accountId: {}, fileName: {}, size: {}", accountId, fileName, fileSizeKb);
@@ -109,7 +118,6 @@ public class OperationServiceImpl implements OperationService {
         }
 
         //入库
-        String imageFileName = fileName.substring(0, fileName.lastIndexOf("."));
         laboDoService.addImageInfo(accountId, imageFileName, fileMd5, storePath, accessPath);
         return new Result<>(ReturnCode.SUCCESS, accessPath);
     }
@@ -257,6 +265,7 @@ public class OperationServiceImpl implements OperationService {
         List<String> successAccessPaths = new ArrayList<>();
         for (MultipartFile file : fileImg) {
             String fileName = file.getOriginalFilename();
+            fileName = fileName.substring(0, fileName.lastIndexOf(".")) + fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
             String[] names = fileName.split("\\.");
             byte[] fileBytes;
             try {
@@ -363,6 +372,7 @@ public class OperationServiceImpl implements OperationService {
             List<Map<String, Object>> recordList = laboDoService.queryProjectInfoList(projectType, pageSize, offset);
             for (Map<String, Object> eachRecord : recordList) {
                 OtherProjectInfoRes eachRecordRes = new OtherProjectInfoRes();
+                eachRecordRes.setId(Integer.parseInt(eachRecord.get("id").toString()));
                 eachRecordRes.setName(eachRecord.get("project_name").toString());
                 eachRecordRes.setUrl(eachRecord.get("project_url").toString());
                 eachRecordRes.setImage((String) eachRecord.get("project_image"));
@@ -373,6 +383,58 @@ public class OperationServiceImpl implements OperationService {
         data.put("totalCount", totalCount);
         data.put("dataList", dataList);
         return new Result<>(ReturnCode.SUCCESS, data);
+    }
+
+    /**
+     * 新增项目记录
+     *
+     * @param accountId 账户Id
+     * @param type      项目类型，0为个人项目，1为工具类网站，2为创意类网站，3为技术类网站
+     * @param name      项目名称
+     * @param url       访问链接
+     * @param image     缩略图url
+     * @param des       项目描述
+     */
+    public Result<String> addOtherProjectInfo(int accountId, int type, String name, String url, String image, String des) {
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        if (!publicService.checkAccountLegal(accountInfo)) {
+            logger.warn("addOtherProjectInfo, account is illegal, accountId: {}", accountId);
+            return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
+        }
+
+        //校验是否有管理员权限
+        boolean isAdmin = Boolean.parseBoolean(accountInfo.get("is_admin").toString());
+        if (!isAdmin) {
+            logger.warn("addOtherProjectInfo, account isn't admin, accountId: {}", accountId);
+            return new Result<>(ReturnCode.ACCOUNT_NOT_ADMIN);
+        }
+
+        //入库
+        laboDoService.addProjectInfo(type, name, url, image, des);
+        return new Result<>(ReturnCode.SUCCESS);
+    }
+
+    /**
+     * 删除项目记录
+     *
+     * @param accountId 账户Id
+     * @param id        记录标识
+     */
+    public Result<String> deleteOtherProjectInfo(int accountId, int id) {
+        Map<String, Object> accountInfo = laboDoService.queryAccountInfoById(accountId);
+        if (!publicService.checkAccountLegal(accountInfo)) {
+            logger.warn("deleteOtherProjectInfo, account is illegal, accountId: {}", accountId);
+            return new Result<>(ReturnCode.ACCOUNT_ILLEGAL);
+        }
+
+        //校验是否有管理员权限
+        boolean isAdmin = Boolean.parseBoolean(accountInfo.get("is_admin").toString());
+        if (!isAdmin) {
+            logger.warn("deleteOtherProjectInfo, account isn't admin, accountId: {}", accountId);
+            return new Result<>(ReturnCode.ACCOUNT_NOT_ADMIN);
+        }
+        laboDoService.removeProjectInfoById(id);
+        return new Result<>(ReturnCode.SUCCESS);
     }
 
 }

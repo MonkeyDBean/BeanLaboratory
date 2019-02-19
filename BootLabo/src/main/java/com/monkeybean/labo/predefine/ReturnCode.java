@@ -23,6 +23,7 @@ public enum ReturnCode {
     NEW_OLD_PWD_SAME(20003, "new pwd can't be same as the old", "新旧密码不可相同"),
     ERROR_PASSWORD(20004, "password is wrong", "密码错误"),
     ACCOUNT_ILLEGAL(20005, "account not exist in db or account has been forbidden", "账号不存在或账户被封号"),
+    ACCOUNT_NOT_ADMIN(20007, "account no root authority", "账户无管理权限"),
     IDENTITY_VERIFY_FAILED(20008, "google think you are a robot", "身份认证失败，请重试"),
     MESSAGE_APPLY_TIME_LIMIT(20010, "apply message code, the interval of time is too short", "距离上次申请短信验证码的时间间隔过短"),
     MESSAGE_APPLY_NUM_LIMIT(20011, "apply message code, the frequency is up to max", "今日短信申请次数已达上限"),

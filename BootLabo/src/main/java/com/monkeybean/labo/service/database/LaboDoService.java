@@ -430,6 +430,34 @@ public class LaboDoService {
     }
 
     /**
+     * 删除项目记录，伪删除，仅将is_delete置为1
+     *
+     * @param id 记录标识
+     */
+    public void removeProjectInfoById(Integer id) {
+        laboDao.removeProjectInfoById(id);
+    }
+
+    /**
+     * 新增项目记录
+     *
+     * @param projectType  项目类型：0为个人项目，1为工具类网站，2为创意类网站，3为技术类网站
+     * @param projectName  项目名称
+     * @param projectUrl   访问链接
+     * @param projectImage 缩略图url
+     * @param projectDes   项目描述
+     */
+    public void addProjectInfo(Integer projectType, String projectName, String projectUrl, String projectImage, String projectDes) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("projectType", projectType);
+        param.put("projectName", projectName);
+        param.put("projectUrl", projectUrl);
+        param.put("projectImage", projectImage);
+        param.put("projectDes", projectDes);
+        laboDao.addProjectInfo(param);
+    }
+
+    /**
      * 查询账户Id当前种子基数
      *
      * @return 不存在则返回null
