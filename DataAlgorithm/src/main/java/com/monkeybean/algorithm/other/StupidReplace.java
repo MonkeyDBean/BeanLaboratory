@@ -1,4 +1,4 @@
-package com.monkeybean.algorithm;
+package com.monkeybean.algorithm.other;
 
 import java.io.IOException;
 import java.util.Scanner;
