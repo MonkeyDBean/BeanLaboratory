@@ -10,10 +10,7 @@ import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.service.database.LaboDoService;
-import com.monkeybean.labo.util.CommonUtil;
-import com.monkeybean.labo.util.ExcelUtil;
-import com.monkeybean.labo.util.IpUtil;
-import com.monkeybean.labo.util.ReCaptchaUtil;
+import com.monkeybean.labo.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -192,7 +189,9 @@ public class TestController {
         response.addHeader("Cache-Control", "no-cache");
         try {
             OutputStream outputStream = response.getOutputStream();
-            ExcelUtil.createWorkBook(originData, "test_sheet", columnNames).write(outputStream);
+            try (Workbook workbook = ExcelUtil.createWorkBook(originData, "test_sheet", columnNames)) {
+                workbook.write(outputStream);
+            }
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {
@@ -308,6 +307,15 @@ public class TestController {
             logger.error("getAllTmpJsonData, IOException, e: {}", e);
             return new Result<>(ReturnCode.SERVER_EXCEPTION);
         }
+    }
+
+    @ApiOperation(value = "测试上传文件到小米服务器")
+    @PostMapping(path = "image/mi/upload")
+    public String uploadImageToMi(@RequestParam(value = "secret") String secret, @RequestParam(value = "file") MultipartFile multipartFile) throws IOException {
+        String[] fileInfo = multipartFile.getOriginalFilename().split("\\.");
+        File file = File.createTempFile(fileInfo[0], "." + fileInfo[1]);
+        multipartFile.transferTo(file);
+        return MiPushUtil.pushFile(file, secret, true);
     }
 
 }

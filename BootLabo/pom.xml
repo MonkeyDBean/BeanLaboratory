@@ -249,6 +249,24 @@
             <systemPath>${basedir}/src/main/java/lib/aliyun-java-sdk-dysmsapi-1.0.0.jar</systemPath>
         </dependency>
 
+        <!-- xiaomi message push -->
+        <dependency>
+            <groupId>com.xiaomi</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/java/lib/json-simple-1.1.1.jar</systemPath>
+        </dependency>
+
+        <!-- xiaomi message push -->
+        <dependency>
+            <groupId>com.xiaomi</groupId>
+            <artifactId>push-server</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/java/lib/MiPush_SDK_Server_2_2_20.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
