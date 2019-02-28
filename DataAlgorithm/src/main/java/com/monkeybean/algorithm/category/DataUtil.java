@@ -726,4 +726,20 @@ public class DataUtil {
         }
     }
 
+    /**
+     * 简单分页
+     *
+     * @param n 待分页记录总数
+     * @param m 每页记录数
+     * @return 成功返回分页大小. 参数错误返回-1
+     */
+    public static int pageHelper(int n, int m){
+        if(n < 1 || m < 1){
+            return -1;
+        }
+        //return n % m == 0 ? n / m : n / m + 1;
+        //或
+        return (n - 1) / m + 1;
+    }
+
 }
