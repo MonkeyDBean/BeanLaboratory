@@ -20,6 +20,7 @@
         <module>MvcTest</module>
         <module>BootSchedule</module>
         <module>BootQuartz</module>
+        <module>HelloGrpc</module>
     </modules>
 
     <properties>
