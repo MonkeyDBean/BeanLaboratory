@@ -12,8 +12,6 @@
 
     <artifactId>HelloGrpc</artifactId>
 
-    <!-- 参考： https://github.com/grpc/grpc-java/tree/master/examples -->
-    <!-- 参考： https://www.jianshu.com/p/46d600e5a1b1 -->
     <name>HelloGrpc</name>
     <description>MonkeyBean Laboratory : gRpc Hello World</description>
 

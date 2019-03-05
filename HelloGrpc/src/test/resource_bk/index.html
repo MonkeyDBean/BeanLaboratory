@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset = "UTF-8">
+    <script type="text/javascript" src="HelloWorld.js"></script>
+</head>
+<body>
+    <button onclick="testProtoBuf()">protobuf_serialize_test</button>
+    <button id="callRequest">测试请求</button>
+    <script>
+        function testProtoBuf(){
+            //序列化
+            var message = new proto.helloworld.HelloRequest();
+            message.setName("google protobuf serialize test");
+            console.log("origin data: " + message.getName());
+            var bytes = message.serializeBinary();
+            console.log("serialize message: " + bytes);
+
+            //反序列化
+            var deMsg = new proto.helloworld.HelloReply.deserializeBinary(bytes);
+            var deMsgMessage = deMsg.getMessage();
+            console.log("deserialize message: " + deMsgMessage);
+        }
+
+        callRequest.onclick = function(){
+            console.log("callRequest test");
+//            var greetService = new proto.helloworld.GreeterServiceClient();
+        }
+
+    </script>
+</body>
+</html>
