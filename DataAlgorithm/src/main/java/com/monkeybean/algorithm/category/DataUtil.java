@@ -407,6 +407,33 @@ public class DataUtil {
     }
 
     /**
+     * 简单分页
+     *
+     * @param n 待分页记录总数
+     * @param m 每页记录数
+     * @return 成功返回分页大小. 参数错误返回-1
+     */
+    public static int pageHelper(int n, int m) {
+        if (n < 1 || m < 1) {
+            return -1;
+        }
+        //return n % m == 0 ? n / m : n / m + 1;
+        //或
+        return (n - 1) / m + 1;
+    }
+
+    /**
+     * 判断一个数是否为奇数
+     *
+     * @return true则为基数
+     */
+    public static boolean isOdd(int num) {
+        //return num % 2 != 0;
+        //或
+        return (num & 1) == 1;
+    }
+
+    /**
      * 循环双向链表
      */
     public class DbLinkedList<T> {
@@ -724,22 +751,6 @@ public class DataUtil {
         public Node(T value) {
             this.value = value;
         }
-    }
-
-    /**
-     * 简单分页
-     *
-     * @param n 待分页记录总数
-     * @param m 每页记录数
-     * @return 成功返回分页大小. 参数错误返回-1
-     */
-    public static int pageHelper(int n, int m){
-        if(n < 1 || m < 1){
-            return -1;
-        }
-        //return n % m == 0 ? n / m : n / m + 1;
-        //或
-        return (n - 1) / m + 1;
     }
 
 }

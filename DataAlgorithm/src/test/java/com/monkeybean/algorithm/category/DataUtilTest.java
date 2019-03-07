@@ -146,7 +146,7 @@ public class DataUtilTest {
         dbLinkedList.print();
     }
 
-    @Test
+    //    @Test
     public void testTwoDateInterval() {
         int year1 = 2018, month1 = 9, day1 = 3;
         int year2 = 2016, month2 = 12, day2 = 12;
@@ -158,11 +158,17 @@ public class DataUtilTest {
         System.out.println("intervalDays: " + (intervalDays >= 0 ? intervalDays : -intervalDays));
     }
 
-    @Test
+    //    @Test
     public void testPageHelper() {
         int n1 = 12, n2 = 14, m = 4;
         System.out.println("n1: " + n1 + ", m: " + m + ", result: " + DataUtil.pageHelper(n1, m));
         System.out.println("n2: " + n1 + ", m: " + m + ", result: " + DataUtil.pageHelper(n2, m));
+    }
+
+    @Test
+    public void testIsOdd() {
+        int num = -2;
+        System.out.print("num is: " + num + " , is odd: " + DataUtil.isOdd(num));
     }
 
 }
