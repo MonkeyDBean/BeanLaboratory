@@ -51,19 +51,31 @@ browserify exports.js > HelloWorld.js
 ```
 5.编写index.html，运行测试，可调用testProtoBuf函数测试序列化
 ### 测试通信
-6.在 https://github.com/grpc/grpc-web/releases 下载 protoc-gen-grpc-web-1.0.3-windows-x86_64.exe, 路径添加到系统变量path中
-7.node安装依赖
+6.在 https://github.com/grpc/grpc-web/releases 下载 protoc-gen-grpc-web-1.0.3-windows-x86_64.exe
+7.运行目录，安装node依赖
 ```
 npm i grpc-web
 ```
-8.在helloworld.proto文件所在目录执行如下，生成grpc client js文件
+8.在helloworld.proto文件所在目录执行如下，生成helloworld_grpc_web_pb.js文件
 ```
-protoc ./helloworld.proto --plugin=protoc-gen-grpc-web-1.0.3-windows-x86_64.exe --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+protoc ./helloworld.proto --plugin=protoc-gen-grpc-web=<path to protoc-gen-grpc-web> --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+```
+如
+```
+protoc ./helloworld.proto --plugin=protoc-gen-grpc-web=G:\grpc-web\protoc-gen-grpc-web-1.0.3-windows-x86_64.exe --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
 ```
 9.同步骤四，添加导出模块，打包构建，index.html引入生成文件，添加请求服务端函数，测试
 
 ## 备注
-protoc最新版本(protoc-3.7.0-win64)暂不支持参数：--grpc-web_out，所以上一步的测试通信实际不可操作。通过protoc -help可查看参数选项。
-github问题跟踪：
+1.github问题跟踪:
 https://github.com/grpc/grpc-web/issues/490
 https://github.com/protocolbuffers/protobuf/issues/5831
+https://github.com/grpc/grpc-web/issues/491
+2.grpc-web测试步骤中，可下载protoc和grpc-web plugin后，文件一次生成,节省步骤
+```
+protoc ./helloworld.proto --plugin=protoc-gen-grpc-web=G:\grpc-web\protoc-gen-grpc-web-1.0.3-windows-x86_64.exe --js_out=import_style=commonjs,binary:. --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+```
+3.测试通信暂不可用，error如下，待解决
+```
+Uncaught TypeError: proto.helloworld.GreeterClient is not a constructor
+```

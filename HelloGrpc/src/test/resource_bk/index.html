@@ -22,9 +22,27 @@
             console.log("deserialize message: " + deMsgMessage);
         }
 
+        //测试通信
         callRequest.onclick = function(){
             console.log("callRequest test");
-//            var greetService = new proto.helloworld.GreeterServiceClient();
+            var address = 'http://localhost:50051';
+            var client = new proto.helloworld.GreeterClient(address, null, null);
+            var message = new proto.helloworld.HelloRequest();
+            message.setName("grpc web request");
+            var metadata = {'custom-header-1': 'value1'};
+            var call = client.sayHello(message, metadata, function(err, response){
+                if (err) {
+                    console.log(err.code);
+                    console.log(err.message);
+                } else {
+                    console.log(response.getMessage());
+                }
+            });
+            call.on('status', function(status) {
+                console.log(status.code);
+                console.log(status.details);
+                console.log(status.metadata);
+            });
         }
 
     </script>
