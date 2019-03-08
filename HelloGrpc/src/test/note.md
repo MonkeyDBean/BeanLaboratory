@@ -8,6 +8,9 @@
 6.REST的替代者(Envoy+gRPC-Web): https://mp.weixin.qq.com/s/HxEupqk94KtZuy4h4HWGGw
 7.浏览器引入gRPC的现况：https://mp.weixin.qq.com/s/45_B3mzVgqlr4Q8Ji19o-w
 8.grpc-web github地址:https://github.com/grpc/grpc-web
+9.springboot整合grpc参考：
+https://github.com/xiaoguangtouqiang/grpc-demo
+https://blog.csdn.net/xiaoguangtouqiang/article/details/80492324
 
 ## 示例参考:
 1.grpc官方示例：https://github.com/grpc/grpc-java/tree/master/examples
