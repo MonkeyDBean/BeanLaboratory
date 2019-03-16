@@ -1,5 +1,6 @@
 package com.monkeybean.algorithm.category;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 
 import java.io.FileOutputStream;
@@ -23,7 +24,7 @@ public class OtherUtilTest {
         OtherUtil.printSimpleHeart(false);
     }
 
-    @Test
+    //    @Test
     public void printTwoHeart() throws Exception {
         System.out.println("two heart:");
         OtherUtil.printTwoHeart();
@@ -72,6 +73,28 @@ public class OtherUtilTest {
         //读取文件
         Map<String, String> fileContentMap = new HashMap<>();
         Files.lines(Paths.get(newFilePathStr), StandardCharsets.UTF_8).forEach(value -> fileContentMap.put(path.getFileName().toString(), value));
+    }
+
+//    @Test
+    public void testMapOrder(){
+
+        //LinkedHashMap是有序的，保存了记录的插入顺序；若已有记录，后续值变更不影响原有顺序
+        Map<Integer, String> map = new LinkedHashMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+        map.put(4, "four");
+        map.put(3, "three");
+        map.put(4, "four_twice");
+        System.out.println("testMapOrder: " + JSON.toJSONString(map));
+    }
+
+    @Test
+    public void testPrintYearInfo(){
+//        OtherUtil.printBirthInfo("2019-03-12T22:30:30");
+//        OtherUtil.printBirthInfo("1994-02-04T11:15:30");
+//        OtherUtil.printBirthInfo("1992-06-24T08:00:00");
+
+        OtherUtil.solarToLunar("1994-02-04");
     }
 
 }
