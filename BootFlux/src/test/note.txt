@@ -1,0 +1,2 @@
+SpringBoot2支持许多新特性，其中一个小彩蛋是动态Banner
+如果目录src/main/resources下同时存在banner.txt和banner.gif，项目会先将banner.gif每一个画面打印完毕之后，再打印banner.txt中的内容
