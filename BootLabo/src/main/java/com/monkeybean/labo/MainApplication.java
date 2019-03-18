@@ -18,6 +18,9 @@ import org.springframework.core.env.Environment;
  * Created by MonkeyBean on 2018/05/26.
  */
 @SpringBootApplication
+//排除默认json解析，使用如下代码或通过pom依赖排除
+//@SpringBootApplication(exclude = {JacksonAutoConfiguration.class})
+//若为war包，使用下行注释代码
 //public class MainApplication extends SpringBootServletInitializer {
 public class MainApplication {
 

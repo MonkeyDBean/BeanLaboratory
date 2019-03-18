@@ -3,6 +3,7 @@ package com.monkeybean.labo.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.dao.LaboDataDao;
@@ -317,5 +318,29 @@ public class TestController {
         multipartFile.transferTo(file);
         return MiPushUtil.pushFile(file, secret, true);
     }
+
+    @ApiOperation(value = "测试更改默认json解析")
+    @GetMapping(path = "json/default/check")
+//    public Result<Map<Integer, String>> checkJsonSeq(){
+    public Result<String> checkJsonSeq() {
+
+        //LinkedHashMap是有序的，保存了记录的插入顺序；若已有记录，后续值变更不影响原有顺序
+        Map<Integer, String> map = new LinkedHashMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+        map.put(4, "four");
+        map.put(3, "three");
+        map.put(4, "four_twice");
+
+        //SpringBoot内置了jackson来完成JSON的序列化和反序列化, 若将map直接响应请求，则会调用jackson序列化, 而jackson序列化出的数据是无序的。
+        //可通过gson或fastjson将map序列化为json字符串, 保证有序, 但是这种方法更改了返回数据类型(map变成了String)
+        //换其他方法，如更改默认json转换依赖：pom排除jackson，引入fastjson或gson, 同时application.properties声明首选库
+        Gson gson = new Gson();
+        String result1 = gson.toJson(map);
+//        String result2 = JSON.toJSONString(map);
+//        return new Result<>(ReturnCode.SUCCESS, map);
+        return new Result<>(ReturnCode.SUCCESS, result1);
+    }
+
 
 }
