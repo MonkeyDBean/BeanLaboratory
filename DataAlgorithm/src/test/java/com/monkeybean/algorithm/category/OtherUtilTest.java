@@ -30,21 +30,6 @@ public class OtherUtilTest {
     }
 
     //    @Test
-    public void testMapStream() {
-        List<Integer> origin = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            origin.add(i);
-        }
-        origin.add(9);
-        origin.add(10);
-        System.out.println("list is: ");
-        Arrays.stream(origin.toArray()).forEach(System.out::println);
-        System.out.println("max is: " + origin.stream().mapToInt(e -> e).max().orElse(0));
-        System.out.println("count is: " + origin.stream().mapToInt(e -> e).count());
-        System.out.println("sum is: " + origin.stream().mapToInt(e -> e).distinct().sum());
-    }
-
-    //    @Test
     public void testForceCast() {
         Object b = null;
         Integer value = (Integer) b;
@@ -75,12 +60,18 @@ public class OtherUtilTest {
     }
 
     @Test
-    public void testPrintYearInfo() {
-//        OtherUtil.printBirthInfo("2019-03-12T22:30:30");
-//        OtherUtil.printBirthInfo("1994-02-04T11:15:30");
-//        OtherUtil.printBirthInfo("1992-06-24T08:00:00");
-
-        OtherUtil.solarToLunar("1994-02-04");
+    public void testMapStream() {
+        List<Integer> origin = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            origin.add(i);
+        }
+        origin.add(9);
+        origin.add(10);
+        System.out.println("list is: ");
+        Arrays.stream(origin.toArray()).forEach(System.out::println);
+        System.out.println("max is: " + origin.stream().mapToInt(e -> e).max().orElse(0));
+        System.out.println("count is: " + origin.stream().mapToInt(e -> e).count());
+        System.out.println("sum is: " + origin.stream().mapToInt(e -> e).distinct().sum());
     }
 
 }

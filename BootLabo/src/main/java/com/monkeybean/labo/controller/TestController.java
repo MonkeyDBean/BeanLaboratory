@@ -335,6 +335,7 @@ public class TestController {
         //SpringBoot内置了jackson来完成JSON的序列化和反序列化, 若将map直接响应请求，则会调用jackson序列化, 而jackson序列化出的数据是无序的。
         //可通过gson或fastjson将map序列化为json字符串, 保证有序, 但是这种方法更改了返回数据类型(map变成了String)
         //换其他方法，如更改默认json转换依赖：pom排除jackson，引入fastjson或gson, 同时application.properties声明首选库
+        //暂不更改默认jackson, 若更改，影响swagger等正常使用
         Gson gson = new Gson();
         String result1 = gson.toJson(map);
 //        String result2 = JSON.toJSONString(map);
