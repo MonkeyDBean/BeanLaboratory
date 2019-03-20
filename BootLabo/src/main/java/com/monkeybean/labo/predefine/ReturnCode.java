@@ -11,6 +11,7 @@ public enum ReturnCode {
     /**
      * 系统及服务错误
      */
+    OTHER_EXCEPTION(10000, "other illegal operation or exception", "其他异常"),
     SERVER_EXCEPTION(10001, "System, server run exception", "服务处理异常, 请稍后重试"),
     MESSAGE_APPLY_FAILED(10005, "System, apply message code error", "短信验证码申请失败"),
     DB_DATA_ERROR(10010, "System, database exception", "数据库数据异常"),

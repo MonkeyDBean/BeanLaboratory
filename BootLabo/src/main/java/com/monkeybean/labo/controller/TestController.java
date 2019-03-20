@@ -14,14 +14,17 @@ import com.monkeybean.labo.service.database.LaboDoService;
 import com.monkeybean.labo.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.aspectj.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * Created by MonkeyBean on 2018/5/26.
@@ -118,6 +122,83 @@ public class TestController {
         String fileAccessPath = otherConfig.getBaseAccessPath() + "/" + fileNewName;
         logger.info("fileStorePath is : {}, fileAccessPath: {}", fileStorePath, fileAccessPath);
         return new Result<>(ReturnCode.SUCCESS, fileAccessPath);
+    }
+
+    @ApiOperation(value = "测试图片简单加密后，按既定路径存储")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "origin", value = "原始根路径", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "aim", value = "目标根路径，注：不可与原始根路径存在包含关系，否则多次执行会读取已生成的文件", required = true, dataType = "string", paramType = "query")
+    })
+    @PostMapping(path = "/image/rearrange")
+    public Result<String> rearrangeImage(@RequestParam("origin") String originPath, @RequestParam("aim") String aimPath) {
+        File originDir = new File(originPath);
+        File aimDir = new File(aimPath);
+        if (!originDir.exists() || !originDir.isDirectory() || !aimDir.exists() || !aimDir.isDirectory()) {
+            return new Result<>(ReturnCode.OTHER_EXCEPTION);
+        }
+        Pattern pattern = Pattern.compile(ConstValue.LEGAL_IMAGE_NAME);
+        List<File> originFileList = new ArrayList<>();
+        OutputStream writer = null;
+        try {
+            addImgList(originDir, originFileList, pattern);
+            for (File file : originFileList) {
+                byte[] fileBytes = FileUtil.readAsByteArray(file);
+
+                //仅测试，不通过md5校验文件是否已存在，直接写入
+                String hash = Coder.getMd5(fileBytes);
+                String mappingPath = FileCommonUtil.generateMappingPath(aimPath, hash, FilenameUtils.getExtension(file.getName()));
+                logger.info("mappingPath is: {}", mappingPath);
+                writer = new FileOutputStream(mappingPath);
+
+                //仅测试，异或数字设为1224
+                int xor = 1204;
+                writer.write(FileCommonUtil.encryptImgXor(fileBytes, xor));
+            }
+            return new Result<>(ReturnCode.SUCCESS);
+        } catch (Exception e) {
+            logger.error("rearrangeImage, e: {}", e);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    logger.error("rearrangeImage, write close exception, {}", e);
+                }
+            }
+        }
+        return new Result<>(ReturnCode.OTHER_EXCEPTION);
+    }
+
+    /**
+     * 将某个目录下的所有图片路径添加至list
+     *
+     * @param directory 根目录
+     * @param imgList   图片列表
+     * @param pattern   图片名的正则校验
+     * @throws IOException 读文件异常
+     */
+    private void addImgList(File directory, List<File> imgList, Pattern pattern) throws IOException {
+        File[] files = directory.listFiles();
+        if (files != null && files.length > 0) {
+            for (File tempFile : files) {
+                if (tempFile.isDirectory()) {
+                    addImgList(tempFile, imgList, pattern);
+                } else {
+                    if (!pattern.matcher(tempFile.getName()).matches()) {
+                        logger.warn("addImgList, file name illegal, filePath: {}", tempFile.getAbsolutePath());
+                        continue;
+                    }
+
+                    //字节大小限制设为4M
+                    double maxSize = 4096.0;
+                    if (!FileCommonUtil.isFileSizeLegal(FileUtil.readAsByteArray(tempFile).length, maxSize)) {
+                        logger.warn("addImgList, file too large, filePath: {}", tempFile.getAbsolutePath());
+                        continue;
+                    }
+                    imgList.add(tempFile);
+                }
+            }
+        }
     }
 
     /**

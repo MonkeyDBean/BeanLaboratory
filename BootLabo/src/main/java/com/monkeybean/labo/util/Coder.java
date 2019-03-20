@@ -12,6 +12,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 
 /**
@@ -27,6 +28,16 @@ public final class Coder {
     private static char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     private Coder() {
+    }
+
+    /**
+     * 对字节数组做md5散列
+     */
+    public static String getMd5(byte[] msg) throws Exception {
+        MessageDigest md = MessageDigest.getInstance(KEY_MD5);
+        md.update(msg);
+        byte[] digest = md.digest();
+        return DatatypeConverter.printHexBinary(digest).toLowerCase();
     }
 
     /**
