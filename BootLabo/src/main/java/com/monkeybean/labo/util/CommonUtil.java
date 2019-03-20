@@ -1,12 +1,12 @@
 package com.monkeybean.labo.util;
 
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 
 /**
@@ -117,5 +117,57 @@ public final class CommonUtil {
                 cronStr = "0 0 0 * * ?";
         }
         return cronStr;
+    }
+
+    /**
+     * 向FTP服务器上传文件
+     *
+     * @param url      主机名
+     * @param username 账号
+     * @param password 密码
+     * @param path     保存目录
+     * @param filename 文件名
+     * @param input    输入流
+     * @return 成功返回true，否则返回false
+     */
+    public static boolean uploadFile(String url, String username, String password, String path, String filename, InputStream input) {
+        FTPClient ftp = new FTPClient();
+        try {
+
+            //连接FTP服务器
+            ftp.connect(url);
+
+            //登录
+            ftp.login(username, password);
+            int reply = ftp.getReplyCode();
+            if (!FTPReply.isPositiveCompletion(reply)) {
+                ftp.disconnect();
+                return false;
+            }
+            if (!ftp.changeWorkingDirectory(path)) {
+
+                //路径不存在则创建
+                if (!ftp.makeDirectory(path)) {
+                    logger.error("FTP uploadFile, make dir error");
+                    return false;
+                }
+                ftp.changeWorkingDirectory(path);
+            }
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+            ftp.storeFile(filename, input);
+            input.close();
+            ftp.logout();
+        } catch (IOException e) {
+            logger.error("FTP uploadFile, IOException: {}", e);
+        } finally {
+            if (ftp.isConnected()) {
+                try {
+                    ftp.disconnect();
+                } catch (IOException e) {
+                    logger.error("FTP uploadFile, close IOException: {}", e);
+                }
+            }
+        }
+        return true;
     }
 }
