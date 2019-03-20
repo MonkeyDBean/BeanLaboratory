@@ -1,4 +1,4 @@
-package com.monkeybean.algorithm.model.factory;
+package com.monkeybean.algorithm.pattern.factory;
 
 /**
  * Created by MonkeyBean on 2019/3/12.

@@ -1,7 +1,8 @@
-package com.monkeybean.algorithm.model.factory;
+package com.monkeybean.algorithm.pattern.factory;
 
 /**
  * 工厂模式中，创建对象时不暴露创建过程，通过共同的接口指向新创建的对象，主要解决了接口选择问题
+ * 工厂模式属于创建型模式
  * 优点为只需知道对象的名称即可创建对象，拓展性高，增加新产品只需扩展工厂类，便于管理
  * 引用自：http://www.runoob.com/design-pattern/factory-pattern.html
  * <p>
