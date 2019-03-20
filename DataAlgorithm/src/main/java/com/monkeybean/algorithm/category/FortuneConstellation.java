@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * 干支纪年，生效纪年，星座等
+ * 验证准确性：https://www.buyiju.com/bazi/#csshow
  * <p>
  * Created by MonkeyBean on 2019/3/19.
  */
@@ -164,6 +165,7 @@ public class FortuneConstellation {
      * @param second 秒
      */
     public static void printBirthInfo(int year, int month, int day, int hour, int minute, int second) {
+        System.out.println("************************");
 
         //输出星座
         printConstellation(month, day);
@@ -171,11 +173,11 @@ public class FortuneConstellation {
         //获取立春时间
         Map<String, Integer> springInfo = getSpringBeginTime(year);
 
-        //输出生肖
-        printZodiacAnimal(year, month, day, hour, minute, second, springInfo);
-
         //转为阴历
         Map<String, Integer> result = ChinaDate.solarToLunar(year, month, day);
+
+        //输出生肖
+        printZodiacAnimal(year, month, day, hour, minute, second, springInfo, result.get("year"));
 
         //输出干支纪年等信息
         printTrunkBranchInfo(result.get("year"), result.get("month"), result.get("day"), hour, minute, second, springInfo);
@@ -209,7 +211,7 @@ public class FortuneConstellation {
         int middleValue = (b - 1) % 6 + 1;
         int cElementSeq = ((a + a % 2) / 2 + (middleValue + middleValue % 2) / 2) % 5;
         String elementInfo = fiveElementPrefix[(cSeq - 1) / 2] + fiveElement[cElementSeq];
-        System.out.println(year + "年对应六十甲子序数为: " + cSeq + ", 五行为" + elementInfo);
+        System.out.println(year + "年对应六十甲子序数为: " + cSeq + ", 年五行为" + elementInfo);
         System.out.println(yearDes + "年");
 
         //月干公式为：月干=年干数*2+月份, 末尾1为甲，0(10)为癸
@@ -274,7 +276,7 @@ public class FortuneConstellation {
         if (hourTrunkSeq == 0) {
             hourTrunkSeq = 10;
         }
-        System.out.print(trunk[hourTrunkSeq - 1] + hourBranchStr + "时");
+        System.out.println(trunk[hourTrunkSeq - 1] + hourBranchStr + "时");
     }
 
     /**
@@ -316,43 +318,53 @@ public class FortuneConstellation {
 
     /**
      * 属相按立春划分, 不是除夕(每年最后一天)或春节(初一，每年第一天)
-     * 参数均为阳历时间
      *
-     * @param year   年 20-22世纪
-     * @param month  月
-     * @param day    日
-     * @param hour   时
-     * @param minute 分
-     * @param second 秒
-     * @param info   当年立春时间
+     * @param year      阳历年 20-22世纪
+     * @param month     阳历月
+     * @param day       阳历日
+     * @param hour      时
+     * @param minute    分
+     * @param second    秒
+     * @param info      当年立春时间
+     * @param lunarYear 阴历年
      */
-    public static void printZodiacAnimal(int year, int month, int day, int hour, int minute, int second, Map<String, Integer> info) {
+    public static void printZodiacAnimal(int year, int month, int day, int hour, int minute, int second, Map<String, Integer> info, int lunarYear) {
         if (info == null) {
             return;
         }
+        boolean isLeap = (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
+        String leapStr;
+        if (isLeap) {
+            leapStr = "闰年";
+        } else {
+            leapStr = "平年";
+        }
+        System.out.println("阳历" + year + "年是" + leapStr);
 
         //年的地支序号
         int b = (year + 9) % 12;
         b = b == 0 ? 12 : b;
-        boolean isLeap = (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
-        System.out.print(year + "年是" + zodiacAnimal[b - 1] + "年, ");
-        if (isLeap) {
-            System.out.println("闰年");
-        } else {
-            System.out.println("平年");
+        System.out.println(year + "年是" + zodiacAnimal[b - 1] + "年");
+
+        //另一参数年的地支序号
+        int lunarB = (lunarYear + 9) % 12;
+        lunarB = lunarB == 0 ? 12 : lunarB;
+        if (year != lunarYear) {
+            System.out.println(lunarYear + "年是" + zodiacAnimal[lunarB - 1] + "年");
         }
-        System.out.print("阳历" + year + "年" + month + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒，属相为: ");
-        if (month < 3) {
+        int springZodiacSeq = lunarB;
+
+        //生肖序数, 按立春划分
+        if (month == 2) {
             int springStartHeavy = info.get("day") * 24 * 60 * 60 + info.get("hour") * 60 * 60 + info.get("minute") * 60 + info.get("second");
             int paramHeavy = day * 24 * 60 * 60 + hour * 60 * 60 + minute * 60 + second;
-            if (paramHeavy <= springStartHeavy) {
-                int zodiacSeq = b - 1;
-                zodiacSeq = zodiacSeq == 0 ? 12 : zodiacSeq;
-                System.out.println(zodiacAnimal[zodiacSeq - 1]);
-                return;
+            if (springStartHeavy <= paramHeavy) {
+                springZodiacSeq = b;
             }
         }
-        System.out.println(zodiacAnimal[b - 1]);
+
+        System.out.println("阳历" + year + "年" + month + "月" + day + "日" + hour + "时" + minute + "分" + second + "秒，按立春划分，属相为: " + zodiacAnimal[springZodiacSeq - 1]
+                + ", 按阴历自然年即除夕划分为，属相为：" + zodiacAnimal[lunarB - 1]);
     }
 
     /**
