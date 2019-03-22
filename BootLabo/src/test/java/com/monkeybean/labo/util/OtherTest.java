@@ -1,6 +1,7 @@
 package com.monkeybean.labo.util;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
@@ -111,6 +112,16 @@ public class OtherTest {
         hm.put("d", "dd");
         String result = JSON.toJSONString(hm);
         System.out.println("JSON.toJSONString, result: " + result);
+    }
+
+    @Test
+    public void testSha1() {
+        String originStr = "{\"nickName\":\"Band\",\"gender\":1,\"language\":\"zh_CN\",\"city\":\"Guangzhou\",\"province\":\"Guangdong\",\"country\":\"CN\",\"avatarUrl\":\"http://wx.qlogo.cn/mmopen/vi_32/1vZvI39NWFQ9XM4LtQpFrQJ1xlgZxx3w7bQxKARol6503Iuswjjn6nIGBiaycAjAtpujxyzYsrztuuICqIM5ibXQ/0\"}";
+        String key = "HyVFkGl5F5OQWJZZaNzBBg==";
+        String testStr = originStr + key;
+        String expiredStr = "75e81ceda165f4ffa64f4068af58c64b8f54b88c";
+        String resultStr = DigestUtils.sha1Hex(testStr);
+        assertTrue(expiredStr.equalsIgnoreCase(resultStr));
     }
 
 }
