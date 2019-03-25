@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * 日期时间处理工具
@@ -201,6 +198,63 @@ public final class DateUtil {
         Calendar cal = Calendar.getInstance(TimeZone.getDefault());
         cal.setTime(checkDate);
         return !cal.before(startCalendar) && !cal.after(endCalendar);
+    }
+
+    /**
+     * 获取指定日期延后秒数的日期
+     *
+     * @param date   日期
+     * @param second 描述
+     */
+    public static Date getDelayTime(Date date, int second) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.SECOND, second);
+        return calendar.getTime();
+    }
+
+    /**
+     * 指定日期间隔, 随机生成n个日期
+     *
+     * @param startDate 起始日期
+     * @param endDate   截至日期
+     * @param count     随机个数, 10以内
+     * @return 随机日期列表，失败返回空列表
+     */
+    public static List<Date> getRandomDateList(Date startDate, Date endDate, int count) {
+        List<Date> dateList = new ArrayList<>();
+        if (startDate.getTime() >= endDate.getTime() || count < 1 || count > 10) {
+            logger.warn("getRandomDateList, param illegal, startDate: {}, endDate: {}, count: {}", startDate.getTime(), endDate.getTime(), count);
+            return dateList;
+        }
+        for (int i = 0; i < count; i++) {
+            dateList.add(new Date(randomTimeStamp(startDate.getTime(), endDate.getTime())));
+        }
+
+        //升序排列
+        if (dateList.size() > 1) {
+            dateList.sort((date1, date2) -> (int) (date1.getTime() - date2.getTime()));
+        }
+        return dateList;
+    }
+
+    /**
+     * 获取指定时间戳内的随机日期
+     *
+     * @param begin 开始日期时间戳
+     * @param end   截止截止时间戳
+     * @return 随机时间戳
+     */
+    private static long randomTimeStamp(long begin, long end) {
+        if (begin < 0 || end < 0 || begin >= end) {
+            logger.warn("randomTimeStamp param illegal, begin: {}, end: {}", begin, end);
+            return 0;
+        }
+        long rtn = begin + (long) (Math.random() * (end - begin));
+        if (rtn == begin || rtn == end) {
+            return randomTimeStamp(begin, end);
+        }
+        return rtn;
     }
 
 }
