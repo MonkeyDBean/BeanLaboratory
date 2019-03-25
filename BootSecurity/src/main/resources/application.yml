@@ -1,0 +1,18 @@
+server:
+  port: 8090
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  security:
+    user:
+      name: root
+      password: test
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+

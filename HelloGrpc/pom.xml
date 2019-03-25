@@ -52,6 +52,12 @@
             <artifactId>grpc-testing</artifactId>
             <version>${grpc.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/junit/junit -->
@@ -69,6 +75,12 @@
             <!--<version>2.24.5</version>-->
             <version>1.10.19</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
     </dependencies>

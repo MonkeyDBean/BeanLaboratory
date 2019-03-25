@@ -21,6 +21,7 @@
         <module>BootSchedule</module>
         <module>BootQuartz</module>
         <module>HelloGrpc</module>
+        <module>BootSecurity</module>
     </modules>
 
     <properties>
