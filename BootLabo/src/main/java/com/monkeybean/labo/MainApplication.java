@@ -51,20 +51,13 @@ public class MainApplication {
 //        return applicationBuilder.sources(MainApplication.class);
 //    }
 
-    // 配置filter实现前端的跨域访问
-    @Bean
-    public FilterRegistrationBean filterRegistrationBean() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new CrossOriginFilter());
-        registration.addUrlPatterns("/*");
-        return registration;
-    }
-
+    // 配置拦截器及跨域
     @Bean
     public FilterRegistrationBean filterTokenKeyBean() {
         logger.info("filter token is:-> {}, sniff token is:-> {}, dailyRequestMaxNum is:-> {}", env.getProperty("filter.token"), env.getProperty("sniff.token"), env.getProperty("other.dailyRequestMaxNum"));
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(new TokenKeyFilter(Boolean.parseBoolean(env.getProperty("filter.token")), env.getProperty("sniff.token"), Integer.parseInt(env.getProperty("other.dailyRequestMaxNum"))));
+        registration.setFilter(new CrossOriginFilter());
         registration.addUrlPatterns("/*");
         return registration;
     }
