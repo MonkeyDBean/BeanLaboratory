@@ -1,4 +1,4 @@
-package com.monkeybean.schedule.component;
+package com.monkeybean.schedule.component.schedule;
 
 import com.monkeybean.schedule.dao.ScheduleDataDao;
 import org.slf4j.Logger;

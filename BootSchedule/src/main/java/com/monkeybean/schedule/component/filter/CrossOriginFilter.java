@@ -1,18 +1,24 @@
-package com.kodgames.agent.component.filter;
+package com.monkeybean.schedule.component.filter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by zhangbin on 2017/7/17.
+ * Created by MonkeyBean on 2019/3/26.
  */
+@WebFilter(filterName = "CrossOriginFilter", urlPatterns = "/*")
 public class CrossOriginFilter implements Filter {
+    private static Logger logger = LoggerFactory.getLogger(CrossOriginFilter.class);
 
     @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
+    public void init(FilterConfig arg0) throws ServletException {
+        logger.info("CrossOriginFilter init");
     }
 
     @Override
@@ -26,7 +32,8 @@ public class CrossOriginFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig arg0) throws ServletException {
-        // TODO Auto-generated method stub
+    public void destroy() {
+        logger.info("CrossOriginFilter destroy");
     }
+
 }

@@ -1,11 +1,5 @@
-package com.kodgames.wechatmini.controller;
+package com.monkeybean.schedule.controller;
 
-import com.kodgames.wechatmini.component.reqres.Result;
-import com.kodgames.wechatmini.constant.StatusCode;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by zhangbin on 2019/3/25.
+ * Created by MonkeyBean on 2019/3/26.
  */
-@Api(value = "其他公共服务")
-@RequestMapping(path = "personal/util")
+@RequestMapping(path = "public/util")
 @RestController
 public class PublicController {
     private static Logger logger = LoggerFactory.getLogger(PublicController.class);
@@ -26,12 +19,10 @@ public class PublicController {
     public PublicController() {
     }
 
-    @ApiOperation(value = "嗅探线上服务器运行是否正常")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "code：0")})
     @GetMapping(path = "sniff/status")
-    public Result<Integer> sniffStatus() {
+    public String sniffStatus() {
         logger.debug("sniff test ok, now time: {}", System.currentTimeMillis());
-        return new Result<>(StatusCode.SUCCESS);
+        return "SUCCESS";
     }
 
 }
