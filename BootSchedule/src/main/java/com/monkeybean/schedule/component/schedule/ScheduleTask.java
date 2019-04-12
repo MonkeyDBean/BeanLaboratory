@@ -36,6 +36,11 @@ public class ScheduleTask {
         return new ConcurrentTaskScheduler();
     }
 
+//    /**
+//     * 固定时间执行任务：每小时的0分，15分，30分，45分
+//     */
+//    @Scheduled(cron = "0 0,15,30,45 * * * ?")
+
     /**
      * 每3分钟执行一次
      * 以下cron表达式同fixedRate效果相同, 均为每隔3分钟执行一次，不论业务执行花费时间
