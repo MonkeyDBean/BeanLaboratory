@@ -1,14 +1,21 @@
 package com.monkeybean.labo.component.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.util.regex.Pattern;
 
 /**
  * Created by MonkeyBean on 2018/05/26.
  */
 @ConfigurationProperties(prefix = "other")
 @Component
-public class OtherConfig {
+public class OtherConfig implements InitializingBean {
+    private static Logger logger = LoggerFactory.getLogger(OtherConfig.class);
 
     /**
      * 数据库，账户密码盐，配置后不可更新
@@ -69,6 +76,13 @@ public class OtherConfig {
      * 心知天气，api key
      */
     private String weatherApiKey;
+
+    /**
+     * 图片正则
+     */
+    private String imageRegex;
+
+    private Pattern imagePattern;
 
     public String getSqlSalt() {
         return sqlSalt;
@@ -164,5 +178,31 @@ public class OtherConfig {
 
     public void setWeatherApiKey(String weatherApiKey) {
         this.weatherApiKey = weatherApiKey;
+    }
+
+    public String getImageRegex() {
+        return imageRegex;
+    }
+
+    public void setImageRegex(String imageRegex) {
+        this.imageRegex = imageRegex;
+    }
+
+    public Pattern getImagePattern() {
+        return imagePattern;
+    }
+
+    public void setImagePattern(Pattern imagePattern) {
+        this.imagePattern = imagePattern;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+
+        //对正则预编译以提高性能
+        if (!StringUtils.isEmpty(imageRegex)) {
+            this.imagePattern = Pattern.compile(imageRegex);
+        }
+        logger.info("OtherConfig properties init or refresh");
     }
 }

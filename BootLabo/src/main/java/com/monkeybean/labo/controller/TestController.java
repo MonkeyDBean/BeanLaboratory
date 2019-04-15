@@ -424,5 +424,13 @@ public class TestController {
         return new Result<>(ReturnCode.SUCCESS, result1);
     }
 
+    @ApiOperation(value = "测试图片正则")
+    @GetMapping(path = "image/regex/{imageName}")
+    public String testImageRegex(@PathVariable String imageName) {
+        if (otherConfig.getImagePattern().matcher(imageName).matches()) {
+            return "match";
+        }
+        return "mismatch";
+    }
 
 }
