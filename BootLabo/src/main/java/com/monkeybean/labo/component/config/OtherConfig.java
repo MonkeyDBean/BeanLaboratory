@@ -10,6 +10,8 @@ import org.springframework.util.StringUtils;
 import java.util.regex.Pattern;
 
 /**
+ * 调用InitializingBean的afterPropertiesSet方法设置参数, 效果与构造函数内设置相同
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @ConfigurationProperties(prefix = "other")
