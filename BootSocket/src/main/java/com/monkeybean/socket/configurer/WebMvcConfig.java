@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.validation.BindException;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,16 +65,22 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     //统一异常处理
     @Override
+    @SuppressWarnings("unchecked")
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         exceptionResolvers.add((request, response, handler, e) -> {
             Result result = new Result();
-            if (e instanceof ServiceException) {//业务失败的异常，如“账号或密码错误”
+
+            //业务失败的异常，如“账号或密码错误”
+            if (e instanceof ServiceException) {
                 result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
                 logger.info(e.getMessage());
             } else if (e instanceof NoHandlerFoundException) {
                 result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在");
             } else if (e instanceof ServletException) {
                 result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
+            } else if (e instanceof BindException) {
+                BindException ex = (BindException) e;
+                result.setCode(ResultCode.FAIL).setMessage("请求参数校验失败").setData(ex.getAllErrors());
             } else {
                 result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员");
                 String message;
