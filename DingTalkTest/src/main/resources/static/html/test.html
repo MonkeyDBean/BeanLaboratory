@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>just for test</title>
+</head>
+<body>
+<script src="../js/jquery-3.2.1.js" type="text/javascript"></script>
+<script src="../js/common_function.js" type="text/javascript"></script>
+<script type="text/javascript">
+    function configGetSuccess(data) {
+        console.log("corpId: " + data.corpId);
+        console.log("agentId: " + data.agentId);
+        console.log("appKey: " + data.appKey);
+        console.log("appSecret: " + data.appSecret);
+        console.log("signUrl: " + data.signUrl);
+    }
+    $(function () {
+        var nowUrl = window.location.href;
+        var nowUrlArray = nowUrl.split("/");
+        var protocol = nowUrlArray[0];
+        var domain = window.location.host;
+        var path = "/test/config/get";
+        var reqUrl = protocol + "//" + domain + path;
+        console.log("test url :" + reqUrl);
+        doGetAjax(reqUrl, {}, configGetSuccess);
+    });
+</script>
+</body>
+</html>

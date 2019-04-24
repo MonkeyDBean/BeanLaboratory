@@ -22,6 +22,7 @@
         <module>BootQuartz</module>
         <module>HelloGrpc</module>
         <module>BootSecurity</module>
+        <module>DingTalkTest</module>
     </modules>
 
     <properties>

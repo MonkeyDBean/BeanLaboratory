@@ -1,0 +1,49 @@
+<!--https://open-doc.dingtalk.com/microapp/dev/welcome-to-lark-->
+<!-- Ding jsApi all: https://open-doc.dingtalk.com/microapp/dev/swk0bg -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ding Test</title>
+    <style type="text/css">
+        .hidden_input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Ding Ding Test</h1>
+<input id="corpId" class="hidden_input" th:value="${corpId}"/>
+<input id="ticket" class="hidden_input" th:value="${ticket}"/>
+<input id="agentId" class="hidden_input" th:value="${agentId}"/>
+<input id="nonceStr" class="hidden_input" th:value="${nonceStr}"/>
+<input id="timeStamp" class="hidden_input" th:value="${timeStamp}"/>
+<input id="sign" class="hidden_input" th:value="${sign}"/>
+<p id="showResult">Init</p>
+<button onclick="chooseConversation()">测试选择内部会话</button>
+<input id="conversationTextInput" class="hidden_input" type="text"/>
+<button onclick="sendConversionMessage()">发送群消息</button>
+<script type="text/javascript" th:src="@{/js/jquery-3.2.1.js}"></script>
+<script type="text/javascript" th:src="@{/js/dingtalk.open.js}"></script>
+<script type="text/javascript" th:src="@{/js/common_function.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#showResult").html("Resource Loading Finish");
+        var ticket = $("#ticket").val();
+        if (!!ticket) {
+            dd.config({
+                agentId: $("#agentId").val(),
+                corpId: $("#corpId").val(),
+                timeStamp: $("#timeStamp").val(),
+                nonceStr: $("#nonceStr").val(),
+                signature: $("#sign").val(),
+                jsApiList: [
+                    'biz.chat.chooseConversationByCorpId'
+                ]
+            });
+            $("#showResult").html("Ding Config Finish");
+        }
+    });
+</script>
+</body>
+</html>
