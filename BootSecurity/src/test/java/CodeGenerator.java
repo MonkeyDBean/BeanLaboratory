@@ -1,9 +1,9 @@
 import com.google.common.base.CaseFormat;
 import freemarker.template.TemplateExceptionHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.*;
 import org.mybatis.generator.internal.DefaultShellCallback;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,48 +11,63 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.kodgames.boss.core.ProjectConstant.*;
-
+import static com.monkeybean.security.core.ProjectConstant.*;
 
 /**
  * 代码生成器，根据数据表名称生成对应的Model、Mapper、Service、Controller简化开发。
+ * <p>
+ * From: https://github.com/lihengming/spring-boot-api-project-seed
  */
 public class CodeGenerator {
 
-    //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://127.0.0.1:3306/bossserver";
+    /**
+     * JDBC配置，项目的实际配置
+     */
+    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/security_test?useUnicode=true&characterEncoding=utf8&useSSL=false";
     private static final String JDBC_USERNAME = "root";
     private static final String JDBC_PASSWORD = "root";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
-    //项目在硬盘上的基础路径
-    private static final String PROJECT_PATH = System.getProperty("user.dir");
+    /**
+     * 项目在硬盘上的基础路径
+     */
+    private static final String PROJECT_PATH = System.getProperty("user.dir") + "/BootSecurity";
 
-    //模板位置
+    /**
+     * 模板位置
+     */
     private static final String TEMPLATE_FILE_PATH = PROJECT_PATH + "/src/test/resources/generator/template";
 
-    //java文件路径
+    /**
+     * java文件路径
+     */
     private static final String JAVA_PATH = "/src/main/java";
 
-    //资源文件路径
+    /**
+     * 资源文件路径
+     */
     private static final String RESOURCES_PATH = "/src/main/resources";
 
-    //生成的Service存放路径
+    /**
+     * 生成的Service存放路径
+     */
     private static final String PACKAGE_PATH_SERVICE = packageConvertPath(SERVICE_PACKAGE);
 
-    //生成的Controller存放路径
+    /**
+     * 生成的Service实现存放路径
+     */
+    private static final String PACKAGE_PATH_SERVICE_IMPL = packageConvertPath(SERVICE_IMPL_PACKAGE);
+
+    /**
+     * 生成的Controller存放路径
+     */
     private static final String PACKAGE_PATH_CONTROLLER = packageConvertPath(CONTROLLER_PACKAGE);
 
-    //@author
-    private static final String AUTHOR = "CodeGenerator";
-
-    //@date
+    private static final String AUTHOR = "MonkeyBean";
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());
 
     public static void main(String[] args) {
-        genCode("user");
-        genCode("role");
-        genCode("authority");
+        genCode("account");
     }
 
     /**
@@ -63,7 +78,7 @@ public class CodeGenerator {
      */
     private static void genCode(String... tableNames) {
         for (String tableName : tableNames) {
-            genCode(tableName, null);
+            genCodeByCustomModelName(tableName, null);
         }
     }
 
@@ -74,11 +89,11 @@ public class CodeGenerator {
      * @param tableName 数据表名称
      * @param modelName 自定义的 Model 名称
      */
-    private static void genCode(String tableName, String modelName) {
+    private static void genCodeByCustomModelName(String tableName, String modelName) {
         genModelAndMapper(tableName, modelName);
         genService(tableName, modelName);
+        genController(tableName, modelName);
     }
-
 
     private static void genModelAndMapper(String tableName, String modelName) {
         Context context = new Context(ModelType.FLAT);
@@ -117,7 +132,7 @@ public class CodeGenerator {
 
         TableConfiguration tableConfiguration = new TableConfiguration(context);
         tableConfiguration.setTableName(tableName);
-        tableConfiguration.setDomainObjectName(modelName);
+        if (StringUtils.isNotEmpty(modelName)) tableConfiguration.setDomainObjectName(modelName);
         tableConfiguration.setGeneratedKey(new GeneratedKey("id", "Mysql", true, null));
         context.addTableConfiguration(tableConfiguration);
 
@@ -146,7 +161,7 @@ public class CodeGenerator {
         System.out.println(modelName + "Mapper.xml 生成成功");
     }
 
-    private static void genService(String tableName, String modelName) {
+    public static void genService(String tableName, String modelName) {
         try {
             freemarker.template.Configuration cfg = getConfiguration();
 
@@ -158,16 +173,48 @@ public class CodeGenerator {
             data.put("modelNameLowerCamel", tableNameConvertLowerCamel(tableName));
             data.put("basePackage", BASE_PACKAGE);
 
-            File file1 = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
+            File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            cfg.getTemplate("service.ftl").process(data,
+                    new FileWriter(file));
+            System.out.println(modelNameUpperCamel + "Service.java 生成成功");
+
+            File file1 = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE_IMPL + modelNameUpperCamel + "ServiceImpl.java");
             if (!file1.getParentFile().exists()) {
                 file1.getParentFile().mkdirs();
             }
             cfg.getTemplate("service-impl.ftl").process(data,
                     new FileWriter(file1));
-            System.out.println(modelNameUpperCamel + "Service.java 生成成功");
+            System.out.println(modelNameUpperCamel + "ServiceImpl.java 生成成功");
         } catch (Exception e) {
             throw new RuntimeException("生成Service失败", e);
         }
+    }
+
+    public static void genController(String tableName, String modelName) {
+        try {
+            freemarker.template.Configuration cfg = getConfiguration();
+            Map<String, Object> data = new HashMap<>();
+            data.put("date", DATE);
+            data.put("author", AUTHOR);
+            String modelNameUpperCamel = StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
+            data.put("baseRequestMapping", modelNameConvertMappingPath(modelNameUpperCamel));
+            data.put("modelNameUpperCamel", modelNameUpperCamel);
+            data.put("modelNameLowerCamel", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, modelNameUpperCamel));
+            data.put("basePackage", BASE_PACKAGE);
+
+            File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + modelNameUpperCamel + "Controller.java");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            cfg.getTemplate("controller.ftl").process(data, new FileWriter(file));
+            System.out.println(modelNameUpperCamel + "Controller.java 生成成功");
+        } catch (Exception e) {
+            throw new RuntimeException("生成Controller失败", e);
+        }
+
     }
 
     private static freemarker.template.Configuration getConfiguration() throws IOException {

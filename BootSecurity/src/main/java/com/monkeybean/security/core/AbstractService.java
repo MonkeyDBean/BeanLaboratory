@@ -1,4 +1,4 @@
-package com.monkeybean.socket.core;
+package com.monkeybean.security.core;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -22,7 +22,7 @@ public class DbUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) {
-        DbUserDetailsService userDetails = new DbUserDetailsService();
+        DbUserDetails userDetails = new DbUserDetails();
         Account account = accountService.findByUserName(userName);
         if (account != null) {
             BeanUtils.copyProperties(account, userDetails);

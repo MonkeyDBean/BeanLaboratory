@@ -1,4 +1,4 @@
-package com.monkeybean.socket.core;
+package com.monkeybean.security.core;
 
 import com.alibaba.fastjson.JSON;
 
@@ -15,7 +15,7 @@ public class Result<T> {
     }
 
     public Result setCode(ResultCode resultCode) {
-        this.code = resultCode.code();
+        this.code = resultCode.getCode();
         return this;
     }
 

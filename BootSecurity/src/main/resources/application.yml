@@ -4,10 +4,11 @@ server:
     uri-encoding: UTF-8
 
 spring:
-  security:
-    user:
-      name: root
-      password: test
+  datasource:
+    url: jdbc:mysql://localhost:3306/security_test?useUnicode=true&characterEncoding=utf8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
   http:
     encoding:
       charset: UTF-8
@@ -15,4 +16,3 @@ spring:
       force: true
   messages:
     encoding: UTF-8
-

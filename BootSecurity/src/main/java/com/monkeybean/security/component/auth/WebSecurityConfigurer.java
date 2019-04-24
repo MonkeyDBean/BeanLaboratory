@@ -1,5 +1,6 @@
-package com.monkeybean.security.component;
+package com.monkeybean.security.component.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +19,13 @@ import java.util.Collections;
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
+
+    private final DbUserDetailsService dbUserDetailsService;
+
+    @Autowired
+    public WebSecurityConfigurer(DbUserDetailsService dbUserDetailsService) {
+        this.dbUserDetailsService = dbUserDetailsService;
+    }
 
     /**
      * 认证管理配置，可配置多种数据源，如内存，数据库，ldap

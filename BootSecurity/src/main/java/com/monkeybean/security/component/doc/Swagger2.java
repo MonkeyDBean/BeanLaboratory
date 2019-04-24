@@ -1,4 +1,4 @@
-package com.monkeybean.security.doc;
+package com.monkeybean.security.component.doc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

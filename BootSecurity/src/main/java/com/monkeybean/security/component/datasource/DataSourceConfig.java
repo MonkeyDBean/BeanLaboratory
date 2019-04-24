@@ -1,4 +1,4 @@
-package com.kodgames.boss.component.datasource;
+package com.monkeybean.security.component.datasource;
 
 import com.github.pagehelper.PageInterceptor;
 import com.zaxxer.hikari.HikariDataSource;
@@ -15,9 +15,7 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-import static com.kodgames.boss.core.ProjectConstant.MAPPER_INTERFACE_REFERENCE;
-import static com.kodgames.boss.core.ProjectConstant.MAPPER_PACKAGE;
-import static com.kodgames.boss.core.ProjectConstant.MODEL_PACKAGE;
+import static com.monkeybean.security.core.ProjectConstant.*;
 
 @Configuration
 public class DataSourceConfig {

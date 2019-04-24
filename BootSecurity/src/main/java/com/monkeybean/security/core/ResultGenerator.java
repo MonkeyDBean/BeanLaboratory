@@ -1,4 +1,4 @@
-package com.monkeybean.socket.core;
+package com.monkeybean.security.core;
 
 /**
  * 响应结果生成工具
