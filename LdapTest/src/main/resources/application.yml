@@ -1,0 +1,6 @@
+spring:
+  ldap:
+    urls: ldap://172.16.1.121:389/
+    base: dc=monkeybean,dc=com
+    username: cn=Manager,dc=monkeybean,dc=com
+    password: 87654321

@@ -23,6 +23,7 @@
         <module>HelloGrpc</module>
         <module>BootSecurity</module>
         <module>DingTalkTest</module>
+        <module>LdapTest</module>
     </modules>
 
     <properties>

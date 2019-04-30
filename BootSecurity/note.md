@@ -10,20 +10,14 @@ SpringSecurity是提供安全控制解决方式的框架(即访问权限进行�
 引入Security后，访问服务时，会弹出登录页，访问认证。默认用户名为user, 默认密码为程序启动时自动生成的一串字符串，格式如8961e7a8-5f2d-4808-bff1-44bc9491bb45。用户名密码可在配置文件设置。
 
 ### 参考链接
-文档
-```
-https://springcloud.cc/spring-security.html#getting-started
-https://springcloud.cc/spring-security-zhcn.html#getting-started
-```
-使用参考
-```
-# 基本
-https://blog.csdn.net/liushangzaibeijing/article/details/81220610
+[Spring Security参考](https://springcloud.cc/spring-security.html#getting-started)
 
-# 与Shiro简单比对
-https://blog.csdn.net/liyuejin/article/details/77838868
+[Spring Security手册](https://springcloud.cc/spring-security-zhcn.html#getting-started)
 
-# 整合OAuth2, 接口安全，权限分级
-https://blog.csdn.net/qq_19671173/article/details/79748422
-https://blog.csdn.net/weixin_42033269/article/details/80086422
-```
+[Spring Security基本使用](https://blog.csdn.net/liushangzaibeijing/article/details/81220610)
+
+[Shiro和Spring Security对比](https://blog.csdn.net/liyuejin/article/details/77838868)
+
+[SpringSecurity整合OAuth2](https://blog.csdn.net/weixin_42033269/article/details/80086422)
+
+[基于Spring Boot2 + Spring Security OAuth2 实现单点登陆](https://blog.csdn.net/qq_19671173/article/details/79748422)

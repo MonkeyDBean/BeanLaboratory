@@ -144,6 +144,18 @@
             <!--<version>2.10</version>-->
         <!--</dependency>-->
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-ldap -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-ldap</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-ldap -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-ldap</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
