@@ -124,4 +124,28 @@ public class OtherTest {
         assertTrue(expiredStr.equalsIgnoreCase(resultStr));
     }
 
+    /**
+     * java基本数据类型: byte, short, int, long, float, double, char, boolean, 参数传递为值传递
+     * 对象数据类型, 参数传递为引用传递(对象地址的值传递; java无指针，与c++的引用传递不同)
+     * 字符串为不可变对象(好处为提高效率、线程安全)
+     */
+    @Test
+    public void testStringStore() {
+
+        //常量赋值，首先校验"123"在字符串常量池是否存在，若不存在，则在常量池创建String对象"123",然后a指向这个内存地址，之后所有的字符串对象(b)常量赋值均指向该地址，java中称为"字符串驻留"
+        //所有字符串常量都会在编译之后自动驻留
+        String a = "123";
+        String b = "123";
+        assertTrue(a == b);
+
+        //new构造创建, 至少创建一个对象，也可能为两个。首先在heap中创建"123"字符串对象，然后c指向这个内存地址；然后判断字符串常量池是否有"123"，若无则创建
+        String c = new String("123");
+        String d = new String("123");
+        assertTrue(c != d);
+        assertTrue(c.equals(d));
+
+        //intern方法返回常量池中字符串对象的引用
+        assertTrue(c.intern() == d.intern());
+    }
+
 }
