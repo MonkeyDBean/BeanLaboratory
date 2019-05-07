@@ -23,8 +23,8 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
     @Override
     public Account findByUserName(String userName) {
         Condition condition = new Condition(Account.class);
-        condition.createCriteria().andEqualTo("enabled", true);
-        condition.createCriteria().andEqualTo("userName", userName);
+        condition.createCriteria().andEqualTo("enabled", true)
+                .andEqualTo("userName", userName);
         List<Account> users = accountMapper.selectByCondition(condition);
         if (users != null && !users.isEmpty()) {
             return users.get(0);
