@@ -432,7 +432,7 @@
                                 <delete dir="${project.build.directory}/../labo_release"/>
 
                                 <!-- sh脚本 -->
-                                <copy todir="${project.build.directory}/../labo_release/labo">
+                                <copy todir="${project.build.directory}/../labo_release">
                                     <fileset dir="${project.build.testSourceDirectory}/../script_backup">
                                         <include name="*.sh"/>
                                     </fileset>

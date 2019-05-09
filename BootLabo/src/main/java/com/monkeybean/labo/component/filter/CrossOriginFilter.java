@@ -26,38 +26,38 @@ public class CrossOriginFilter implements Filter {
         logger.info("CrossOriginFilter destroy, timestamp: {}", System.currentTimeMillis());
     }
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-        chain.doFilter(httpServletRequest, httpServletResponse);
-    }
-
-//    /**
-//     * 允许跨域
-//     */
 //    @Override
 //    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 //            throws IOException, ServletException {
 //        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 //        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-//
-//        //若前后端为不同域名，会有Session跨域问题，同一用户的SessionId不一致。服务端如下设置，允许跨域；同时前端设置withCredentials为true，解决浏览器的同源限制
-//        //可参照：https://blog.csdn.net/weixin_40461281/article/details/81196932
-//        //接收任意域名请求
-//        httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-//
-//        //允许任意请求方法
-//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
-//
-//        //允许浏览器发送cookie
-//        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-//
-//        //列出浏览器CORS请求会额外发送的头字段，若用于签名校验的stime或sign放在头部，则需声明
-////        httpServletResponse.setHeader("Access-Control-Allow-Headers", "stime,sign");
+//        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
 //        chain.doFilter(httpServletRequest, httpServletResponse);
 //    }
+
+    /**
+     * 允许跨域
+     */
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
+        //若前后端为不同域名，会有Session跨域问题，同一用户的SessionId不一致。服务端如下设置，允许跨域；同时前端设置withCredentials为true，解决浏览器的同源限制
+        //可参照：https://blog.csdn.net/weixin_40461281/article/details/81196932
+        //接收任意域名请求
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+
+        //允许任意请求方法
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
+
+        //允许浏览器发送cookie
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+
+        //列出浏览器CORS请求会额外发送的头字段，若用于签名校验的stime或sign放在头部，则需声明
+//        httpServletResponse.setHeader("Access-Control-Allow-Headers", "stime,sign");
+        chain.doFilter(httpServletRequest, httpServletResponse);
+    }
 
 }

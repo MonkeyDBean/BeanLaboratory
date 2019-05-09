@@ -51,14 +51,26 @@ public class MainApplication {
 //        return applicationBuilder.sources(MainApplication.class);
 //    }
 
-    // 配置拦截器及跨域
+    /**
+     * 拦截器配置
+     */
     @Bean
     public FilterRegistrationBean filterTokenKeyBean() {
         logger.info("filter token is:-> {}, sniff token is:-> {}, dailyRequestMaxNum is:-> {}", env.getProperty("filter.token"), env.getProperty("sniff.token"), env.getProperty("other.dailyRequestMaxNum"));
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new TokenKeyFilter(Boolean.parseBoolean(env.getProperty("filter.token")), env.getProperty("sniff.token"), Integer.parseInt(env.getProperty("other.dailyRequestMaxNum"))));
-        registration.setFilter(new CrossOriginFilter());
         registration.addUrlPatterns("/*");
+        registration.setFilter(new TokenKeyFilter(Boolean.parseBoolean(env.getProperty("filter.token")), env.getProperty("sniff.token"), Integer.parseInt(env.getProperty("other.dailyRequestMaxNum"))));
+        return registration;
+    }
+
+    /**
+     * 跨域配置
+     */
+    @Bean
+    public FilterRegistrationBean filterCrossOriginBean() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.addUrlPatterns("/*");
+        registration.setFilter(new CrossOriginFilter());
         return registration;
     }
 

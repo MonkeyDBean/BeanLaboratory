@@ -14,3 +14,10 @@ nohup java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8096
 
 ## Mybatis代码生成器
 可考虑引入maven依赖org.mybatis.generator或使用idea插件MyBatisCodeHelperPro(参考：https://blog.csdn.net/HcJsJqJSSM/article/details/84348966)
+
+## mysql创建新用户并授权远程连接等所有权限
+root登录mysql后
+```
+create user 'usrName'@'%' identified by 'password';
+grant all privileges on *.* to usrName@'%'identified by 'password';
+```
