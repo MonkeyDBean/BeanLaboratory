@@ -402,7 +402,7 @@ public class TestController {
 
     @ApiOperation(value = "测试更改默认json解析")
     @GetMapping(path = "json/default/check")
-//    public Result<Map<Integer, String>> checkJsonSeq(){
+    // public Result<Map<Integer, String>> checkJsonSeq(){
     public Result<String> checkJsonSeq() {
 
         //LinkedHashMap是有序的，保存了记录的插入顺序；若已有记录，后续值变更不影响原有顺序
@@ -419,8 +419,8 @@ public class TestController {
         //暂不更改默认jackson, 若更改，影响swagger等正常使用
         Gson gson = new Gson();
         String result1 = gson.toJson(map);
-//        String result2 = JSON.toJSONString(map);
-//        return new Result<>(ReturnCode.SUCCESS, map);
+        //String result2 = JSON.toJSONString(map);
+        //return new Result<>(ReturnCode.SUCCESS, map);
         return new Result<>(ReturnCode.SUCCESS, result1);
     }
 
