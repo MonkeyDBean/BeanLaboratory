@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS `account` (
   `user_name` varchar(50) NOT NULL COMMENT '用户名, 该字段值需考虑与其他账户储存方式的区分，如idap, 数据库字段存储值可加统一前缀',
   `password` varchar(64) NOT NULL COMMENT '密码',
   `phone` varchar(11) COMMENT '手机号',
+  `email` VARCHAR(64) COMMENT '邮箱地址',
+  `enabled` BIT(1) NOT NULL DEFAULT b'0' COMMENT '0标识不可用, 1标识可用',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后修改时间',
   PRIMARY KEY (`id`),

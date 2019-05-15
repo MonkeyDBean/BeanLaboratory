@@ -16,7 +16,7 @@ public class LoginController {
     /**
      * 访问需认证接口时, 重定向到此接口
      */
-    @GetMapping("in")
+    @GetMapping
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<Integer> login() {
         return new Result<>();

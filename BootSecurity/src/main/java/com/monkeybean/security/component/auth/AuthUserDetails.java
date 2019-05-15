@@ -8,30 +8,24 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
+ * 自定义UserDetails类
+ * <p>
  * Created by MonkeyBean on 2019/4/18.
  */
-public class DbUserDetails implements UserDetails {
-    private Long id;
+public class AuthUserDetails implements UserDetails {
     private String userName;
 
     @JSONField(serialize = false)
     private String password;
     private String phone;
+    private String email;
+
     private Boolean enabled;
 
     /**
      * 是否是数据库账号
      */
-    @JSONField(serialize = false)
     private boolean isDatabase;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Override
     public String getUsername() {
@@ -57,6 +51,14 @@ public class DbUserDetails implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

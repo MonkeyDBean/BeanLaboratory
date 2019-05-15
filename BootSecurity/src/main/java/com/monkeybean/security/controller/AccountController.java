@@ -2,8 +2,8 @@ package com.monkeybean.security.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.monkeybean.security.component.constant.StatusCode;
 import com.monkeybean.security.core.Result;
-import com.monkeybean.security.core.ResultGenerator;
 import com.monkeybean.security.model.Account;
 import com.monkeybean.security.service.AccountService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,25 +26,25 @@ public class AccountController {
     @PostMapping("/add")
     public Result add(Account account) {
         accountService.save(account);
-        return ResultGenerator.genSuccessResult();
+        return new Result<>(StatusCode.SUCCESS);
     }
 
     @PostMapping("/delete")
     public Result delete(@RequestParam Integer id) {
         accountService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+        return new Result<>(StatusCode.SUCCESS);
     }
 
     @PostMapping("/update")
     public Result update(Account account) {
         accountService.update(account);
-        return ResultGenerator.genSuccessResult();
+        return new Result<>(StatusCode.SUCCESS);
     }
 
     @PostMapping("/detail")
     public Result detail(@RequestParam Integer id) {
         Account account = accountService.findById(id);
-        return ResultGenerator.genSuccessResult(account);
+        return new Result<>(StatusCode.SUCCESS, account);
     }
 
     @PostMapping("/list")
@@ -53,6 +53,6 @@ public class AccountController {
         PageHelper.startPage(page, size);
         List<Account> list = accountService.findAll();
         PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        return new Result<>(StatusCode.SUCCESS, pageInfo);
     }
 }

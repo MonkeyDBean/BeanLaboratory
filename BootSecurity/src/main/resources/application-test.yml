@@ -1,0 +1,30 @@
+server:
+  port: 8090
+  tomcat:
+    uri-encoding: UTF-8
+
+datasource:
+  primary:
+    jdbcUrl: jdbc:mysql://localhost:3306/security_test?useUnicode=true&characterEncoding=utf8&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  ldap:
+    urls: ldap://172.16.1.121:389/
+    base: dc=monkeybean,dc=com
+    username: cn=Manager,dc=monkeybean,dc=com
+    password: 87654321
+    userDnPatterns: cn={0}
+
+custom:
+  accountAdmin: rootBeanTest
+  accountPwd: 12345678

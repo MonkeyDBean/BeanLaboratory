@@ -31,6 +31,16 @@ public class Account {
     private String phone;
 
     /**
+     * 邮箱地址
+     */
+    private String email;
+
+    /**
+     * 0标识不可用, 1标识可用
+     */
+    private Boolean enabled;
+
+    /**
      * 创建时间
      */
     @Column(name = "create_time")
@@ -112,6 +122,42 @@ public class Account {
      */
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    /**
+     * 获取邮箱地址
+     *
+     * @return email - 邮箱地址
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * 设置邮箱地址
+     *
+     * @param email 邮箱地址
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * 获取0标识不可用, 1标识可用
+     *
+     * @return enabled - 0标识不可用, 1标识可用
+     */
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    /**
+     * 设置0标识不可用, 1标识可用
+     *
+     * @param enabled 0标识不可用, 1标识可用
+     */
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**

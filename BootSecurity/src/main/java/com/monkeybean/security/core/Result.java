@@ -1,44 +1,61 @@
 package com.monkeybean.security.core;
 
-import com.alibaba.fastjson.JSON;
+import com.monkeybean.security.component.constant.StatusCode;
 
 /**
  * 统一API响应结果封装
  */
 public class Result<T> {
     private int code;
-    private String message;
+    private String msg;
+    private String des;
     private T data;
+
+    public Result() {
+    }
+
+    public Result(StatusCode statusCode) {
+        this.code = statusCode.getCode();
+        this.msg = statusCode.getMsg();
+        this.des = statusCode.getDescription();
+    }
+
+    public Result(StatusCode statusCode, T data) {
+        this.code = statusCode.getCode();
+        this.msg = statusCode.getMsg();
+        this.des = statusCode.getDescription();
+        this.data = data;
+    }
 
     public int getCode() {
         return code;
     }
 
-    public Result setCode(ResultCode resultCode) {
-        this.code = resultCode.getCode();
-        return this;
+    public void setCode(int code) {
+        this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public Result setMessage(String message) {
-        this.message = message;
-        return this;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public T getData() {
         return data;
     }
 
-    public Result setData(T data) {
+    public void setData(T data) {
         this.data = data;
-        return this;
     }
 
-    @Override
-    public String toString() {
-        return JSON.toJSONString(this);
+    public String getDes() {
+        return des;
+    }
+
+    public void setDes(String des) {
+        this.des = des;
     }
 }

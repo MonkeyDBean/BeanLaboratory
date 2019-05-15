@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>错误码页面</title>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/webjars/datatables/1.10.16/js/jquery.dataTables.min.js"></script>
+    <link href="/webjars/datatables/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+    <script>
+        $(function () {
+            var address = window.location.href;
+            var host = address.split("/html")[0];
+            $.get(host + "/code", function (res) {
+                window.data = res.data
+                if (res.code == 0) {
+                    $('#codes').DataTable({
+                        paging: false,
+                        searching: false,
+                        ordering: false,
+                        info: false,
+                        data: res.data,
+                        columns: [
+                            {title: "状态码"},
+                            {title: "名称"},
+                            {title: "错误信息"},
+                            {title: "详细描述"}
+                        ]
+                    });
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+<table id="codes" class="display" cellspacing="0" cellpadding="0" style="text-align: center;"></table>
+</body>
+</html>
