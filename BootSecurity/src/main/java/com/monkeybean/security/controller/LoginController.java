@@ -1,6 +1,7 @@
 package com.monkeybean.security.controller;
 
-import com.monkeybean.security.core.Result;
+import com.monkeybean.security.component.constant.StatusCode;
+import com.monkeybean.security.component.reqres.Result;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by MonkeyBean on 2019/4/18.
  */
 @RestController
-@RequestMapping("login")
+@RequestMapping("login/in")
 public class LoginController {
     /**
      * 访问需认证接口时, 重定向到此接口
@@ -19,6 +20,6 @@ public class LoginController {
     @GetMapping
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Result<Integer> login() {
-        return new Result<>();
+        return new Result<>(StatusCode.UNAUTHORIZED);
     }
 }

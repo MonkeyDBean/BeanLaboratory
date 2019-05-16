@@ -82,7 +82,7 @@ public class AuthUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         //所有用户默认为user角色
-        return Collections.singletonList(() -> "role_user");
+        return Collections.singletonList(() -> "ROLE_user");
     }
 
     @Override

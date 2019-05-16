@@ -63,21 +63,22 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
         //本地配置
         auth.inMemoryAuthentication()
-                .withUser("justSimpleRoot").password("123456_abc")
+                .withUser("justSimpleRoot").password("123456_abc").roles("user")
                 .and()
-                .withUser(accountAdmin).password(accountPwd);
+                .withUser(accountAdmin).password(accountPwd).roles("user");
 
         //ldap配置
         auth.ldapAuthentication()
                 .userDnPatterns(ldapProperties.getUserDnPatterns())
-                .contextSource(ldapContextSource);
+                .contextSource(ldapContextSource)
+                .userDetailsContextMapper(authLdapUserDetailsMapper);
 
         //数据库配置
         auth.userDetailsService(dbUserDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     /**
-     * 拦截器配置
+     * 拦截器配置, 请求逻辑处理从UsernamePasswordAuthenticationFilter入手
      */
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -87,8 +88,14 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 //允许跨域
                 .cors();
 
-        //指定登录url
-        http.formLogin().loginPage("/login")
+        //指定登录url, 默认登录登出分别为 /login(如下更改为/auth_login), /logout, 均为post方法; 接口测试前，首先通过/auth_login进行身份认证
+        http.formLogin()
+
+                //指定loginPage会同时更改loginProcessingUrl(security实际认证接口)及formUrl(登录页)
+                .loginPage("/login/in")
+
+                //显式指定认证接口，与登录页区分
+                .loginProcessingUrl("/auth_login")
 
                 //认证成功处理Handler
                 .successHandler(securityAuthenticationSuccessHandler)
@@ -100,7 +107,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().accessDeniedHandler(securityAccessDeniedHandler);
 
         //定义登录消息
-        http.authorizeRequests().antMatchers("/login", "/code",
+        http.authorizeRequests().antMatchers("/login/in", "/code", "/testtest/*",
 
                 //swagger放行
                 "/swagger*/**", "/v2/api-docs", "/webjars/**",
@@ -113,13 +120,10 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
     }
 
-//    /**
-//     * 配置Spring Security的Filter链
-//     */
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        super.configure(web);
-//    }
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
+    }
 
     /**
      * 跨域配置

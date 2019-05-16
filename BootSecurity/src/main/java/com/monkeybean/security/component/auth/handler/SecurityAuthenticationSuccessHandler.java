@@ -3,7 +3,7 @@ package com.monkeybean.security.component.auth.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.monkeybean.security.component.auth.UserInfoHolder;
 import com.monkeybean.security.component.constant.StatusCode;
-import com.monkeybean.security.core.Result;
+import com.monkeybean.security.component.reqres.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

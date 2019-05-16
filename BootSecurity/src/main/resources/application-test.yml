@@ -28,3 +28,4 @@ spring:
 custom:
   accountAdmin: rootBeanTest
   accountPwd: 12345678
+  superAdmins: rootBeanTest,test01

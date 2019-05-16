@@ -1,4 +1,4 @@
-package com.monkeybean.security.core;
+package com.monkeybean.security.component.reqres;
 
 import com.monkeybean.security.component.constant.StatusCode;
 

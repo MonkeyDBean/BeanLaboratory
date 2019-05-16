@@ -1,5 +1,6 @@
 package com.monkeybean.security.component.auth.ldap;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
@@ -10,6 +11,7 @@ import javax.naming.Name;
  * Created by MonkeyBean on 2019/4/20.
  */
 @Entry(objectClasses = "inetOrgPerson")
+@JsonIgnoreProperties({"handler", "hibernateLazyInitializer"})
 public class LdapUserInfo {
 
     @Id

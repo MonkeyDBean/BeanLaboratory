@@ -15,8 +15,11 @@ import java.util.Collection;
 @Component
 public class AuthLdapUserDetailsMapper extends LdapUserDetailsMapper {
 
+    /**
+     * 获取对象后, 自定义处理(如新增属性)
+     */
     @Override
-    public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority > authorities) {
+    public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authorities) {
         AuthUserDetails authUserDetails = new AuthUserDetails();
         UserDetails userDetails = super.mapUserFromContext(ctx, username, authorities);
         authUserDetails.setUserName(userDetails.getUsername());

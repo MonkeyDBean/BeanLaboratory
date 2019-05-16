@@ -1,7 +1,7 @@
 package com.monkeybean.security.controller;
 
 import com.monkeybean.security.component.constant.StatusCode;
-import com.monkeybean.security.core.Result;
+import com.monkeybean.security.component.reqres.Result;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
