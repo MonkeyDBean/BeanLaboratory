@@ -1,0 +1,22 @@
+以下针对浏览器对状态码的处理(浏览器规范及限制)。代码内重定向等不涉及如下问题。
+一.http状态码
+参考及常见问题：
+http://www.cnblogs.com/liyongsan/p/6795851.html
+
+
+二.301 post
+301状态码，需注意：对于某些使用HTTP/1.0协议的浏览器(部分HTTP/1/.1的浏览器也有此问题如微信浏览器)，当它们发送的POST请求得到了一个301响应时，接下来的重定向请求将会变成GET方式。
+
+301丢失请求方法(即post变为了get)的解决方案：
+https://blog.imdst.com/nginxqiang-zhi-tiao-zhuan-https-jie-kou-de-postqing-qiu-bian-cheng-get/
+https://segmentfault.com/q/1010000004897208
+
+如labo_80_rewrite.conf文件中，
+rewrite ^(.*) https://labo.monkeybean.cn$1 permanent;
+改为
+return 307 https://labo.monkeybean.cn$request_uri;
+
+
+三.307 status code
+部分浏览器不能识别307响应, 如微信浏览器
+可考虑不使用重定向
