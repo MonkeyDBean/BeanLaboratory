@@ -7,6 +7,8 @@
 **/labo_release
 **/application-d*.*
 **/info_config.json
+out
+
 
 # 过滤规则
 ## config.php      表示忽略当前路径的 config.php 文件
