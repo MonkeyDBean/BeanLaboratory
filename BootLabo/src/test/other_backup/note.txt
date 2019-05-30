@@ -21,3 +21,22 @@ root登录mysql后
 create user 'usrName'@'%' identified by 'password';
 grant all privileges on *.* to usrName@'%'identified by 'password';
 ```
+
+## 若引入Redis作为session存储(EnableRedisHttpSession)
+一般情况，cookie作用范围为域名根路径
+1.未引入Redis前, 若不设置cookie作用范围, cookie默认作用范围同根路径context-path的设置，需设置如下
+```
+# 根路径
+server.servlet.context-path=/monkey
+# cookie作用范围
+server.servlet.session.cookie.path=/
+```
+2.引入Redis, 则使用如下方式指定cookie作用范围
+```
+@Bean
+CookieSerializer cookieSerializer() {
+    DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
+    defaultCookieSerializer.setCookiePath("/");
+    return defaultCookieSerializer;
+}
+```
