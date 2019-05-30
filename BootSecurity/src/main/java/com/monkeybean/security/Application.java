@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.ldap.repository.config.EnableLdapRepositories;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
@@ -18,6 +19,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 //启用ldap
 @EnableLdapRepositories
+//启用事务，此注解多余，不加也可以，仅在需要事务的方法和类上加事务注解就行
+@EnableTransactionManagement
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {

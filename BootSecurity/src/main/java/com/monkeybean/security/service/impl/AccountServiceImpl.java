@@ -21,6 +21,7 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
     private AccountMapper accountMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Account findByUserName(String userName) {
         Condition condition = new Condition(Account.class);
         condition.createCriteria().andEqualTo("enabled", true)
