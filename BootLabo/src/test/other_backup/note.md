@@ -10,7 +10,7 @@
 
 ## 请求拦截顺序
 Req-->Filter-->Interceptor-->Aspect-->Controller
-![concept_use](/image_backup/concept_use/filter_seq.png)
+![concept_use](BootLabo/src/test/other_backup/image_backup/concept_use/filter_seq.png)
 
 Filer是Java Web里的, 是获取不到Spring里的Controller信息; Interceptor、Aspect是和spring 相关的，可以获取到Controller的信息
 注：在线绘制流程图等UML图, 推荐ProcessOn; 在线图片压缩推荐TinyPng
