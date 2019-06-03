@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 /**
+ * 请求拦截, 合法性判断
+ *
  * Created by MonkeyBean on 2018/05/26.
  */
 public class TokenKeyFilter implements Filter {
