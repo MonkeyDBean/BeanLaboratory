@@ -8,6 +8,7 @@
 **/application-d*.*
 **/info_config.json
 out
+**/test_file.out
 
 
 # 过滤规则

@@ -11,6 +11,9 @@ public class SingleObject2 {
     private SingleObject2() {
     }
 
+    /**
+     * 对整个方法加锁, 保证有序执行, 但执行效率较低
+     */
     public static synchronized SingleObject2 getInstance() {
         if (instance == null) {
             instance = new SingleObject2();

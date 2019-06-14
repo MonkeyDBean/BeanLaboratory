@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class OtherUtilTest {
 
-    //    @Test
+    // @Test
     public void printSimpleHeart() throws Exception {
         System.out.println("full heart:");
         OtherUtil.printSimpleHeart(true);
@@ -23,20 +23,20 @@ public class OtherUtilTest {
         OtherUtil.printSimpleHeart(false);
     }
 
-    //    @Test
+    // @Test
     public void printTwoHeart() throws Exception {
         System.out.println("two heart:");
         OtherUtil.printTwoHeart();
     }
 
-    //    @Test
+    // @Test
     public void testForceCast() {
         Object b = null;
         Integer value = (Integer) b;
         System.out.println("testForceCast, value: " + value);
     }
 
-    //    @Test
+    // @Test
     public void testFileRead() throws Exception {
 
         //列出文件
@@ -59,6 +59,34 @@ public class OtherUtilTest {
         Files.lines(Paths.get(newFilePathStr), StandardCharsets.UTF_8).forEach(value -> fileContentMap.put(path.getFileName().toString(), value));
     }
 
+    // @Test
+    public void testArrayLength() {
+        int[] testArray = {1, 2};
+        assert testArray.length == 2;
+        testArray = new int[3];
+        assert testArray.length == 3;
+    }
+
+    @Test
+    public void testComparator() {
+        List<SortTestClass> dataList = new ArrayList<>();
+        Random random = new Random(System.currentTimeMillis());
+        for (int i = 0; i < 10; i++) {
+            int heavy = random.nextInt(100);
+            String des = "testData" + heavy;
+            SortTestClass sortTestClass = new SortTestClass();
+            sortTestClass.setDes(des);
+            sortTestClass.setHeavy(heavy);
+            dataList.add(sortTestClass);
+        }
+        if (!dataList.isEmpty()) {
+            dataList.sort(Comparator.comparingInt(SortTestClass::getHeavy));
+        }
+        for (SortTestClass eachData : dataList) {
+            System.out.println("des: " + eachData.getDes() + "\t heavy:" + eachData.getHeavy());
+        }
+    }
+
     @Test
     public void testMapStream() {
         List<Integer> origin = new ArrayList<>();
@@ -72,6 +100,38 @@ public class OtherUtilTest {
         System.out.println("max is: " + origin.stream().mapToInt(e -> e).max().orElse(0));
         System.out.println("count is: " + origin.stream().mapToInt(e -> e).count());
         System.out.println("sum is: " + origin.stream().mapToInt(e -> e).distinct().sum());
+    }
+
+    /**
+     * 排序测试类
+     */
+    private class SortTestClass {
+
+        /**
+         * 描述
+         */
+        private String des;
+
+        /**
+         * 权重
+         */
+        private int heavy;
+
+        public String getDes() {
+            return des;
+        }
+
+        public void setDes(String des) {
+            this.des = des;
+        }
+
+        public int getHeavy() {
+            return heavy;
+        }
+
+        public void setHeavy(int heavy) {
+            this.heavy = heavy;
+        }
     }
 
 }
