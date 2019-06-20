@@ -152,5 +152,6 @@ INSERT INTO `other_project_info` (`id`, `project_type`, `project_name`, `project
 	(36, 2, '表情创作器', 'https://www.52doutu.cn/diy/', NULL, NULL, '2018-07-07 17:31:22', '2018-07-07 17:31:22'),
 	(37, 2, '装B生成器', 'http://g.g.adccd.com/', NULL, NULL, '2018-07-07 17:32:05', '2018-07-07 17:32:38'),
 	(38, 2, '2048', 'https://www.52doutu.cn/diy/', NULL, NULL, '2018-07-07 17:31:43', '2018-07-07 17:32:41'),
-	(39, 2, '设计分享', 'https://dribbble.com/', NULL, NULL, '2018-07-07 17:33:16', '2018-07-07 17:33:17');
+	(39, 2, '设计分享', 'https://dribbble.com/', NULL, NULL, '2018-07-07 17:33:16', '2018-07-07 17:33:17'),
+	(40, 1, '腾讯在线协作文档', 'https://docs.qq.com/desktop/', NULL, NULL, '2018-07-07 17:33:16', '2018-07-07 17:33:17');
 
