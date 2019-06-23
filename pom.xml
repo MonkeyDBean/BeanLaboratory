@@ -27,6 +27,7 @@
         <module>BootSecurity</module>
         <module>DingTalkTest</module>
         <module>LdapTest</module>
+        <module>CrawlerTest</module>
     </modules>
 
     <properties>
