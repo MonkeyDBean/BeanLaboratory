@@ -162,13 +162,13 @@ public class WxUtil {
      * 微信小程序：数据签名校验, 保证数据不被篡改, 验证数据完整性
      * 开发文档：https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html
      *
-     * @param rawData 原始数据
+     * @param rawData    原始数据
      * @param sessionKey 用户session_key
      * @param originSign 原始签名
      * @return true为校验通过
      */
-    public static boolean checkSign(String rawData, String sessionKey, String originSign){
-        if(StringUtils.isAnyEmpty(rawData, sessionKey, originSign)){
+    public static boolean checkSign(String rawData, String sessionKey, String originSign) {
+        if (StringUtils.isAnyEmpty(rawData, sessionKey, originSign)) {
             return false;
         }
         String originDataStr = rawData + sessionKey;

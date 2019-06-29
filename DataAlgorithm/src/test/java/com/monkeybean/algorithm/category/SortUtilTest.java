@@ -23,7 +23,7 @@ public class SortUtilTest {
 //        SortUtil.setIsPrint(false);
     }
 
-    //    @Test
+    @Test
     public void multiSort() throws Exception {
         SortUtil sortUtil = new SortUtil();
         List<SortUtil.SortObject<Double>> resultList = sortUtil.multiSort(100, false);

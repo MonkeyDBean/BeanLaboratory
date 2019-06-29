@@ -11,6 +11,9 @@
 9.springboot整合grpc参考：
 https://github.com/xiaoguangtouqiang/grpc-demo
 https://blog.csdn.net/xiaoguangtouqiang/article/details/80492324
+10.serviceMesh浅析：
+https://www.zhihu.com/people/monkeybean/activities
+https://philcalcado.com/2017/08/03/pattern_service_mesh.html
 
 ## 示例参考:
 1.grpc官方示例：https://github.com/grpc/grpc-java/tree/master/examples

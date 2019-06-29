@@ -107,7 +107,7 @@ public class OperationController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "无特殊处理的返回值")})
     @PostMapping(value = "info/project/other")
     public Result<String> addOtherProjectInfo(@Valid @ModelAttribute OtherProjectInfoAddReq reqModel, HttpSession session) {
-        return operationService.addOtherProjectInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getType(), reqModel.getName(),
+        return operationService.addOtherProjectInfo(Integer.parseInt(session.getAttribute(ConstValue.ACCOUNT_IDENTITY).toString()), reqModel.getTypeInt(), reqModel.getName(),
                 reqModel.getUrl(), reqModel.getImage(), reqModel.getDes());
     }
 

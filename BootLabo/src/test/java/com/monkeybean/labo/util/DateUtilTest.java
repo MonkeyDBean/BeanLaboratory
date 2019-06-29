@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class DateUtilTest {
 
-    //    @Test
+    @Test
     public void strToCalendar() throws Exception {
         String dateStr = "2018-03-31 22:22:22";
         Calendar calendar = DateUtil.strToCalendar(dateStr);
@@ -21,7 +21,7 @@ public class DateUtilTest {
         System.out.println("calendar, day：" + calendar.get(Calendar.DAY_OF_YEAR));
     }
 
-    //    @Test
+    @Test
     public void checkNMonthLegal() {
         String dateFrom = "2018-06-10";
         String dateTo = "2018-07-09";

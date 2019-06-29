@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
+import com.monkeybean.labo.component.reqres.res.IpaParseRes;
 import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
@@ -17,8 +18,10 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -433,4 +436,49 @@ public class TestController {
         return "mismatch";
     }
 
+    @ApiOperation(value = "测试调用shell/python/bat等, 读取执行结果")
+    @ApiImplicitParam(name = "file", value = "脚本路径", required = true, dataType = "string", paramType = "query")
+    @GetMapping(path = "script/call")
+    public String callScript(String file) {
+        if (StringUtils.isNotEmpty(file)) {
+            return CommonUtil.callScript(file);
+        }
+        logger.warn("callScript, param illegal");
+        return null;
+    }
+
+    @ApiOperation(value = "测试linux下解析mobileprovision文件")
+    @ApiImplicitParam(name = "file", value = "全路径的文件名", required = true, dataType = "string", paramType = "query")
+    @GetMapping(path = "mobileprovision/parse")
+    public String testParseMobileProvision(String file) {
+        if (StringUtils.isNotEmpty(file)) {
+            return IpaUtil.getFileContentByExecuteShell(file);
+        }
+        logger.warn("testParseMobileProvision, param illegal");
+        return null;
+    }
+
+    @ApiOperation(value = "测试使用copyInputStreamToFile将MultipartFile转File")
+    @ApiImplicitParam(name = "path", value = "转为file的存储路径", required = true, dataType = "string", paramType = "query")
+    @PostMapping(path = "multipart/to/file")
+    public String testMultipartFileToFile(MultipartFile multipartFile, String path) {
+        File file = new File(path);
+        if (file.exists() && file.isDirectory()) {
+            try {
+                FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), new File(path + File.separator + multipartFile.getOriginalFilename()));
+                return "success";
+            } catch (IOException e) {
+                logger.error("testMultipartFileToFile, IOException: {}", e);
+            }
+        }
+        return "fail";
+    }
+
+    @ApiOperation(value = "测试解析ipa文件")
+    @PostMapping(path = "ipa/parse")
+    public IpaParseRes testParseIpa(MultipartFile mFile) throws IOException {
+        File file = File.createTempFile("temp_File", mFile.getOriginalFilename());
+        mFile.transferTo(file);
+        return IpaUtil.parseIpa(file);
+    }
 }

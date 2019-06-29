@@ -13,7 +13,7 @@ public class DataUtilTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
-    //    @Test
+    @Test
     public void testBinarySearch() {
         int n = 50;
         int[] array = new int[n];
@@ -30,7 +30,7 @@ public class DataUtilTest {
         logger.info("findLastEqualSmaller, data is: {}, index is: {}", data, DataUtil.findLastEqualSmaller(array, data));
     }
 
-    //    @Test
+    @Test
     public void arrayShuffle() throws Exception {
         int n = 200000;
         int[] array = new int[n];
@@ -48,7 +48,7 @@ public class DataUtilTest {
         }
     }
 
-    //    @Test
+    @Test
     public void listShuffle() throws Exception {
         int n = 200000;
         List<Integer> swapOriginList = new ArrayList<>();
@@ -80,7 +80,7 @@ public class DataUtilTest {
         }
     }
 
-    //    @Test
+    @Test
     public void getAccurateDivide() throws Exception {
         int a = 4, b = -7, n = 1;
         logger.info("getAccurateDivide {}/{}, n is: {} result is: {}", a, b, n, DataUtil.getAccurateDivide(a, b, n));
@@ -90,7 +90,7 @@ public class DataUtilTest {
         logger.info("getAccurateDivide {}/{}, n is: {} result is: {}", a, b, n, DataUtil.getAccurateDivide(a, b, n));
     }
 
-    //    @Test
+    @Test
     public void getPrimeNum() throws Exception {
         int range = 100000;
         long start = System.currentTimeMillis();
@@ -116,7 +116,7 @@ public class DataUtilTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testDbLinkedList() {
         DataUtil dataUtil = new DataUtil();
         Collection<Integer> collection = new ArrayList<>();
@@ -146,7 +146,7 @@ public class DataUtilTest {
         dbLinkedList.print();
     }
 
-    //    @Test
+    @Test
     public void testTwoDateInterval() {
         int year1 = 2018, month1 = 9, day1 = 3;
         int year2 = 2016, month2 = 12, day2 = 12;
@@ -158,7 +158,7 @@ public class DataUtilTest {
         System.out.println("intervalDays: " + (intervalDays >= 0 ? intervalDays : -intervalDays));
     }
 
-    //    @Test
+    @Test
     public void testPageHelper() {
         int n1 = 12, n2 = 14, m = 4;
         System.out.println("n1: " + n1 + ", m: " + m + ", result: " + DataUtil.pageHelper(n1, m));

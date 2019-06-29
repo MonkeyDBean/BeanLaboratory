@@ -288,6 +288,20 @@
             <version>3.6</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.googlecode.plist/dd-plist -->
+        <dependency>
+            <groupId>com.googlecode.plist</groupId>
+            <artifactId>dd-plist</artifactId>
+            <version>1.21</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.coobird/thumbnailator -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -374,6 +388,7 @@
                 <configuration>
                     <excludes>
                         <exclude>*.*</exclude>
+                        <exclude>back_test/</exclude>
                     </excludes>
                 </configuration>
             </plugin>

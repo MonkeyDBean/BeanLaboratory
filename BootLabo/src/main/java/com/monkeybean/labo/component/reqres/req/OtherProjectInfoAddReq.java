@@ -1,5 +1,7 @@
 package com.monkeybean.labo.component.reqres.req;
 
+import com.monkeybean.labo.predefine.ConstValue;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -15,7 +17,7 @@ public class OtherProjectInfoAddReq {
      */
     @Pattern(regexp = "^[0123]$", message = "类型不合法")
     @NotNull
-    private int type;
+    private String type;
 
     /**
      * 项目名称
@@ -29,12 +31,14 @@ public class OtherProjectInfoAddReq {
      */
     @NotBlank
     @Size(max = 255)
+    @Pattern(regexp = ConstValue.LEGAL_URL)
     private String url;
 
     /**
      * 缩略图url
      */
     @Size(min = 12, max = 255)
+    @Pattern(regexp = ConstValue.LEGAL_URL)
     private String image;
 
     /**
@@ -43,11 +47,11 @@ public class OtherProjectInfoAddReq {
     @Size(min = 1, max = 255)
     private String des;
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -81,5 +85,9 @@ public class OtherProjectInfoAddReq {
 
     public void setDes(String des) {
         this.des = des;
+    }
+
+    public int getTypeInt() {
+        return Integer.parseInt(type);
     }
 }

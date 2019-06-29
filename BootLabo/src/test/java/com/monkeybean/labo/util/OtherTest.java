@@ -5,7 +5,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertTrue;
@@ -20,7 +25,14 @@ public class OtherTest {
         Integer.valueOf(null);
     }
 
-    //    @Test
+    @Test
+    public void testBooleanEqual() {
+        boolean testB = false;
+        assertTrue(Boolean.FALSE.equals(testB));
+        assertTrue(!Boolean.TRUE.equals(testB));
+    }
+
+    @Test
     public void testLinkedList() {
         LinkedList<String> list = new LinkedList<>();
         list.add("111");
@@ -47,20 +59,20 @@ public class OtherTest {
         }
     }
 
-    //    @Test
+    @Test
     public void testSplit() {
         String testStr = "test";
         System.out.println("split 0 is: \n" + testStr.split(",")[0]);
     }
 
-    //    @Test
+    @Test
     public void testLastIndex() {
         String origin = "file.11.jpg";
         String result = origin.substring(0, origin.lastIndexOf("."));
         System.out.println("origin: " + origin + "\nresult: " + result);
     }
 
-    //    @Test
+    @Test
     public void testMergeList() {
         List<Integer> list1 = new ArrayList<>();
         list1.add(1);
@@ -146,6 +158,105 @@ public class OtherTest {
 
         //intern方法返回常量池中字符串对象的引用
         assertTrue(c.intern() == d.intern());
+    }
+
+    /**
+     * Vector, 线程安全的数据结构, 方法均由synchronized修饰(同一时间内只有一个线程能访问，效率较低)
+     * 可实现自动增长的对象数组(动态数组), 可插入不同类的对象
+     * 对于预先不知或者不愿预先定义数组大小, 并且需频繁地进行查找、插入、删除工作, 可考虑使用向量类
+     */
+    @Test
+    public void testVector() {
+        Vector vector = new Vector();
+        vector.addElement("test");
+        vector.addElement(100);
+        vector.setElementAt(true, 1);
+        vector.addElement("test");
+        vector.addElement(24);
+        vector.addElement(new Long(12));
+        System.out.println("vector lastIndexOf 'test' is: " + vector.lastIndexOf("test"));
+        Enumeration<String> elements = vector.elements();
+        while (elements.hasMoreElements()) {
+            System.out.println("vector element: " + String.valueOf(elements.nextElement()));
+        }
+    }
+
+    /**
+     * 正则预编译演示, Matcher非线程安全
+     * A Matcher is created on on a precompiled regexp, while String.matches must recompile the regexp every time it executes, so it becomes more wasteful the more often you run that line of code.
+     * 关于执行效率: https://www.baeldung.com/java-regex-performance
+     */
+    @Test
+    public void testPattern() {
+        String regexPattern = "^test\\w*$";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher("");
+        String[] values = {"test", "test11", "testAa", "not", "test_", "test.."};
+        for (String value : values) {
+            matcher.reset(value);
+            System.out.println("value: " + value + ", matches: " + matcher.matches());
+        }
+        String performanceTestStr = "test1234";
+        matcher.reset(performanceTestStr);
+        int executeTimes = 100000;
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < executeTimes; i++) {
+            matcher.matches();
+        }
+        long intervalPattern = System.currentTimeMillis() - start;
+        start = System.currentTimeMillis();
+        for (int i = 0; i < executeTimes; i++) {
+            performanceTestStr.matches(regexPattern);
+        }
+        long intervalString = System.currentTimeMillis() - start;
+        System.out.println("intervalPattern: " + intervalPattern + ", intervalString: " + intervalString);
+        assertTrue(intervalPattern < intervalString);
+    }
+
+    /**
+     * 测试千分位
+     * d为digital的缩写, \d为匹配数字字符, \D为匹配非数字字符
+     * b为boundaries的缩写, \b为单词边界, \B为非单词边界
+     * exp1(?=exp2) 表示 查找exp2前面的exp1
+     * exp1(?!exp2) 表示 查找后面不是exp2的exp1
+     * 千分位正则匹配为：\B(?=(\d{3})+(?!\d))
+     */
+    @Test
+    public void testReg() {
+        String originStr = "66122400600.04";
+
+        //正则匹配
+        String regexPattern = "\\B(?=(\\d{3})+(?!\\d))";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(originStr);
+        String regResStr = matcher.replaceAll(",");
+        String aimStr = "66,122,400,600.04";
+        assertTrue(regResStr.equals(aimStr));
+
+        //或使用NumberFormat
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        //设置之后不会有千分位，若不设置，默认有千分位
+        //numberFormat.setGroupingUsed(false);
+        String numResStr = numberFormat.format(Double.valueOf(originStr));
+        assertTrue(numResStr.equals(aimStr));
+
+        //或使用DecimalFormat: 千分位格式，保留两位小数
+        DecimalFormat df = new DecimalFormat("###,###.##");
+        String decimalResStr = df.format(Double.valueOf(originStr));
+        assertTrue(decimalResStr.equals(aimStr));
+    }
+
+    /**
+     * 线程安全容器, 写时复制; 适用于读多写少的场景
+     * 当向容器添加元素时, 不直接向当前容器添加, 而是先将当前容器进行Copy, 复制出新的容器, 然后向新的容器里添加元素, 添加完元素之后, 再将原容器的引用指向新的容器
+     * 优点是可以并发读CopyOnWrite容器元素, 无需加锁实现更高并发, 因为当前容器不会添加任何元素; CopyOnWrite容器是读写分离的思想, 读和写不同的容器
+     * 缺点是仅为了保证数据一致性, 添加到拷贝数据时还没有替换, 读的仍然是旧数据; 如果对象比较大, 频繁进行替换会消耗内存, 进而引发GC问题; 此时可考虑换其他容器如ConcurrentHashMap(分段锁)
+     */
+    @Test
+    public void testCopyOnArrayList() {
+        List<String> list = new CopyOnWriteArrayList<>();
+        list.add("simpleUse");
+        System.out.println("CopyOnWriteArrayList element 0 is :" + list.get(0));
     }
 
 }

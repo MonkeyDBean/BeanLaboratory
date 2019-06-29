@@ -1,11 +1,15 @@
 package com.monkeybean.labo.util;
 
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 
@@ -15,7 +19,6 @@ import java.text.DecimalFormat;
  * Created by MonkeyBean on 2018/05/26.
  */
 public final class CommonUtil {
-
     private static Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 
     private CommonUtil() {
@@ -72,6 +75,9 @@ public final class CommonUtil {
 
     /**
      * 读取文件内容
+     * jdk1.7之后, 优雅关闭外部资源的编写方式(实际为语法糖, 编译后依然是之前的finally写法): try-with-resource
+     * 在之前的编程, 如果打开外部资源, 使用完毕后必须手动关闭, 因为外部资源不由JVM管理
+     * 参考: https://www.cnblogs.com/itZhy/p/7636615.html
      *
      * @param file 文件对象
      * @return 成功返回字符串, 失败返回null
@@ -170,4 +176,92 @@ public final class CommonUtil {
         }
         return true;
     }
+
+    /**
+     * 调用脚本, 读取执行结果
+     *
+     * @param filePath 脚本路径, 脚本文件格式可以为bat, shell, python
+     * @return 失败返回null
+     */
+    public static String callScript(String filePath) {
+
+        //若为python脚本, 加命令前缀
+        //解析python文件，也可考虑引入jython依赖(https://mvnrepository.com/artifact/org.python/jython-standalone), 调用PythonInterpreter
+        String format = filePath.substring(filePath.length() - 2, filePath.length());
+        if ("py".equalsIgnoreCase(format)) {
+            filePath = "python " + filePath;
+        }
+        Process proc;
+        try {
+            proc = Runtime.getRuntime().exec(filePath);
+        } catch (IOException e) {
+            logger.error("callScript Runtime exec IOException: {}", e);
+            return null;
+        }
+        StringBuilder originContentSBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+            String eachLine = br.readLine();
+            while (eachLine != null) {
+                originContentSBuilder.append(eachLine);
+                eachLine = br.readLine();
+            }
+        } catch (IOException e) {
+            logger.error("callScript StreamReader IOException: {}", e);
+        }
+        return originContentSBuilder.toString();
+    }
+
+    /**
+     * 调整图片宽高, 重新生成图片
+     *
+     * @param srcPath   原图片路径
+     * @param destPath  新生成的图片路径
+     * @param newWidth  图片新宽度
+     * @param newHeight 图片新高度
+     * @param forceSize 是否强制使用指定宽、高: false为保持原图片宽高比例约束
+     * @return 成功返回true
+     */
+    public static boolean resizeImage(String srcPath, String destPath, int newWidth, int newHeight, boolean forceSize) {
+        try {
+            if (forceSize) {
+                Thumbnails.of(srcPath).forceSize(newWidth, newHeight).toFile(destPath);
+            } else {
+                Thumbnails.of(srcPath).width(newWidth).height(newHeight).toFile(destPath);
+            }
+        } catch (IOException e) {
+            logger.error("resizeImage, IOException: {}", e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 更改图片宽高
+     * 作用同resizeImage方法, 但生成图片的质量远不如resizeImage方法(Thumbnails依赖)
+     *
+     * @param srcPath   原图片路径
+     * @param destPath  新生成的图片路径
+     * @param newWidth  新宽度
+     * @param newHeight 新高度
+     * @return 成功返回true
+     */
+    public static boolean changeSize(String srcPath, String destPath, int newWidth, int newHeight) {
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(srcPath)); BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(destPath))) {
+
+            //字节流转图片对象
+            Image image = ImageIO.read(in);
+
+            //构建图片流
+            BufferedImage bufferedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+            //绘制改变尺寸后的图
+            bufferedImage.getGraphics().drawImage(image, 0, 0, newWidth, newHeight, null);
+            ImageIO.write(bufferedImage, "PNG", out);
+            return true;
+        } catch (IOException e) {
+            logger.error("changeSize, IOException: {}", e);
+            return false;
+        }
+    }
+
 }

@@ -60,35 +60,48 @@ public class ConstValue {
      * 合法图片名正则
      */
     public static final String LEGAL_IMAGE_NAME = "^(.+?)\\.(png|jpg|gif|jpeg)$";
+
+    /**
+     * 合法url正则
+     */
+    public static final String LEGAL_URL = "^http[s]?:.*";
+
     /**
      * 发送验证码成功及失败标志
      */
     public static final String SEND_SUCCESS = "success";
     public static final String SEND_FAIL = "fail";
+
     /**
      * session的expires设置为2小时
      */
     public static final int MAX_SESSION_TIME = 7200;
+
     /**
      * 图片格式
      */
     public static final String IMAGE_SUPPORT_PATTERN = "png,jpg,jpeg,gif";
+
     /**
      * 图片名称最小长度, 如: 1.png
      */
     public static final int IMAGE_NAME_MIN_LEN = 5;
+
     /**
      * 请求的合法时间区间, 毫秒
      */
     public static final long TIME_OUT = 3 * 60 * 1000L;
+
     /**
      * 初始账户id
      */
     public static final int ID_START = 600;
+
     /**
      * 配置表，种子基数配置名称
      */
     public static final String ID_BASE_NAME = "idBaseSeed";
+
     /**
      * 预留账户Id，尾数及位数和
      */
@@ -105,12 +118,14 @@ public class ConstValue {
             add(24);
         }
     };
+
     /**
      * 图片访问权限类型，0为仅私有，1为共享, 2为所有
      */
     public static final int IMAGE_ACCESS_PRIVATE = 0;
     public static final int IMAGE_ACCESS_SHARE = 1;
     public static final int IMAGE_ACCESS_ALL = 2;
+
     /**
      * session存储的用户身份标志Key
      */

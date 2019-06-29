@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class OtherUtilTest {
 
-    // @Test
+    @Test
     public void printSimpleHeart() throws Exception {
         System.out.println("full heart:");
         OtherUtil.printSimpleHeart(true);
@@ -23,20 +23,20 @@ public class OtherUtilTest {
         OtherUtil.printSimpleHeart(false);
     }
 
-    // @Test
+    @Test
     public void printTwoHeart() throws Exception {
         System.out.println("two heart:");
         OtherUtil.printTwoHeart();
     }
 
-    // @Test
+    @Test
     public void testForceCast() {
         Object b = null;
         Integer value = (Integer) b;
         System.out.println("testForceCast, value: " + value);
     }
 
-    // @Test
+    @Test
     public void testFileRead() throws Exception {
 
         //列出文件
@@ -59,7 +59,7 @@ public class OtherUtilTest {
         Files.lines(Paths.get(newFilePathStr), StandardCharsets.UTF_8).forEach(value -> fileContentMap.put(path.getFileName().toString(), value));
     }
 
-    // @Test
+    @Test
     public void testArrayLength() {
         int[] testArray = {1, 2};
         assert testArray.length == 2;

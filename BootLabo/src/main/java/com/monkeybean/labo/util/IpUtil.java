@@ -13,7 +13,6 @@ import java.io.IOException;
  * Created by MonkeyBean on 2018/05/26.
  */
 public final class IpUtil {
-
     private static Logger logger = LoggerFactory.getLogger(WeatherUtil.class);
 
     private IpUtil() {
