@@ -217,6 +217,20 @@
             <version>4.5.6</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.18</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -519,7 +533,7 @@
                             <!-- 这里的 error 改成 warning 则有警告就编译不通过 -->
                             <violationSeverity>error</violationSeverity>
                             <!-- 忽略检查的文件 -->
-                            <excludes>**/CrossOriginFilter.java,**/aspect/*</excludes>
+                            <excludes>**/CrossOriginFilter.java,**/aspect/*, **/TestController.java</excludes>
                         </configuration>
                         <goals>
                             <goal>check</goal>

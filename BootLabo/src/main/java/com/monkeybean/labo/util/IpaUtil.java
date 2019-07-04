@@ -2,14 +2,17 @@ package com.monkeybean.labo.util;
 
 import com.dd.plist.*;
 import com.monkeybean.labo.component.reqres.res.IpaParseRes;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -263,6 +266,178 @@ public class IpaUtil {
         } catch (IOException e) {
             logger.error("parseAndStoreFile, InputStream IOException: {}", e);
         }
+    }
+
+    /**
+     * 解析并更改plist文件内容
+     *
+     * @param originFile            原始plist文件
+     * @param aimFile               处理后的文件
+     * @param softwarePackageUrl    包下载路径
+     * @param displayImageUrl       缩略图路径
+     * @param fullSizeImageUrl      大图路径
+     * @param bundleIdentifierValue 应用包名
+     * @param bundleVersionValue    文件版本号
+     * @param titleValue            应用展示名
+     * @return 成功返回true, 失败返回false
+     */
+    public static synchronized boolean changePlistContent(File originFile, File aimFile, String softwarePackageUrl, String displayImageUrl, String fullSizeImageUrl,
+                                                          String bundleIdentifierValue, String bundleVersionValue, String titleValue) {
+        if (!originFile.exists()) {
+            logger.warn("changePlistContent file not exist");
+            return false;
+        }
+        try (InputStream in = new FileInputStream(originFile)) {
+            NSDictionary rootDict = (NSDictionary) PropertyListParser.parse(in);
+            NSArray itemsArray = ((NSArray) rootDict.get("items"));
+            NSDictionary itemsDic = (NSDictionary) (itemsArray.getArray()[0]);
+            NSArray assetsArray = (NSArray) itemsDic.get("assets");
+            for (NSObject eachItem : assetsArray.getArray()) {
+                NSDictionary eachDic = (NSDictionary) eachItem;
+                String kindValue = eachDic.get("kind").toString();
+                if (kindValue.equals("software-package")) {
+                    eachDic.put("url", softwarePackageUrl);
+                } else if (kindValue.equals("display-image")) {
+                    eachDic.put("url", displayImageUrl);
+                } else if (kindValue.equals("full-size-image")) {
+                    eachDic.put("url", fullSizeImageUrl);
+                }
+            }
+            NSDictionary metaDataDic = (NSDictionary) itemsDic.get("metadata");
+            metaDataDic.put("bundle-identifier", bundleIdentifierValue);
+            metaDataDic.put("bundle-version", bundleVersionValue);
+            metaDataDic.put("title", titleValue);
+
+            //存储处理后的文件
+            PropertyListParser.saveAsXML(rootDict, aimFile);
+        } catch (Exception e) {
+            logger.error("changePlistContent, Exception: {}", e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 根据ipa文件生成目标文件夹(包含原始.ipa、manifest.plist以及及两个icon)
+     *
+     * @param ipaOriginFile     原始ipa文件
+     * @param ipaOriginFileName 原始ipa文件名称, 格式如ReD08C10X3_gymj_old_20190321_120900_107912_ios_dis.ipa; 不可从ipaOriginFile.getName()获取, ipaOriginFile可能为类型转换的临时文件(非原始文件)
+     * @param domain            域名前缀, 格式如https://home02.nm.erduosmj.com/package_ios
+     * @param name              包名(标识符), 格式如ReDx001
+     * @return 失败返回null; 成功返回map, 包含: 目标文件夹路径(desPath), 压缩文件的名称(compressName), 证书颁发商(teamName)
+     */
+    public static Map<String, Object> generateDirByIpa(File ipaOriginFile, String ipaOriginFileName, String domain, String name) {
+        final String imagePattern = ".png";
+        String[] originNameArray = ipaOriginFileName.split("_");
+        if (originNameArray.length < 3) {
+            logger.error("parseIpa MultipartFile name illegal");
+            return null;
+        }
+        IpaParseRes res = IpaUtil.parseIpa(ipaOriginFile);
+        if (res == null) {
+            logger.error("parseIpa failed, IpaParseRes is null");
+            return null;
+        }
+        String versionName = originNameArray[originNameArray.length - 3];
+        String nameAndVersion = name + versionName;
+        String urlPrefix = domain + "/" + nameAndVersion + "/";
+        String softwarePackageUrl = urlPrefix + ipaOriginFileName;
+        String displayImageName = "Icon-57" + imagePattern;
+        String displayImageUrl = urlPrefix + displayImageName;
+        String fullSizeImageName = "Icon-512" + imagePattern;
+        String fullSizeImageUrl = urlPrefix + fullSizeImageName;
+        URL manifestFileUrl = IpaUtil.class.getClassLoader().getResource("back_test/manifest.plist");
+        if (manifestFileUrl == null) {
+            logger.error("testParseIpa, manifest.plist is not exist");
+            return null;
+        }
+        File manifestOriginFile = new File(manifestFileUrl.getPath());
+
+        //创建根目录, 若目录已存在, 则删除原有目录下的所有文件
+        //本地应用运行目录(C:\Users\Administrator\AppData\Local\Temp)磁盘较满, 更改写入到target目录, linux下运行时, 不使用createTempFile, 预先配置临时源文件路径及目标文件路径
+        //String newFileParentPath = ipaOriginFile.getParent() + File.separator + nameAndVersion;
+        String newFileParentPath = manifestOriginFile.getParent() + File.separator + nameAndVersion;
+        File parentDirFile = new File(newFileParentPath);
+        if (parentDirFile.exists()) {
+            File[] existFiles = parentDirFile.listFiles();
+            if (existFiles != null) {
+                for (File file : existFiles) {
+                    boolean deleteChildFile = file.delete();
+                    if (!deleteChildFile) {
+                        logger.error("delete child file failed, parentDir: {}, childDir: {}", newFileParentPath, file.getPath());
+                        return null;
+                    }
+                }
+            }
+        } else {
+            boolean createDir = parentDirFile.mkdir();
+            if (!createDir) {
+                logger.error("parentDirFile create failed: {}", newFileParentPath);
+                return null;
+            }
+        }
+        File aimFile = new File(newFileParentPath + File.separator + manifestOriginFile.getName());
+
+        //生成manifest.plist文件
+        IpaUtil.changePlistContent(manifestOriginFile, aimFile, softwarePackageUrl, displayImageUrl, fullSizeImageUrl, res.getBundleId(), res.getBundleVersion(), res.getDisplayName());
+
+        //复制ipa文件到目标路径
+        String ipaDesPathStr = newFileParentPath + File.separator + ipaOriginFileName;
+        File ipaDesFile = new File(ipaDesPathStr);
+//        if(ipaDesFile.exists()){
+//            logger.warn("ipaDesFile is exist: {}", ipaDesPathStr);
+//            boolean deleteIpaDesFile = ipaDesFile.delete();
+//            if(!deleteIpaDesFile){
+//                logger.error("ipaDesFile delete failed: {}", ipaDesPathStr);
+//                return;
+//            }
+//        }
+//        Files.copy(ipaOriginFile.toPath(), ipaDesFile.toPath());
+        try {
+            FileUtils.copyFile(ipaOriginFile, ipaDesFile);
+        } catch (IOException e) {
+            logger.error("generateDirByIpa copyFile IOException: {}", e);
+            return null;
+        }
+
+        //复制所需图片
+        List<String> originIconList = new ArrayList<>();
+        String icon57OriginName = "AppIcon57x57" + imagePattern;
+        String iconFullOriginName = "AppIcon83.5x83.5@2x~ipad" + imagePattern;
+        originIconList.add(icon57OriginName);
+        originIconList.add(iconFullOriginName);
+        IpaUtil.parseAndStoreFile(ipaOriginFile, originIconList, newFileParentPath);
+
+        //图片重命名
+        String icon57OriginFilePath = newFileParentPath + File.separator + icon57OriginName;
+        String displayImageFilePath = newFileParentPath + File.separator + displayImageName;
+        File icon57OriginFile = new File(icon57OriginFilePath);
+        File displayImageFile = new File(displayImageFilePath);
+        String iconFullOriginFilePath = newFileParentPath + File.separator + iconFullOriginName;
+        String fullSizeImageFilePath = newFileParentPath + File.separator + fullSizeImageName;
+        File iconFullOriginFile = new File(iconFullOriginFilePath);
+        File fullSizeImageFile = new File(fullSizeImageFilePath);
+
+        //重命名文件不存在
+        if (!icon57OriginFile.exists() || !iconFullOriginFile.exists()) {
+            logger.error("icon57OriginFile or iconFullOriginFile not exist, icon57OriginFilePath: {}, iconFullOriginFilePath: {}", icon57OriginFilePath, iconFullOriginFilePath);
+            return null;
+        }
+        boolean icon57Rename = icon57OriginFile.renameTo(displayImageFile);
+        boolean iconFullRename = iconFullOriginFile.renameTo(fullSizeImageFile);
+        if (!icon57Rename || !iconFullRename) {
+            logger.error("icon57OriginFile or iconFullOriginFile renameTo failed, icon57Rename: {}, iconFullRename: {}", icon57Rename, iconFullRename);
+            return null;
+        }
+
+        //更改图片宽高
+        FileCommonUtil.resizeImage(fullSizeImageFilePath, fullSizeImageFilePath, 512, 512, true);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("desPath", newFileParentPath);
+        dataMap.put("teamName", res.getTeamName());
+        String compressName = originNameArray[0] + "-ios-ipa-" + versionName + ".tar.gz";
+        dataMap.put("compressName", compressName);
+        return dataMap;
     }
 
 }

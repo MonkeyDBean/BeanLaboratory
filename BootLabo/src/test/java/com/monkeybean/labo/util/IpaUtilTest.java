@@ -77,4 +77,35 @@ public class IpaUtilTest {
         }
     }
 
+    @Test
+    public void changePlistContent() {
+        URL fileUrl = this.getClass().getClassLoader().getResource("back_test/manifest.plist");
+        if (fileUrl == null) {
+            return;
+        }
+        String urlPrefix = "https://test.domain.com/package_ios";
+        String name = "ReDx001";
+        String version = "12345";
+        String versionName = name + version;
+        urlPrefix = urlPrefix + "/" + versionName + "/";
+        String softwarePackageUrl = urlPrefix + "test.ipa";
+        String displayImageUrl = urlPrefix + "Icon-57.png";
+        String fullSizeImageUrl = urlPrefix + "Icon-512.png";
+        String bundleIdentifierValue = "com.monkey.bean";
+        String bundleVersionValue = "1.0.0.0";
+        String titleValue = "测试标题";
+        File originFile = new File(fileUrl.getPath());
+        String newFileParentPath = originFile.getParent() + File.separator + version;
+        File parentDir = new File(newFileParentPath);
+        if (!parentDir.exists()) {
+            boolean createDir = parentDir.mkdir();
+            if (!createDir) {
+                System.err.println("parentDir create failed: " + parentDir);
+                return;
+            }
+        }
+        File aimFile = new File(newFileParentPath + File.separator + originFile.getName());
+        IpaUtil.changePlistContent(originFile, aimFile, softwarePackageUrl, displayImageUrl, fullSizeImageUrl, bundleIdentifierValue, bundleVersionValue, titleValue);
+    }
+
 }

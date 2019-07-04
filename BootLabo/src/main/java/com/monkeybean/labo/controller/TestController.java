@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
-import com.monkeybean.labo.component.reqres.res.IpaParseRes;
 import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
@@ -17,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -37,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -369,7 +370,7 @@ public class TestController {
     public Result<String> getTmpJsonData(@RequestParam(value = "order") int order) {
         try {
             Resource resource = new ClassPathResource("info_config.json");
-            String content = CommonUtil.getContent(resource.getFile());
+            String content = FileCommonUtil.getContent(resource.getFile());
             JSONArray array = JSONArray.parseArray(content);
             if (order > 0 && order <= array.size()) {
                 return new Result<>(ReturnCode.SUCCESS, array.getString(order - 1));
@@ -474,11 +475,80 @@ public class TestController {
         return "fail";
     }
 
-    @ApiOperation(value = "测试解析ipa文件")
-    @PostMapping(path = "ipa/parse")
-    public IpaParseRes testParseIpa(MultipartFile mFile) throws IOException {
-        File file = File.createTempFile("temp_File", mFile.getOriginalFilename());
-        mFile.transferTo(file);
-        return IpaUtil.parseIpa(file);
+    @ApiOperation(value = "测试重设图片尺寸")
+    @PostMapping(path = "image/resize")
+    public void testResizeImage(int width, int height, MultipartFile mFile, HttpServletResponse response) throws IOException {
+        String fileName = "AppIcon" + width + "x" + height + ".png";
+        response.setContentType("image/png");
+        response.addHeader("Content-Disposition", "attachment; filename=" + fileName);
+        ServletOutputStream servletOutputStream = response.getOutputStream();
+        Thumbnails.of(mFile.getInputStream()).width(width).height(height).toOutputStream(servletOutputStream);
     }
+
+    @ApiOperation(value = "测试解析ipa文件, 生成tar.gz文件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "domain", value = "域名前缀, 格式如https://home02.nm.erduosmj.com/package_ios", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "name", value = "包名(标识符), 格式如ReDx001", required = true, dataType = "string", paramType = "query")
+    })
+    @PostMapping(path = "ipa/parse/to/tar")
+    public void testParseIpaToTar(MultipartFile mFile, String domain, String name) {
+
+        //MultipartFile transfer to File
+        String ipaOriginFileName = mFile.getOriginalFilename();
+        File ipaOriginFile;
+        try {
+            ipaOriginFile = File.createTempFile("temp_File", ipaOriginFileName);
+            mFile.transferTo(ipaOriginFile);
+        } catch (IOException e) {
+            logger.error("createTempFile IOException: {}", e);
+            return;
+        }
+
+        //解析ipa文件, 生成目标文件夹
+        Map<String, Object> dataMap = IpaUtil.generateDirByIpa(ipaOriginFile, ipaOriginFileName, domain, name);
+        if (dataMap == null) {
+            logger.error("testParseIpaToTar, generateDirByIpa failed");
+            return;
+        }
+        logger.info("certificateProvider: {}", dataMap.get("teamName"));
+
+        //压缩为tar.gz
+        String desPath = dataMap.get("desPath").toString();
+        String compressName = dataMap.get("compressName").toString();
+        File inputFile = new File(desPath);
+        String compressPath = desPath + File.separator + compressName;
+        FileCommonUtil.compressToTar(inputFile, compressPath);
+
+        //删除临时文件, 释放资源占用
+        boolean deleteTempFile = ipaOriginFile.delete();
+        if (!deleteTempFile) {
+            logger.warn("deleteTempFile failed");
+        }
+    }
+
+    @ApiOperation(value = "测试ftp上传, 非线程池方式")
+    @PostMapping(path = "ftp/upload")
+    public boolean testUploadFileToFtp(MultipartFile mFile, String url, String user, String password, String path) throws IOException {
+//        File file = File.createTempFile("temp_File", mFile.getOriginalFilename());
+//        mFile.transferTo(file);
+//        boolean uploadRes = FtpUtil.uploadFile(url, user, password, path, mFile.getOriginalFilename(), new FileInputStream(file));
+//        file.delete();
+//        return uploadRes;
+        return FtpUtil.uploadFile(url, user, password, path, mFile.getOriginalFilename(), mFile.getInputStream());
+    }
+
+    @ApiOperation(value = "测试ftp上传, 线程池方式")
+    @PostMapping(path = "ftp/upload/pool")
+    public boolean testUploadFileToFtpByPool(MultipartFile mFile) throws IOException {
+        if (mFile == null) {
+            return false;
+        }
+        String originFilePath = mFile.getOriginalFilename();
+        String desFilePath = "test/" + mFile.getOriginalFilename();
+        boolean uploadResult = FtpUtil.uploadFileToFtp(mFile.getInputStream(), originFilePath, true);
+        boolean moveResult = FtpUtil.moveFileToDirectory(originFilePath, desFilePath);
+        boolean deleteResult = FtpUtil.deleteFile(desFilePath);
+        return uploadResult && moveResult && deleteResult;
+    }
+
 }
