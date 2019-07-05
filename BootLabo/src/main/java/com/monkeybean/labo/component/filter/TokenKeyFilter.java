@@ -75,7 +75,7 @@ public class TokenKeyFilter implements Filter {
         }
 
         //判断请求是否已达最大，请求次数写入缓存
-        int dailyCount = CacheData.REQUEST_COUNT_MAP.getOrDefault(servletPath, 0);
+        int dailyCount = CacheData.getRequestCountMap().getOrDefault(servletPath, 0);
         if (dailyCount < dailyRequestMaxNum) {
             if (dailyCount > dailyRequestWarnNum) {
                 logger.warn("today request: {}  is beyond the guard line, count is: {}, dailyRequestWarnNum: {}", servletPath, dailyCount, dailyRequestWarnNum);
@@ -85,7 +85,7 @@ public class TokenKeyFilter implements Filter {
             httpServletResponse.setStatus(401);
             return;
         }
-        CacheData.REQUEST_COUNT_MAP.put(servletPath, CacheData.REQUEST_COUNT_MAP.getOrDefault(servletPath, 0) + 1);
+        CacheData.getRequestCountMap().put(servletPath, CacheData.getRequestCountMap().getOrDefault(servletPath, 0) + 1);
 
         //无需安全校验的接口
         if (servletPath.contains("swagger") || servletPath.contains("api-docs")

@@ -60,7 +60,7 @@ public class PublicServiceImpl implements PublicService {
         int tail = CommonUtil.getNum(accountId, 0);
         int sum = tail + CommonUtil.getNum(accountId, 1) + CommonUtil.getNum(accountId, 2);
         if (accountId >= 100 && accountId <= 100000) {
-            if (ConstValue.reservedIdTail.contains(tail) || ConstValue.reservedIdSum.contains(sum)) {
+            if (ConstValue.getReservedIdTail().contains(tail) || ConstValue.getReservedIdTail().contains(sum)) {
                 return false;
             }
             if (accountId % 100 == 0) {

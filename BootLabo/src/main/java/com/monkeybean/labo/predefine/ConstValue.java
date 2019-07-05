@@ -101,17 +101,26 @@ public class ConstValue {
      * 配置表，种子基数配置名称
      */
     public static final String ID_BASE_NAME = "idBaseSeed";
-
+    /**
+     * 图片访问权限类型，0为仅私有，1为共享, 2为所有
+     */
+    public static final int IMAGE_ACCESS_PRIVATE = 0;
+    public static final int IMAGE_ACCESS_SHARE = 1;
+    public static final int IMAGE_ACCESS_ALL = 2;
+    /**
+     * session存储的用户身份标志Key
+     */
+    public static final String ACCOUNT_IDENTITY = "accountId";
     /**
      * 预留账户Id，尾数及位数和
      */
-    public static final Set<Integer> reservedIdTail = new HashSet<Integer>() {
+    private static final Set<Integer> reservedIdTail = new HashSet<Integer>() {
         {
             add(6);
             add(8);
         }
     };
-    public static final Set<Integer> reservedIdSum = new HashSet<Integer>() {
+    private static final Set<Integer> reservedIdSum = new HashSet<Integer>() {
         {
             add(6);
             add(12);
@@ -119,16 +128,11 @@ public class ConstValue {
         }
     };
 
-    /**
-     * 图片访问权限类型，0为仅私有，1为共享, 2为所有
-     */
-    public static final int IMAGE_ACCESS_PRIVATE = 0;
-    public static final int IMAGE_ACCESS_SHARE = 1;
-    public static final int IMAGE_ACCESS_ALL = 2;
+    public static Set<Integer> getReservedIdTail() {
+        return reservedIdTail;
+    }
 
-    /**
-     * session存储的用户身份标志Key
-     */
-    public static final String ACCOUNT_IDENTITY = "accountId";
-
+    public static Set<Integer> getReservedIdSum() {
+        return reservedIdSum;
+    }
 }

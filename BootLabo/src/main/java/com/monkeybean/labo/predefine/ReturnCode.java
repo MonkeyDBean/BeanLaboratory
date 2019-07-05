@@ -52,31 +52,19 @@ public enum ReturnCode {
         this.code = code;
         this.msg = msg;
         this.description = description;
-        CacheData.CODE_NAME.put(code, this.name());
+        CacheData.getCodeName().put(code, this.name());
     }
 
     public int getCode() {
         return code;
     }
 
-    void setCode(int code) {
-        this.code = code;
-    }
-
     public String getMsg() {
         return msg;
     }
 
-    void setMsg(String msg) {
-        this.msg = msg;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    void setDescription(String description) {
-        this.description = description;
     }
 
 }

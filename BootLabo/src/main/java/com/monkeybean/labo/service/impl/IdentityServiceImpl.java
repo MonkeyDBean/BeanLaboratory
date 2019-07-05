@@ -394,7 +394,7 @@ public class IdentityServiceImpl implements IdentityService {
         }
 
         //邮箱的发送次数是否已达最大
-        if (CacheData.MAIL_SEND_NUM_MAP.getOrDefault(mail, 0) > this.otherConfig.getMailSendMaxNum()) {
+        if (CacheData.getMailSendNumMap().getOrDefault(mail, 0) > this.otherConfig.getMailSendMaxNum()) {
             IdentityServiceImpl.logger.warn("mail send count is up to max, accountId: {}, mail: {}", accountId, mail);
             return new Result<>(ReturnCode.MAIL_SEND_MAX);
         }
@@ -417,8 +417,8 @@ public class IdentityServiceImpl implements IdentityService {
         if (!sendMail(mail, activeUrl)) {
             return new Result<>(ReturnCode.SERVER_EXCEPTION);
         }
-        CacheData.MAIL_KEY_MAP.put(mailKey, accountInfo.get("phone").toString() + mail);
-        CacheData.MAIL_SEND_NUM_MAP.put(mail, CacheData.MAIL_SEND_NUM_MAP.getOrDefault(mail, 0) + 1);
+        CacheData.getMailKeyMap().put(mailKey, accountInfo.get("phone").toString() + mail);
+        CacheData.getMailSendNumMap().put(mail, CacheData.getMailSendNumMap().getOrDefault(mail, 0) + 1);
         return new Result<>(ReturnCode.SUCCESS);
     }
 
