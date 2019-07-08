@@ -39,7 +39,7 @@ public class RandomStringUtil {
      */
     public RandomStringUtil(int length) {
         if (length < 1) {
-            logger.error("RandomStringUtils constructor, param illegal, length: {}", length);
+            logger.error("RandomStringUtils constructor, param illegal, length: [{}]", length);
             throw new IllegalArgumentException("length < 1: " + length);
         }
         buf = new char[length];

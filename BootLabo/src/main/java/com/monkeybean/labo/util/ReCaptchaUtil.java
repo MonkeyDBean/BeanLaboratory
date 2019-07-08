@@ -36,9 +36,9 @@ public final class ReCaptchaUtil {
         String resultStr = null;
         try {
             resultStr = OkHttpUtil.doGet(VERIFY_URL, requestParam);
-            logger.info("verifyReCaptcha resultStr: {}", resultStr);
+            logger.info("verifyReCaptcha resultStr: [{}]", resultStr);
         } catch (IOException e) {
-            logger.error("OkHttpClient IOException: {}", e);
+            logger.error("OkHttpClient IOException: [{}]", e);
         }
         return resultStr != null && JSONObject.parseObject(resultStr).getBooleanValue("success");
     }

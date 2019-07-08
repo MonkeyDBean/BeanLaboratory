@@ -227,7 +227,7 @@ public final class LegalUtil {
             }
 
         } catch (ParseException e) {
-            logger.error("validate18IdCard, System, ParseException: {}", e);
+            logger.error("validate18IdCard, System, ParseException: [{}]", e);
             return false;
         }
 
@@ -284,7 +284,7 @@ public final class LegalUtil {
                 return false;
             }
         } catch (ParseException e) {
-            logger.error("validate15IDCard, System, ParseException: {}", e);
+            logger.error("validate15IDCard, System, ParseException: [{}]", e);
             return false;
         }
         return true;

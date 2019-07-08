@@ -56,7 +56,7 @@ public class MainApplication {
      */
     @Bean
     public FilterRegistrationBean filterTokenKeyBean() {
-        logger.info("filter token is:-> {}, sniff token is:-> {}, dailyRequestMaxNum is:-> {}", env.getProperty("filter.token"), env.getProperty("sniff.token"), env.getProperty("other.dailyRequestMaxNum"));
+        logger.info("filter token is:-> [{}], sniff token is:->[{}], dailyRequestMaxNum is:-> [{}]", env.getProperty("filter.token"), env.getProperty("sniff.token"), env.getProperty("other.dailyRequestMaxNum"));
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.addUrlPatterns("/*");
         registration.setFilter(new TokenKeyFilter(Boolean.parseBoolean(env.getProperty("filter.token")), env.getProperty("sniff.token"), Integer.parseInt(env.getProperty("other.dailyRequestMaxNum"))));

@@ -39,7 +39,7 @@ public final class WeatherUtil {
         try {
             res = OkHttpUtil.doGet(url, param);
         } catch (IOException e) {
-            logger.error("getInfoBySoJson, IOException: {}", e);
+            logger.error("getInfoBySoJson, IOException: [{}]", e);
         }
         return res;
     }
@@ -97,7 +97,7 @@ public final class WeatherUtil {
         try {
             res = OkHttpUtil.doGet(url);
         } catch (IOException e) {
-            logger.error("getNowWeather, IOException: {}", e);
+            logger.error("getNowWeather, IOException: [{}]", e);
         }
         return res;
     }

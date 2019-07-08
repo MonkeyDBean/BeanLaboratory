@@ -27,7 +27,7 @@ public class MiPushUtil {
     public static String pushFile(File file, String appSecret, boolean isIcon) throws IOException {
         Media media = new Media(appSecret);
         Result result = media.upload(file, isIcon, true);
-        logger.info("miPushFile, result data: {}", result.getData());
+        logger.debug("miPushFile, result data: [{}]", result.getData());
         String url;
         if (isIcon) {
             url = URLDecoder.decode(result.getData(Constants.JSON_MEDIA_ICON_URL), "UTF8");

@@ -82,7 +82,7 @@ public class FtpUtil {
             }
         }
         if (ftpClient == null) {
-            logger.error("Could not get a ftpClient from the pool: {}", ex);
+            logger.error("Could not get a ftpClient from the pool: [{}]", ex);
         }
         return ftpClient;
     }
@@ -97,13 +97,13 @@ public class FtpUtil {
         try {
             ftpClientPool.returnObject(ftpClient);
         } catch (Exception e) {
-            logger.error("ftpClientPool, returnObject Exception: {}", e);
+            logger.error("ftpClientPool, returnObject Exception: [{}]", e);
         } finally {
             if (ftpClient.isAvailable()) {
                 try {
                     ftpClient.disconnect();
                 } catch (IOException e) {
-                    logger.error("ftpClient, disconnect IOException: {}", e);
+                    logger.error("ftpClient, disconnect IOException: [{}]", e);
                 }
             }
         }
@@ -137,7 +137,7 @@ public class FtpUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("existFile, path: {}, fileName: {}, Exception: {}", path, fileName, e);
+            logger.error("existFile, path: [{}], fileName: [{}], Exception: [{}]", path, fileName, e);
         } finally {
             releaseFtpClient(ftpClient);
         }
@@ -168,7 +168,7 @@ public class FtpUtil {
                     if (!files.isEmpty()) {
                         for (String eachFile : files) {
                             if (eachFile.equals(fileName)) {
-                                logger.info("file is exist, remoteFilePath: {}", remoteFilePath);
+                                logger.info("file is exist, remoteFilePath: [{}]", remoteFilePath);
                                 return true;
                             }
                         }
@@ -177,7 +177,7 @@ public class FtpUtil {
                 return ftpClient.storeFile(remoteFilePath, inputStream);
             }
         } catch (IOException e) {
-            logger.error("file is exist, remoteFilePath: {}", remoteFilePath);
+            logger.error("file is exist, remoteFilePath: [{}]", remoteFilePath);
         } finally {
             releaseFtpClient(ftpClient);
         }
@@ -192,7 +192,7 @@ public class FtpUtil {
      */
     public static boolean moveFileToDirectory(String sourceFilePath, String destFilePath) {
         if (StringUtils.isEmpty(sourceFilePath) || StringUtils.isEmpty(destFilePath)) {
-            logger.warn("moveFileToDirectory, param illegal, sourceFilePath: {}, destFilePath: {}", sourceFilePath, destFilePath);
+            logger.warn("moveFileToDirectory, param illegal, sourceFilePath: [{}], destFilePath: [{}]", sourceFilePath, destFilePath);
             return false;
         }
         if (sourceFilePath.equals(destFilePath)) {
@@ -210,7 +210,7 @@ public class FtpUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("move file error, Exception: {}", e);
+            logger.error("move file error, Exception: [{}]", e);
         }
         return false;
     }
@@ -222,7 +222,7 @@ public class FtpUtil {
      */
     public static boolean deleteFile(String filePath) {
         if (StringUtils.isEmpty(filePath) || "/".equals(filePath)) {
-            logger.warn("deleteFile, param illegal, filePath: {}", filePath);
+            logger.warn("deleteFile, param illegal, filePath: [{}]", filePath);
             return false;
         }
         FTPClient ftpClient = getFtpClient();
@@ -233,7 +233,7 @@ public class FtpUtil {
                 }
             }
         } catch (Exception e) {
-            logger.error("delete file error, {}: {}", filePath, e);
+            logger.error("delete file error, filePath: [{}], e: [{}]", filePath, e);
         }
         return false;
     }
@@ -273,7 +273,7 @@ public class FtpUtil {
                 if (ftpClient.changeWorkingDirectory(currentDir.toString()))
                     continue;
                 if (!ftpClient.makeDirectory(currentDir.toString())) {
-                    logger.error("create dir failed：{}", currentDir.toString());
+                    logger.error("create dir failed：[{}]", currentDir.toString());
                     return false;
                 }
             }
@@ -281,7 +281,7 @@ public class FtpUtil {
             //将目录切换至指定路径
             return ftpClient.changeWorkingDirectory(dir);
         } catch (Exception e) {
-            logger.error("ftp create dir Exception: {}", e);
+            logger.error("ftp create dir Exception: [{}]", e);
             return false;
         } finally {
             releaseFtpClient(ftpClient);
@@ -315,7 +315,7 @@ public class FtpUtil {
             try {
                 return ftpClient.listFiles(remotePath + "/", file -> file != null && file.getSize() > 0);
             } catch (IOException e) {
-                logger.error("retrieveFTPFiles, IOException: {}", e);
+                logger.error("retrieveFTPFiles, IOException: [{}]", e);
             } finally {
                 releaseFtpClient(ftpClient);
             }
@@ -363,7 +363,7 @@ public class FtpUtil {
             int reply = ftp.getReplyCode();
             if (!FTPReply.isPositiveCompletion(reply)) {
                 ftp.disconnect();
-                logger.error("uploadFile, ftp reply is negative: {}", reply);
+                logger.error("uploadFile, ftp reply is negative: [{}]", reply);
                 return executeResult;
             }
             if (!ftp.changeWorkingDirectory(path)) {
@@ -387,20 +387,20 @@ public class FtpUtil {
             }
             ftp.logout();
         } catch (IOException e) {
-            logger.error("uploadFile, IOException: {}", e);
+            logger.error("uploadFile, IOException: [{}]", e);
         } finally {
             if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
-                    logger.error("uploadFile, inputStream close IOException: {}", e);
+                    logger.error("uploadFile, inputStream close IOException: [{}]", e);
                 }
             }
             if (ftp.isConnected()) {
                 try {
                     ftp.disconnect();
                 } catch (IOException e) {
-                    logger.error("uploadFile, disconnect IOException: {}", e);
+                    logger.error("uploadFile, disconnect IOException: [{}]", e);
                 }
             }
         }

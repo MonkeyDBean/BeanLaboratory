@@ -42,9 +42,9 @@ public final class ApacheHttpUtil {
         try {
             url = URLEncoder.encode(mapper.writeValueAsString(param), "utf-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error("mapToUrl UnsupportedEncodingException e->{}", e);
+            logger.error("mapToUrl UnsupportedEncodingException e: [{}]", e);
         } catch (JsonProcessingException e) {
-            logger.error("mapToUrl JsonProcessingException e->{}", e);
+            logger.error("mapToUrl JsonProcessingException e: [{}]", e);
         }
         return url;
     }
@@ -87,7 +87,7 @@ public final class ApacheHttpUtil {
             }
             post.setEntity(new UrlEncodedFormEntity(valuePairs, "UTF-8"));
             CloseableHttpResponse response = httpclient.execute(post);
-            logger.info("post request, url: {}, params: {}, response: {}", url, params, response.getStatusLine());
+            logger.info("post request, url: [{}], params: [{}], response: [{}]", url, params, response.getStatusLine());
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
                 HttpEntity entity = response.getEntity();
@@ -111,7 +111,7 @@ public final class ApacheHttpUtil {
     public static String getRequest(Map<String, Object> param, String address) {
         String getJsonParam = mapToUrl(param);
         String requestUrl = address + "?" + getJsonParam;
-        logger.info("getRequest requestUrl: {}", requestUrl);
+        logger.info("getRequest requestUrl: [{}]", requestUrl);
         return doGet(requestUrl);
     }
 
@@ -127,7 +127,7 @@ public final class ApacheHttpUtil {
         String getJsonParam = mapToUrl(paramGet);
         String requestUrl = address + "?" + getJsonParam;
         String postStr = JSON.toJSONString(paramPost);
-        logger.info("postRequest, requestUrl: {}, paramPost: {}", requestUrl, postStr);
+        logger.info("postRequest, requestUrl: [{}], paramPost: [{}]", requestUrl, postStr);
         return doPostForm(requestUrl, paramPost);
     }
 

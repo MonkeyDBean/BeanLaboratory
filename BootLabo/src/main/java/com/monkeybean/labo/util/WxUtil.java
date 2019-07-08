@@ -42,15 +42,15 @@ public class WxUtil {
         try {
             String response = OkHttpUtil.doGet(url);
             JSONObject json = JSONObject.parseObject(response);
-            logger.debug("requestWx, request url is: {}, wx res: {}", url, json);
+            logger.debug("requestWx, request url is: [{}], wx res: [{}]", url, json);
             Integer errCode = json.getInteger("errcode");
             if (errCode != null && errCode != 0) {
-                logger.warn("requestWx error, request url is: {}, wx res: {}", url, json);
+                logger.warn("requestWx error, request url is: [{}], wx res: [{}]", url, json);
                 return null;
             }
             return json;
         } catch (Exception e) {
-            logger.error("requestWx failed, request url is: {}, e: {}", url, e);
+            logger.error("requestWx failed, request url is: [{}], e: [{}]", url, e);
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class WxUtil {
                 + "&scope=" + scopeStr
                 + "&state=" + custom
                 + "#wechat_redirect";
-        logger.debug("getWxAuthUrl: {}", authUrl);
+        logger.debug("getWxAuthUrl: [{}]", authUrl);
         return authUrl;
     }
 

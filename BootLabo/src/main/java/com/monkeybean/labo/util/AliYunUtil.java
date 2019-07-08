@@ -63,7 +63,7 @@ public final class AliYunUtil {
         try {
             DefaultProfile.addEndpoint(AliYunUtil.END_POINT_AREA, AliYunUtil.END_POINT_AREA, AliYunUtil.PRODUCT, AliYunUtil.DOMAIN);
         } catch (ClientException e) {
-            logger.error("ali yun sendMessage, ClientException: {}", e);
+            logger.error("ali yun sendMessage, ClientException: [{}]", e);
             result.put(sendResultKey, ConstValue.SEND_FAIL);
             return result;
         }
@@ -85,7 +85,7 @@ public final class AliYunUtil {
         try {
             sendSmsResponse = acsClient.getAcsResponse(request);
         } catch (ClientException e) {
-            logger.error("ali yun sendMessage, ClientException: {}", e);
+            logger.error("ali yun sendMessage, ClientException: [{}]", e);
             result.put(sendResultKey, ConstValue.SEND_FAIL);
             return result;
         }

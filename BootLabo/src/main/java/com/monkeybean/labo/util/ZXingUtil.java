@@ -56,7 +56,7 @@ public final class ZXingUtil {
         try {
             ImageIO.write(logoImage != null ? addLogoToImage(image, logoImage) : image, format, file);
         } catch (IOException e) {
-            logger.error("writeToFile, Could not write an image of format: {}, IOException: {}", format, e);
+            logger.error("writeToFile, Could not write an image of format: [{}], IOException: [{}]", format, e);
         }
     }
 
@@ -72,7 +72,7 @@ public final class ZXingUtil {
         try {
             ImageIO.write(logoImage != null ? addLogoToImage(image, logoImage) : image, format, stream);
         } catch (IOException e) {
-            logger.error("writeToStream, Could not write an image of format: {}, IOException: {}", format, e);
+            logger.error("writeToStream, Could not write an image of format: [{}], IOException: [{}]", format, e);
         }
     }
 
@@ -86,7 +86,7 @@ public final class ZXingUtil {
         try {
             bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height, hints);
         } catch (WriterException e) {
-            logger.error("generateQRCode, WriterException: {}", e);
+            logger.error("generateQRCode, WriterException: [{}]", e);
         }
         return bitMatrix;
     }
@@ -143,7 +143,7 @@ public final class ZXingUtil {
             Result result = formatReader.decode(binaryBitmap, hints);
             codeContent = result.getText();
         } catch (NotFoundException e) {
-            logger.error("NotFoundException: {}", e);
+            logger.error("NotFoundException: [{}]", e);
         }
         return codeContent;
     }

@@ -53,7 +53,7 @@ public final class Coder {
             //加密结果需要转换成hex才能存入数据库
             desPassword = Hex.encodeHexString(enc);
         } catch (Exception e) {
-            logger.error("Coder, encryptPassWithSlat error: {}", e);
+            logger.error("Coder, encryptPassWithSlat error: [{}]", e);
         }
         return desPassword;
     }
@@ -72,7 +72,7 @@ public final class Coder {
             byte[] dec = DesUtil.decrypt(hex, key);
             passwordMd5 = new String(dec);
         } catch (Exception e) {
-            logger.error("decryptPsWithSlat error: {}", e);
+            logger.error("decryptPsWithSlat error: [{}]", e);
         }
         return passwordMd5;
     }
@@ -149,7 +149,7 @@ public final class Coder {
             //base64使用方法库
             //result = new String(Base64.encodeBase64(encryptHex(md.digest()).getBytes()));
         } catch (Exception e) {
-            logger.error("Exception:-> {}", e);
+            logger.error("Exception:-> [{}]", e);
         }
         return result;
     }
@@ -168,7 +168,7 @@ public final class Coder {
             md.update(origin.getBytes());
             result = new String(Base64.encodeBase64(md.digest()));
         } catch (Exception e) {
-            logger.error("Exception:-> {}", e);
+            logger.error("Exception:-> [{}]", e);
         }
         return result;
     }

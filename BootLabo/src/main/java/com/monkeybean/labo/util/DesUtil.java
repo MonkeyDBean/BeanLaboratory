@@ -43,7 +43,7 @@ public final class DesUtil {
             //正式执行加密操作
             return cipher.doFinal(src);
         } catch (Throwable e) {
-            logger.error("encrypt Throwable error: {}", e);
+            logger.error("encrypt Throwable error: [{}]", e);
         }
         return null;
     }

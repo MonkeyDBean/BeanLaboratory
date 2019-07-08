@@ -29,7 +29,7 @@ public final class FilterUtf8Mb4Util {
         try {
             bytes = text.getBytes("utf-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error("filterOffUtf8Mb4 text to bytes, UnsupportedEncodingException: {}", e);
+            logger.error("filterOffUtf8Mb4 text to bytes, UnsupportedEncodingException: [{}]", e);
         }
         ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
         int i = 0;
@@ -58,7 +58,7 @@ public final class FilterUtf8Mb4Util {
         try {
             return new String(buffer.array(), "utf-8");
         } catch (UnsupportedEncodingException e) {
-            logger.error("filterOffUtf8Mb4 result, UnsupportedEncodingException: {}", e);
+            logger.error("filterOffUtf8Mb4 result, UnsupportedEncodingException: [{}]", e);
             return "";
         }
     }

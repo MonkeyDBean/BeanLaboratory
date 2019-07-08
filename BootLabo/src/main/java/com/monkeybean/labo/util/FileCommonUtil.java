@@ -115,7 +115,7 @@ public class FileCommonUtil {
                 Thumbnails.of(srcPath).width(newWidth).height(newHeight).toFile(destPath);
             }
         } catch (IOException e) {
-            logger.error("resizeImage, IOException: {}", e);
+            logger.error("resizeImage, IOException: [{}]", e);
             return false;
         }
         return true;
@@ -145,7 +145,7 @@ public class FileCommonUtil {
             ImageIO.write(bufferedImage, "PNG", out);
             return true;
         } catch (IOException e) {
-            logger.error("changeSize, IOException: {}", e);
+            logger.error("changeSize, IOException: [{}]", e);
             return false;
         }
     }
@@ -166,7 +166,7 @@ public class FileCommonUtil {
         if (outputFile.exists()) {
             boolean deleteExist = outputFile.delete();
             if (!deleteExist) {
-                logger.error("deleteExist failed, outFilePath: {}", outFilePath);
+                logger.error("deleteExist failed, outFilePath: [{}]", outFilePath);
             }
         }
         File outputFileParent = new File(outputFile.getParent());
@@ -194,7 +194,7 @@ public class FileCommonUtil {
                 os.closeArchiveEntry();
             }
         } catch (Exception e) {
-            logger.error("compressToTar Exception: {}", e);
+            logger.error("compressToTar Exception: [{}]", e);
             return false;
         }
         return true;

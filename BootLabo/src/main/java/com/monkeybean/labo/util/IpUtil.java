@@ -67,7 +67,7 @@ public final class IpUtil {
             DataBlock block = searcher.binarySearch(ip);
             return block.getRegion();
         } catch (DbMakerConfigException | IOException e) {
-            logger.error("ip2region, error: {}", e);
+            logger.error("ip2region, error: [{}]", e);
             return null;
         }
     }

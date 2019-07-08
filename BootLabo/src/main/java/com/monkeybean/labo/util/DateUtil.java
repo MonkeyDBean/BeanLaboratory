@@ -117,7 +117,7 @@ public final class DateUtil {
         try {
             d = sdf.parse(str);
         } catch (Exception e) {
-            logger.error("dateStr2Date, parse error: {}", e);
+            logger.error("dateStr2Date, parse error: [{}]", e);
         }
         return d;
     }
@@ -131,7 +131,7 @@ public final class DateUtil {
         try {
             d = sdf.parse(str);
         } catch (Exception e) {
-            logger.error("timeStr2Date, parse error: {}", e);
+            logger.error("timeStr2Date, parse error: [{}]", e);
         }
         return d;
     }
@@ -224,7 +224,7 @@ public final class DateUtil {
     public static List<Date> getRandomDateList(Date startDate, Date endDate, int count) {
         List<Date> dateList = new ArrayList<>();
         if (startDate.getTime() >= endDate.getTime() || count < 1 || count > 10) {
-            logger.warn("getRandomDateList, param illegal, startDate: {}, endDate: {}, count: {}", startDate.getTime(), endDate.getTime(), count);
+            logger.warn("getRandomDateList, param illegal, startDate: [{}], endDate: [{}], count: [{}]", startDate.getTime(), endDate.getTime(), count);
             return dateList;
         }
         for (int i = 0; i < count; i++) {
@@ -247,7 +247,7 @@ public final class DateUtil {
      */
     private static long randomTimeStamp(long begin, long end) {
         if (begin < 0 || end < 0 || begin >= end) {
-            logger.warn("randomTimeStamp param illegal, begin: {}, end: {}", begin, end);
+            logger.warn("randomTimeStamp param illegal, begin: [{}], end: [{}]", begin, end);
             return 0;
         }
         long rtn = begin + (long) (Math.random() * (end - begin));

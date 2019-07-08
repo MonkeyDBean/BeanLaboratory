@@ -43,13 +43,13 @@ public class IpaUtil {
         try {
             nsObject = PropertyListParser.parse(in);
         } catch (IOException | PropertyListFormatException | ParseException | ParserConfigurationException | SAXException e) {
-            logger.error("parsePListToMap, Exception: {}", e);
+            logger.error("parsePListToMap, Exception: [{}]", e);
             return null;
         } finally {
             try {
                 in.close();
             } catch (IOException e) {
-                logger.error("parsePListToMap, stream close IOException: {}", e);
+                logger.error("parsePListToMap, stream close IOException: [{}]", e);
             }
         }
         return (Map<String, Object>) nsObject.toJavaObject();
@@ -74,7 +74,7 @@ public class IpaUtil {
                 eachLine = br.readLine();
             }
         } catch (IOException e) {
-            logger.error("parseMobileProvisionToMap, IOException: {}", e);
+            logger.error("parseMobileProvisionToMap, IOException: [{}]", e);
         }
 
         //提取plist部分
@@ -89,13 +89,13 @@ public class IpaUtil {
         try {
             nsObject = PropertyListParser.parse(originContentSBuilder.substring(i, j + endStr.length()).getBytes());
         } catch (IOException | PropertyListFormatException | ParseException | ParserConfigurationException | SAXException e) {
-            logger.error("parseMobileProvisionToMap, Exception: {}", e);
+            logger.error("parseMobileProvisionToMap, Exception: [{}]", e);
             return null;
         } finally {
             try {
                 in.close();
             } catch (IOException e) {
-                logger.error("parseMobileProvisionToMap, stream close IOException: {}", e);
+                logger.error("parseMobileProvisionToMap, stream close IOException: [{}]", e);
             }
         }
         return (Map<String, Object>) nsObject;
@@ -119,7 +119,7 @@ public class IpaUtil {
         try {
             proc = Runtime.getRuntime().exec(cmd);
         } catch (IOException e) {
-            logger.error("getFileContentByExecuteShell, Runtime exec IOException: {}", e);
+            logger.error("getFileContentByExecuteShell, Runtime exec IOException: [{}]", e);
             return null;
         }
         StringBuilder originContentSBuilder = new StringBuilder();
@@ -130,7 +130,7 @@ public class IpaUtil {
                 eachLine = br.readLine();
             }
         } catch (IOException e) {
-            logger.error("getFileContentByExecuteShell, StreamReader IOException: {}", e);
+            logger.error("getFileContentByExecuteShell, StreamReader IOException: [{}]", e);
         }
         return originContentSBuilder.toString();
     }
@@ -144,7 +144,7 @@ public class IpaUtil {
      */
     public static IpaParseRes parseIpa(File file) {
         if (!file.exists()) {
-            logger.warn("parseIpa, file not exist, param file path is: {}", file.getPath());
+            logger.warn("parseIpa, file not exist, param file path is: [{}]", file.getPath());
         } else {
             try (InputStream in = new FileInputStream(file); ZipInputStream zipIns = new ZipInputStream(in)) {
                 IpaParseRes res = new IpaParseRes();
@@ -169,7 +169,7 @@ public class IpaUtil {
 
                                 //打印词条
                                 for (String key : rootDict.allKeys()) {
-                                    logger.info(key + ":" + rootDict.get(key));
+                                    logger.debug(key + ":" + rootDict.get(key));
                                 }
 
                                 //设置所需信息
@@ -210,7 +210,7 @@ public class IpaUtil {
 
                                 //打印词条
                                 for (String key : map.keySet()) {
-                                    logger.info(key + ":" + map.get(key));
+                                    logger.debug(key + ":" + map.get(key));
                                 }
                                 res.setTeamName(map.get("TeamName").toString());
                             }
@@ -219,7 +219,7 @@ public class IpaUtil {
                 }
                 return res;
             } catch (Exception e) {
-                logger.error("parseIpa, Exception: {}", e);
+                logger.error("parseIpa, Exception: [{}]", e);
             }
         }
         return null;
@@ -230,7 +230,7 @@ public class IpaUtil {
      *
      * @param file     ipa文件
      * @param iconList 图标名称列表
-     * @param path     图标存储路径
+     * @param path     图标存储父路径
      */
     public static void parseAndStoreFile(File file, List<String> iconList, String path) {
         if (iconList == null || iconList.isEmpty()) {
@@ -254,9 +254,9 @@ public class IpaUtil {
                                 while ((chunk = zipIns.read(data)) != -1) {
                                     fos.write(data, 0, chunk);
                                 }
-                                logger.info("image download success, path: {}", imgPath);
+                                logger.debug("image download success, path: [{}]", imgPath);
                             } catch (IOException e) {
-                                logger.error("parseAndStoreFile, FileOutputStream IOException: {}", e);
+                                logger.error("parseAndStoreFile, FileOutputStream IOException: [{}]", e);
                             }
                             break;
                         }
@@ -264,7 +264,7 @@ public class IpaUtil {
                 }
             }
         } catch (IOException e) {
-            logger.error("parseAndStoreFile, InputStream IOException: {}", e);
+            logger.error("parseAndStoreFile, InputStream IOException: [{}]", e);
         }
     }
 
@@ -311,7 +311,7 @@ public class IpaUtil {
             //存储处理后的文件
             PropertyListParser.saveAsXML(rootDict, aimFile);
         } catch (Exception e) {
-            logger.error("changePlistContent, Exception: {}", e);
+            logger.error("changePlistContent, Exception: [{}]", e);
             return false;
         }
         return true;
@@ -321,16 +321,15 @@ public class IpaUtil {
      * 根据ipa文件生成目标文件夹(包含原始.ipa、manifest.plist以及及两个icon)
      *
      * @param ipaOriginFile     原始ipa文件
-     * @param ipaOriginFileName 原始ipa文件名称, 格式如ReD08C10X3_gymj_old_20190321_120900_107912_ios_dis.ipa; 不可从ipaOriginFile.getName()获取, ipaOriginFile可能为类型转换的临时文件(非原始文件)
-     * @param domain            域名前缀, 格式如https://home02.nm.erduosmj.com/package_ios
+     * @param ipaOriginFileName 原始ipa文件名称, 格式如: ReD08C10X3_gymj_old_20190321_120900_107912_ios_dis.ipa; 不可从ipaOriginFile.getName()获取, ipaOriginFile可能为类型转换的临时文件(非原始文件)
+     * @param domain            域名前缀, 格式如: https://home02.nm.erduosmj.com/package_ios
      * @param name              包名(标识符), 格式如ReDx001
      * @return 失败返回null; 成功返回map, 包含: 目标文件夹路径(desPath), 压缩文件的名称(compressName), 证书颁发商(teamName)
      */
     public static Map<String, Object> generateDirByIpa(File ipaOriginFile, String ipaOriginFileName, String domain, String name) {
-        final String imagePattern = ".png";
         String[] originNameArray = ipaOriginFileName.split("_");
         if (originNameArray.length < 3) {
-            logger.error("parseIpa MultipartFile name illegal");
+            logger.error("generateDirByIpa, MultipartFile name illegal");
             return null;
         }
         IpaParseRes res = IpaUtil.parseIpa(ipaOriginFile);
@@ -338,6 +337,7 @@ public class IpaUtil {
             logger.error("parseIpa failed, IpaParseRes is null");
             return null;
         }
+        final String imagePattern = ".png";
         String versionName = originNameArray[originNameArray.length - 3];
         String nameAndVersion = name + versionName;
         String urlPrefix = domain + "/" + nameAndVersion + "/";
@@ -348,23 +348,27 @@ public class IpaUtil {
         String fullSizeImageUrl = urlPrefix + fullSizeImageName;
         URL manifestFileUrl = IpaUtil.class.getClassLoader().getResource("back_test/manifest.plist");
         if (manifestFileUrl == null) {
-            logger.error("testParseIpa, manifest.plist is not exist");
+            logger.error("generateDirByIpa, manifest.plist is not exist");
             return null;
         }
+
+        //plist原始文件
         File manifestOriginFile = new File(manifestFileUrl.getPath());
 
-        //创建根目录, 若目录已存在, 则删除原有目录下的所有文件
-        //本地应用运行目录(C:\Users\Administrator\AppData\Local\Temp)磁盘较满, 更改写入到target目录, linux下运行时, 不使用createTempFile, 预先配置临时源文件路径及目标文件路径
+        //生成文件父路径
         //String newFileParentPath = ipaOriginFile.getParent() + File.separator + nameAndVersion;
         String newFileParentPath = manifestOriginFile.getParent() + File.separator + nameAndVersion;
         File parentDirFile = new File(newFileParentPath);
+
+        //创建根目录, 若目录已存在, 则删除原有目录下的所有文件
+        //本地应用运行目录(C:\Users\Administrator\AppData\Local\Temp)磁盘较满, 更改写入到target目录, linux下运行时, 不使用createTempFile, 预先配置临时源文件路径及目标文件路径
         if (parentDirFile.exists()) {
             File[] existFiles = parentDirFile.listFiles();
             if (existFiles != null) {
                 for (File file : existFiles) {
                     boolean deleteChildFile = file.delete();
                     if (!deleteChildFile) {
-                        logger.error("delete child file failed, parentDir: {}, childDir: {}", newFileParentPath, file.getPath());
+                        logger.error("delete child file failed, parentDir: [{}], childDir: [{}]", newFileParentPath, file.getPath());
                         return null;
                     }
                 }
@@ -372,23 +376,23 @@ public class IpaUtil {
         } else {
             boolean createDir = parentDirFile.mkdir();
             if (!createDir) {
-                logger.error("parentDirFile create failed: {}", newFileParentPath);
+                logger.error("parentDirFile create failed: [{}]", newFileParentPath);
                 return null;
             }
         }
-        File aimFile = new File(newFileParentPath + File.separator + manifestOriginFile.getName());
 
         //生成manifest.plist文件
+        File aimFile = new File(newFileParentPath + File.separator + manifestOriginFile.getName());
         IpaUtil.changePlistContent(manifestOriginFile, aimFile, softwarePackageUrl, displayImageUrl, fullSizeImageUrl, res.getBundleId(), res.getBundleVersion(), res.getDisplayName());
 
         //复制ipa文件到目标路径
         String ipaDesPathStr = newFileParentPath + File.separator + ipaOriginFileName;
         File ipaDesFile = new File(ipaDesPathStr);
 //        if(ipaDesFile.exists()){
-//            logger.warn("ipaDesFile is exist: {}", ipaDesPathStr);
+//            logger.warn("ipaDesFile is exist: [{}]", ipaDesPathStr);
 //            boolean deleteIpaDesFile = ipaDesFile.delete();
 //            if(!deleteIpaDesFile){
-//                logger.error("ipaDesFile delete failed: {}", ipaDesPathStr);
+//                logger.error("ipaDesFile delete failed: [{}]", ipaDesPathStr);
 //                return;
 //            }
 //        }
@@ -396,7 +400,7 @@ public class IpaUtil {
         try {
             FileUtils.copyFile(ipaOriginFile, ipaDesFile);
         } catch (IOException e) {
-            logger.error("generateDirByIpa copyFile IOException: {}", e);
+            logger.error("generateDirByIpa copyFile IOException: [{}]", e);
             return null;
         }
 
@@ -420,13 +424,13 @@ public class IpaUtil {
 
         //重命名文件不存在
         if (!icon57OriginFile.exists() || !iconFullOriginFile.exists()) {
-            logger.error("icon57OriginFile or iconFullOriginFile not exist, icon57OriginFilePath: {}, iconFullOriginFilePath: {}", icon57OriginFilePath, iconFullOriginFilePath);
+            logger.error("icon57OriginFile or iconFullOriginFile not exist, icon57OriginFilePath: [{}], iconFullOriginFilePath: [{}]", icon57OriginFilePath, iconFullOriginFilePath);
             return null;
         }
         boolean icon57Rename = icon57OriginFile.renameTo(displayImageFile);
         boolean iconFullRename = iconFullOriginFile.renameTo(fullSizeImageFile);
         if (!icon57Rename || !iconFullRename) {
-            logger.error("icon57OriginFile or iconFullOriginFile renameTo failed, icon57Rename: {}, iconFullRename: {}", icon57Rename, iconFullRename);
+            logger.error("icon57OriginFile or iconFullOriginFile renameTo failed, icon57Rename: [{}], iconFullRename: [{}]", icon57Rename, iconFullRename);
             return null;
         }
 
@@ -438,6 +442,30 @@ public class IpaUtil {
         String compressName = originNameArray[0] + "-ios-ipa-" + versionName + ".tar.gz";
         dataMap.put("compressName", compressName);
         return dataMap;
+    }
+
+    /**
+     * 复制inputStream流(InputStream不可重复读取), 方案如下
+     * 1.InputStream转化为ByteArrayOutputStream
+     * 2.需要使用InputStream对象时, 再从ByteArrayOutputStream转化: new ByteArrayInputStream(os.toByteArray())
+     * 3.或生成临时文件, 每次从文件读取
+     *
+     * @param inputStream 输入流
+     * @return 成功返回ByteArrayOutputStream, 失败返回null
+     */
+    public static ByteArrayOutputStream cloneInputStream(InputStream inputStream) {
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[preSetByteSize];
+            int len;
+            while ((len = inputStream.read(buffer)) > -1) {
+                os.write(buffer, 0, len);
+            }
+            os.flush();
+            return os;
+        } catch (IOException e) {
+            logger.error("cloneInputStream IOException: [{}]", e);
+        }
+        return null;
     }
 
 }

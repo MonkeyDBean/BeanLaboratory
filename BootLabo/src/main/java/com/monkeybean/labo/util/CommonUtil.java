@@ -114,7 +114,7 @@ public final class CommonUtil {
         try {
             proc = Runtime.getRuntime().exec(filePath);
         } catch (IOException e) {
-            logger.error("callScript Runtime exec IOException: {}", e);
+            logger.error("callScript Runtime exec IOException: [{}]", e);
             return null;
         }
         StringBuilder originContentSBuilder = new StringBuilder();
@@ -125,7 +125,7 @@ public final class CommonUtil {
                 eachLine = br.readLine();
             }
         } catch (IOException e) {
-            logger.error("callScript StreamReader IOException: {}", e);
+            logger.error("callScript StreamReader IOException: [{}]", e);
         }
         return originContentSBuilder.toString();
     }
