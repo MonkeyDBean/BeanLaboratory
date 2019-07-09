@@ -177,7 +177,7 @@ public class FtpUtil {
                 return ftpClient.storeFile(remoteFilePath, inputStream);
             }
         } catch (IOException e) {
-            logger.error("file is exist, remoteFilePath: [{}]", remoteFilePath);
+            logger.error("uploadFileToFtp, IOException: [{}]", e);
         } finally {
             releaseFtpClient(ftpClient);
         }
@@ -345,7 +345,7 @@ public class FtpUtil {
      * @param url         主机名, 如: ftp-cdn.itops.monkeytest.com
      * @param username    账号
      * @param password    密码
-     * @param path        保存目录, 若为根目录, 参数传 /
+     * @param path        FTP保存目录, 若为根目录, 参数传 /
      * @param filename    文件名
      * @param inputStream 输入流
      * @return 成功返回true，否则返回false
