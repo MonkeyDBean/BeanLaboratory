@@ -420,7 +420,7 @@ public class DingUtil {
      *
      * @param appKey      应用key
      * @param appSecret   应用密钥
-     * @param chatId      会话id
+     * @param chatId      会话(群)id
      * @param textContent 文本消息内容
      * @return 失败返回null
      */

@@ -46,7 +46,7 @@ ding -config=./ding.cfg -subdomain=monkeybeantest 8080
 ## 微应用调试
 ```
 # 访问测试
-$$yourSubdoamin/vaiwan.com/$path
+$yourSubdoamin/vaiwan.com/$path
 如
 monkeybeantest.vaiwan.com/index
 
