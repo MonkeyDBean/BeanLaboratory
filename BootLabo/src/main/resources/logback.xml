@@ -42,7 +42,7 @@
     </appender>
 
     <!-- 全局日志级别, 如需调整,修改这里 -->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="Console"/>
         <appender-ref ref="ServerFile"/>
         <appender-ref ref="ServerErrorFile"/>

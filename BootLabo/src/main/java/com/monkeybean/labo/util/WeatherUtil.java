@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.SignatureException;
@@ -35,13 +34,7 @@ public final class WeatherUtil {
         String url = "https://www.sojson.com/open/api/weather/json.shtml";
         HashMap<String, Object> param = new HashMap<>();
         param.put("city", city);
-        String res = null;
-        try {
-            res = OkHttpUtil.doGet(url, param);
-        } catch (IOException e) {
-            logger.error("getInfoBySoJson, IOException: [{}]", e);
-        }
-        return res;
+        return OkHttpUtil.doGet(url, param);
     }
 
     /**
@@ -93,13 +86,7 @@ public final class WeatherUtil {
             return null;
         }
         String url = "https://api.seniverse.com/v3/weather/now.json?key=" + secretKey + "&location=" + location + "&language=zh-Hans&unit=c";
-        String res = null;
-        try {
-            res = OkHttpUtil.doGet(url);
-        } catch (IOException e) {
-            logger.error("getNowWeather, IOException: [{}]", e);
-        }
-        return res;
+        return OkHttpUtil.doGet(url);
     }
 
     /**
@@ -110,7 +97,7 @@ public final class WeatherUtil {
      * @param location  位置
      * @return 成功则返回数据，失败返回null
      */
-    public static String getDailyWeather(String userId, String secretKey, String location) throws IOException, SignatureException {
+    public static String getDailyWeather(String userId, String secretKey, String location) throws UnsupportedEncodingException, SignatureException {
         if (StringUtils.isAllBlank(userId, secretKey, location)) {
             return null;
         }

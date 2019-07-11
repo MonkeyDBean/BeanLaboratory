@@ -2,12 +2,15 @@ package com.monkeybean.labo.util;
 
 import com.monkeybean.labo.component.config.HttpProxyConfig;
 import okhttp3.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +26,7 @@ public class OkHttpUtil {
     private static final int CONNECT_TIMEOUT = 10;
     private static final int READ_TIMEOUT = 10;
     private static final int WRITE_TIMEOUT = 20;
+    private static Logger logger = LoggerFactory.getLogger(OkHttpUtil.class);
     private static OkHttpClient client = null;
 
     public OkHttpUtil(@Autowired HttpProxyConfig httpProxyConfig) {
@@ -75,21 +79,53 @@ public class OkHttpUtil {
     }
 
     /**
+     * Http Basic Auth
+     * 用于处理需要登录
+     *
+     * @param url      请求Url
+     * @param user     用户名
+     * @param password 密码
+     * @return 成功返回响应字符串, 失败返回null
+     */
+    public static String doGetBasicAuth(String url, String user, String password) {
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Basic " + Base64.getUrlEncoder().encodeToString((user + ":" + password).getBytes()))
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                logger.warn("OkHttpUtil doGetBasicAuth, url: [{}], response [{}] is not success, message: [{}], user: [{}]", url, response, response.message(), user);
+            }
+        } catch (IOException e) {
+            logger.error("OkHttpUtil doGetBasicAuth, url: [{}], user: [{}], IOException: [{}]", url, user, e);
+        }
+        return null;
+    }
+
+    /**
      * Http Get 同步请求
      *
      * @param url 请求地址
-     * @throws IOException IO异常
      */
-    public static String doGet(String url) throws IOException {
+    public static String doGet(String url) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        Response response = OkHttpUtil.client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            return null;
+        try {
+            Response response = OkHttpUtil.client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                logger.warn("OkHttpUtil doGet, url: [{}], response [{}] is not success, message: [{}]", url, response, response.message());
+            }
+        } catch (IOException e) {
+            logger.warn("OkHttpUtil doGet, url: [{}], IOException: [{}]", url, e);
         }
+        return null;
+
     }
 
     /**
@@ -97,9 +133,8 @@ public class OkHttpUtil {
      *
      * @param url   请求地址
      * @param param 参数
-     * @throws IOException IO异常
      */
-    public static String doGet(String url, Map<String, Object> param) throws IOException {
+    public static String doGet(String url, Map<String, Object> param) {
         String requestUrl = url + mapToUrlParam(param);
         return doGet(requestUrl);
     }
@@ -109,20 +144,24 @@ public class OkHttpUtil {
      *
      * @param url  请求地址
      * @param json post body为json的数据
-     * @throws IOException IO异常
      */
-    public static String doPost(String url, String json) throws IOException {
+    public static String doPost(String url, String json) {
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
-        Response response = OkHttpUtil.client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            return null;
+        try {
+            Response response = OkHttpUtil.client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                logger.warn("OkHttpUtil doPost, url: [{}], json: [{}], response [{}] is not success, message: [{}]", url, json, response, response.message());
+            }
+        } catch (IOException e) {
+            logger.error("OkHttpUtil doPost, url: [{}], json: [{}], IOException: [{}]", url, json, e);
         }
+        return null;
     }
 
     /**
@@ -131,20 +170,25 @@ public class OkHttpUtil {
      * @param url  请求地址
      * @param req  body数据
      * @param type body数据类型
-     * @throws IOException IO异常
      */
-    public static String doPost(String url, String req, MediaType type) throws IOException {
+    public static String doPost(String url, String req, MediaType type) {
         RequestBody body = RequestBody.create(type, req);
         Request request = new Request.Builder()
                 .url(url)
                 .post(body)
                 .build();
-        Response response = OkHttpUtil.client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return response.body().string();
-        } else {
-            return null;
+        try {
+            Response response = OkHttpUtil.client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                logger.warn("OkHttpUtil doPost, url: [{}], req: [{}], response [{}] is not success, message: [{}]", url, req, response, response.message());
+
+            }
+        } catch (IOException e) {
+            logger.error("OkHttpUtil doPost, url: [{}], req: [{}], MediaType: [{}], IOException: [{}]", url, req, type, e);
         }
+        return null;
     }
 
     /**

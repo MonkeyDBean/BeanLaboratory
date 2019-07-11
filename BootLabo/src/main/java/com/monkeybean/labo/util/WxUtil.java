@@ -39,20 +39,15 @@ public class WxUtil {
      * @return 成功为微信返回的json数据，失败为null
      */
     private static JSONObject requestWx(String url) {
-        try {
-            String response = OkHttpUtil.doGet(url);
-            JSONObject json = JSONObject.parseObject(response);
-            logger.debug("requestWx, request url is: [{}], wx res: [{}]", url, json);
-            Integer errCode = json.getInteger("errcode");
-            if (errCode != null && errCode != 0) {
-                logger.warn("requestWx error, request url is: [{}], wx res: [{}]", url, json);
-                return null;
-            }
-            return json;
-        } catch (Exception e) {
-            logger.error("requestWx failed, request url is: [{}], e: [{}]", url, e);
+        String response = OkHttpUtil.doGet(url);
+        JSONObject json = JSONObject.parseObject(response);
+        logger.debug("requestWx, request url is: [{}], wx res: [{}]", url, json);
+        Integer errCode = json.getInteger("errcode");
+        if (errCode != null && errCode != 0) {
+            logger.warn("requestWx error, request url is: [{}], wx res: [{}]", url, json);
+            return null;
         }
-        return null;
+        return json;
     }
 
     /**

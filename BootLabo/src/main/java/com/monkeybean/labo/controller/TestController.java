@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.monkeybean.labo.component.config.OtherConfig;
+import com.monkeybean.labo.component.processor.ProcessDelayUnit;
+import com.monkeybean.labo.component.processor.ProcessUnit;
+import com.monkeybean.labo.component.processor.ProcessorFactory;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
@@ -549,6 +552,19 @@ public class TestController {
         boolean moveResult = FtpUtil.moveFileToDirectory(originFilePath, desFilePath);
         boolean deleteResult = FtpUtil.deleteFile(desFilePath);
         return uploadResult && moveResult && deleteResult;
+    }
+
+    @ApiOperation(value = "测试异步处理")
+    @PostMapping(path = "asynchronous/request")
+    public void testRequestAsynchronous(@RequestParam String url, @RequestParam long delay) {
+
+        //数据放入阻塞队列
+        ProcessorFactory.startBlockQueueConsumer();
+        ProcessorFactory.addToBlockQueue(new ProcessUnit(UUID.randomUUID().toString(), System.currentTimeMillis(), url));
+
+        //数据放入延时队列
+        ProcessorFactory.startDelayQueueConsumer();
+        ProcessorFactory.addToDelayQueue(new ProcessDelayUnit(delay, System.currentTimeMillis(), url, UUID.randomUUID().toString()));
     }
 
 }

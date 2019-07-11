@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -33,13 +32,7 @@ public final class ReCaptchaUtil {
         requestParam.put("secret", secret);
         requestParam.put("response", response);
         requestParam.put("remoteip", ip);
-        String resultStr = null;
-        try {
-            resultStr = OkHttpUtil.doGet(VERIFY_URL, requestParam);
-            logger.info("verifyReCaptcha resultStr: [{}]", resultStr);
-        } catch (IOException e) {
-            logger.error("OkHttpClient IOException: [{}]", e);
-        }
+        String resultStr = OkHttpUtil.doGet(VERIFY_URL, requestParam);
         return resultStr != null && JSONObject.parseObject(resultStr).getBooleanValue("success");
     }
 
