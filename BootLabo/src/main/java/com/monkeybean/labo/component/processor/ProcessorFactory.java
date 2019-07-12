@@ -61,6 +61,7 @@ public class ProcessorFactory {
                         doProcessUnit(unit);
                     } catch (InterruptedException e) {
                         logger.error("startBlockQueueConsumer, Thread InterruptedException: [{}]", e);
+                        Thread.currentThread().interrupt();
                     }
                 }
             });
@@ -103,6 +104,7 @@ public class ProcessorFactory {
                         doProcessDelayUnit(model);
                     } catch (InterruptedException e) {
                         logger.error("startDelayQueueConsumer, Thread InterruptedException: [{}]", e);
+                        Thread.currentThread().interrupt();
                     }
                 }
             }).start();

@@ -86,6 +86,11 @@ public class OtherConfig implements InitializingBean {
 
     private Pattern imagePattern;
 
+    /**
+     * 仅测试构建传参
+     */
+    private String testStr;
+
     public String getSqlSalt() {
         return sqlSalt;
     }
@@ -196,6 +201,14 @@ public class OtherConfig implements InitializingBean {
 
     public void setImagePattern(Pattern imagePattern) {
         this.imagePattern = imagePattern;
+    }
+
+    public String getTestStr() {
+        return testStr;
+    }
+
+    public void setTestStr(String testStr) {
+        this.testStr = testStr;
     }
 
     @Override

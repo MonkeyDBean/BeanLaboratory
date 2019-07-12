@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TestControllerTest {
 
-    //    @Test
+    @Test
     public void helloAfterTest() throws InterruptedException {
         WebClient webClient = WebClient.create("http://localhost:8080");
         Mono<String> resp = webClient
@@ -27,7 +27,7 @@ public class TestControllerTest {
         TimeUnit.SECONDS.sleep(1);
     }
 
-    //    @Test
+    @Test
     public void userInfoTest() throws InterruptedException {
         WebClient webClient = WebClient.builder().baseUrl("http://localhost:8080").build();
         webClient.get().uri("/user/repo/all")

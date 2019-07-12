@@ -127,6 +127,7 @@ public class ReentrantLockTest {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
             isLocked = true;
@@ -158,6 +159,7 @@ public class ReentrantLockTest {
                     wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
             isLocked = true;

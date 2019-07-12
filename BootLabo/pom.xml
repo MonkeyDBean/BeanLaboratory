@@ -28,6 +28,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <packageName>BootLabo</packageName>
         <!--<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>-->
+
+        <!-- 仅测试构建传参, 构建完成到target目录查看资源文件, 构建方式: mvn clean install -Djust.test.use=$value -->
+        <just.test.use>test_mvn_env</just.test.use>
     </properties>
 
     <dependencies>

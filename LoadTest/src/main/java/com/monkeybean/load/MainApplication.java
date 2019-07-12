@@ -60,6 +60,7 @@ public class MainApplication {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         System.out.print("Thread InterruptedException, e: {}" + e.toString());
+                        Thread.currentThread().interrupt();
                     }
                 }
             });

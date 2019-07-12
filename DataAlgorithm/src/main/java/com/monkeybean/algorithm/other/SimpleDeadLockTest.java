@@ -42,6 +42,7 @@ public class SimpleDeadLockTest {
                     System.out.println("threadA run normal");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
         });

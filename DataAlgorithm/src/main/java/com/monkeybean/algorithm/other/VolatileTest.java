@@ -93,6 +93,7 @@ public class VolatileTest {
                         Thread.sleep(random.nextInt(10));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }
                 countDownLatch.countDown();

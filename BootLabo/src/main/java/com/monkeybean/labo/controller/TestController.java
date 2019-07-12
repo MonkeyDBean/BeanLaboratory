@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
+import com.monkeybean.labo.component.annotation.TestAnnotation;
 import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.processor.ProcessDelayUnit;
 import com.monkeybean.labo.component.processor.ProcessUnit;
 import com.monkeybean.labo.component.processor.ProcessorFactory;
 import com.monkeybean.labo.component.reqres.Result;
+import com.monkeybean.labo.component.reqres.req.OtherProjectInfoReq;
 import com.monkeybean.labo.dao.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
@@ -58,7 +60,6 @@ import java.util.regex.Pattern;
 @RequestMapping(path = "testtest")
 @RestController
 public class TestController {
-
     private static Logger logger = LoggerFactory.getLogger(TestController.class);
 
     private final OtherConfig otherConfig;
@@ -442,7 +443,7 @@ public class TestController {
 
     @ApiOperation(value = "测试调用shell/python/bat等, 读取执行结果")
     @ApiImplicitParam(name = "file", value = "脚本路径", required = true, dataType = "string", paramType = "query")
-    @GetMapping(path = "script/call")
+    @GetMapping("script/call")
     public String callScript(String file) {
         if (StringUtils.isNotEmpty(file)) {
             return CommonUtil.callScript(file);
@@ -453,7 +454,7 @@ public class TestController {
 
     @ApiOperation(value = "测试linux下解析mobileprovision文件")
     @ApiImplicitParam(name = "file", value = "全路径的文件名", required = true, dataType = "string", paramType = "query")
-    @GetMapping(path = "mobileprovision/parse")
+    @GetMapping("mobileprovision/parse")
     public String testParseMobileProvision(String file) {
         if (StringUtils.isNotEmpty(file)) {
             return IpaUtil.getFileContentByExecuteShell(file);
@@ -464,7 +465,7 @@ public class TestController {
 
     @ApiOperation(value = "测试使用copyInputStreamToFile将MultipartFile转File")
     @ApiImplicitParam(name = "path", value = "转为file的存储路径", required = true, dataType = "string", paramType = "query")
-    @PostMapping(path = "multipart/to/file")
+    @PostMapping("multipart/to/file")
     public String testMultipartFileToFile(MultipartFile multipartFile, String path) {
         File file = new File(path);
         if (file.exists() && file.isDirectory()) {
@@ -479,7 +480,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试重设图片尺寸")
-    @PostMapping(path = "image/resize")
+    @PostMapping("image/resize")
     public void testResizeImage(int width, int height, MultipartFile mFile, HttpServletResponse response) throws IOException {
         String fileName = "AppIcon" + width + "x" + height + ".png";
         response.setContentType("image/png");
@@ -493,7 +494,7 @@ public class TestController {
             @ApiImplicitParam(name = "domain", value = "域名前缀, 格式如https://home02.nm.erduosmj.com/package_ios", required = true, dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "name", value = "包名(标识符), 格式如ReDx001", required = true, dataType = "string", paramType = "query")
     })
-    @PostMapping(path = "ipa/parse/to/tar")
+    @PostMapping("ipa/parse/to/tar")
     public void testParseIpaToTar(MultipartFile mFile, String domain, String name) {
 
         //MultipartFile transfer to File
@@ -530,7 +531,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试ftp上传, 非线程池方式")
-    @PostMapping(path = "ftp/upload")
+    @PostMapping("ftp/upload")
     public boolean testUploadFileToFtp(MultipartFile mFile, String url, String user, String password, String path) throws IOException {
 //        File file = File.createTempFile("temp_File", mFile.getOriginalFilename());
 //        mFile.transferTo(file);
@@ -541,7 +542,7 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试ftp上传, 线程池方式")
-    @PostMapping(path = "ftp/upload/pool")
+    @PostMapping("ftp/upload/pool")
     public boolean testUploadFileToFtpByPool(MultipartFile mFile) throws IOException {
         if (mFile == null) {
             return false;
@@ -554,8 +555,11 @@ public class TestController {
         return uploadResult && moveResult && deleteResult;
     }
 
+    /**
+     * 注解@RequestMapping中有value属性, 只设置value属性可省略value= ; 注解源码@AliasFor("path"), value设置了别名path, 既设置path=也就设置了value的值
+     */
     @ApiOperation(value = "测试异步处理")
-    @PostMapping(path = "asynchronous/request")
+    @PostMapping("asynchronous/request")
     public void testRequestAsynchronous(@RequestParam String url, @RequestParam long delay) {
 
         //数据放入阻塞队列
@@ -565,6 +569,28 @@ public class TestController {
         //数据放入延时队列
         ProcessorFactory.startDelayQueueConsumer();
         ProcessorFactory.addToDelayQueue(new ProcessDelayUnit(delay, System.currentTimeMillis(), url, UUID.randomUUID().toString()));
+    }
+
+    @ApiOperation(value = "测试注解及测试maven构建参数")
+    @GetMapping("str/simple/1")
+    @TestAnnotation(index = 1)
+    public void simpleTest1(String note1, String note2) {
+        logger.info("simpleTest1, otherConfig Str: {}", otherConfig.getTestStr());
+        logger.info("simpleTest1, param note1: {}, note2: {}", note1, note2);
+    }
+
+    @ApiOperation(value = "测试注解")
+    @GetMapping("str/simple/2")
+    @TestAnnotation(property = "current")
+    public void simpleTest3(OtherProjectInfoReq onlyTestModel) {
+        logger.info("simpleTest3, onlyTestModel: {}", onlyTestModel);
+    }
+
+    @ApiOperation(value = "测试注解")
+    @GetMapping("str/simple/3")
+    @TestAnnotation()
+    public void simpleTest4() {
+        logger.info("simpleTest3 execute");
     }
 
 }

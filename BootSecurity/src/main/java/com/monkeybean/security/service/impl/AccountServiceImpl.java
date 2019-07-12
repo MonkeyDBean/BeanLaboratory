@@ -20,6 +20,12 @@ public class AccountServiceImpl extends AbstractService<Account> implements Acco
     @Resource
     private AccountMapper accountMapper;
 
+    /**
+     * 注解@Transactional
+     * https://www.jianshu.com/p/5687e2a38fbc
+     * https://blog.csdn.net/zheng0518/article/details/52214310
+     * https://www.cnblogs.com/shellj/p/spring-transaction-bu-sheng-xiao-de-yi-xie-yuan-yi.html
+     */
     @Override
     @Transactional(readOnly = true)
     public Account findByUserName(String userName) {

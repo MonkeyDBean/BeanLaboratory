@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -19,6 +21,7 @@ import static junit.framework.TestCase.assertTrue;
  * Created by MonkeyBean on 2018/7/26.
  */
 public class OtherTest {
+    private static Logger logger = LoggerFactory.getLogger(OtherTest.class);
 
     @Test(expected = NumberFormatException.class)
     public void testNull() {
@@ -48,28 +51,28 @@ public class OtherTest {
         list.offerFirst("999");
         list.push("AAA");
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("element" + i + ": " + list.get(i));
+            logger.info("element" + i + ": " + list.get(i));
         }
-        System.out.println("---***---");
+        logger.info("---***---");
         list.remove(1);
         list.remove("333");
         list.pop();
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("element" + i + ": " + list.get(i));
+            logger.info("element" + i + ": " + list.get(i));
         }
     }
 
     @Test
     public void testSplit() {
         String testStr = "test";
-        System.out.println("split 0 is: \n" + testStr.split(",")[0]);
+        logger.info("split 0 is: \n" + testStr.split(",")[0]);
     }
 
     @Test
     public void testLastIndex() {
         String origin = "file.11.jpg";
         String result = origin.substring(0, origin.lastIndexOf("."));
-        System.out.println("origin: " + origin + "\nresult: " + result);
+        logger.info("origin: " + origin + "\nresult: " + result);
     }
 
     @Test
@@ -86,7 +89,7 @@ public class OtherTest {
         list2.add(6);
         list1.removeAll(list2);
         list1.addAll(list2);
-        System.out.println("list1Result: " + Arrays.toString(list1.toArray()));
+        logger.info("list1Result: " + Arrays.toString(list1.toArray()));
 
         // 注：通过Arrays.asList()转换的List不可调用addAll()等方法，否则会报UnsupportedOperationException
         // 原因是调用Arrays.asList()方法生成List时返回的是Arrays的静态内部类ArrayList(此ArrayList不是util包下的ArrayList),
@@ -102,7 +105,7 @@ public class OtherTest {
         list4.addAll(list3);
         list4 = new ArrayList<>(new HashSet<>(list4));
         String list4ResultStr = list4.stream().collect(Collectors.joining(","));
-        System.out.println("list4Result: " + list4ResultStr);
+        logger.info("list4Result: " + list4ResultStr);
     }
 
     @Test
@@ -123,7 +126,7 @@ public class OtherTest {
         hm.put("b", 2456);
         hm.put("d", "dd");
         String result = JSON.toJSONString(hm);
-        System.out.println("JSON.toJSONString, result: " + result);
+        logger.info("JSON.toJSONString, result: " + result);
     }
 
     @Test
@@ -174,10 +177,10 @@ public class OtherTest {
         vector.addElement("test");
         vector.addElement(24);
         vector.addElement(new Long(12));
-        System.out.println("vector lastIndexOf 'test' is: " + vector.lastIndexOf("test"));
+        logger.info("vector lastIndexOf 'test' is: " + vector.lastIndexOf("test"));
         Enumeration<String> elements = vector.elements();
         while (elements.hasMoreElements()) {
-            System.out.println("vector element: " + String.valueOf(elements.nextElement()));
+            logger.info("vector element: " + String.valueOf(elements.nextElement()));
         }
     }
 
@@ -194,7 +197,7 @@ public class OtherTest {
         String[] values = {"test", "test11", "testAa", "not", "test_", "test.."};
         for (String value : values) {
             matcher.reset(value);
-            System.out.println("value: " + value + ", matches: " + matcher.matches());
+            logger.info("value: " + value + ", matches: " + matcher.matches());
         }
         String performanceTestStr = "test1234";
         matcher.reset(performanceTestStr);
@@ -209,7 +212,7 @@ public class OtherTest {
             performanceTestStr.matches(regexPattern);
         }
         long intervalString = System.currentTimeMillis() - start;
-        System.out.println("intervalPattern: " + intervalPattern + ", intervalString: " + intervalString);
+        logger.info("intervalPattern: " + intervalPattern + ", intervalString: " + intervalString);
         assertTrue(intervalPattern < intervalString);
     }
 
@@ -256,7 +259,7 @@ public class OtherTest {
     public void testCopyOnArrayList() {
         List<String> list = new CopyOnWriteArrayList<>();
         list.add("simpleUse");
-        System.out.println("CopyOnWriteArrayList element 0 is :" + list.get(0));
+        logger.info("CopyOnWriteArrayList element 0 is :" + list.get(0));
     }
 
 }

@@ -30,6 +30,7 @@ public class ReadWriteLockTest {
                         Thread.sleep(random.nextInt(10));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                     testObject.getData(key);
                 }
