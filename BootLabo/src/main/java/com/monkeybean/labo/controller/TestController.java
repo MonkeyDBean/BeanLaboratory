@@ -558,8 +558,8 @@ public class TestController {
     /**
      * 注解@RequestMapping中有value属性, 只设置value属性可省略value= ; 注解源码@AliasFor("path"), value设置了别名path, 既设置path=也就设置了value的值
      */
-    @ApiOperation(value = "测试异步处理")
-    @PostMapping("asynchronous/request")
+    @ApiOperation(value = "测试队列异步处理")
+    @PostMapping("asynchronous/queue/request")
     public void testRequestAsynchronous(@RequestParam String url, @RequestParam long delay) {
 
         //数据放入阻塞队列
