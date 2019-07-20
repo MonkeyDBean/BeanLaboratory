@@ -273,7 +273,10 @@ public class IpaUtil {
      *
      * @param originFile            原始plist文件
      * @param aimFile               处理后的文件
-     * @param softwarePackageUrl    包下载路径
+     * @param softwarePackageUrl    包下载路径(实际使用cdn, 此处为cdn访问路径), 域名必须为https
+     *                              苹果设备访问链接为prefix + softwarePackageUrl, 此链接为跳转appStore下载代签包
+     *                              prefix为: itms-services://?action=download-manifest&url=
+     *                              苹果设备访问链接格式如: itms-services://?action=download-manifest&url=https://test.domain.com/aim_path/package_ios/ReD04C09X4101224/manifest.plist
      * @param displayImageUrl       缩略图路径
      * @param fullSizeImageUrl      大图路径
      * @param bundleIdentifierValue 应用包名
@@ -284,7 +287,7 @@ public class IpaUtil {
     public static synchronized boolean changePlistContent(File originFile, File aimFile, String softwarePackageUrl, String displayImageUrl, String fullSizeImageUrl,
                                                           String bundleIdentifierValue, String bundleVersionValue, String titleValue) {
         if (!originFile.exists()) {
-            logger.warn("changePlistContent file not exist");
+            logger.warn("changePlistContent file not exist, file path: {}", originFile.getPath());
             return false;
         }
         try (InputStream in = new FileInputStream(originFile)) {
@@ -322,7 +325,7 @@ public class IpaUtil {
      *
      * @param ipaOriginFile     原始ipa文件
      * @param ipaOriginFileName 原始ipa文件名称, 格式如: ReD08C10X3_gymj_old_20190321_120900_107912_ios_dis.ipa; 不可从ipaOriginFile.getName()获取, ipaOriginFile可能为类型转换的临时文件(非原始文件)
-     * @param domain            域名前缀, 格式如: https://home02.nm.erduosmj.com/package_ios
+     * @param domain            资源路径前缀, 域名必须为https, 格式如: https://test.domain.com/package_ios
      * @param name              包名(标识符), 格式如ReDx001
      * @return 失败返回null; 成功返回map, 包含: 目标文件夹路径(desPath), 压缩文件的名称(compressName), 证书颁发商(teamName)
      */
@@ -346,14 +349,18 @@ public class IpaUtil {
         String displayImageUrl = urlPrefix + displayImageName;
         String fullSizeImageName = "Icon-512" + imagePattern;
         String fullSizeImageUrl = urlPrefix + fullSizeImageName;
-        URL manifestFileUrl = IpaUtil.class.getClassLoader().getResource("back_test/manifest.plist");
-        if (manifestFileUrl == null) {
-            logger.error("generateDirByIpa, manifest.plist is not exist");
-            return null;
-        }
 
         //plist原始文件
-        File manifestOriginFile = new File(manifestFileUrl.getPath());
+        URL fileUrl = IpaUtil.class.getClassLoader().getResource("manifest.plist");
+        if (fileUrl == null) {
+            logger.error("manifest.plist not exist, fileUrl is null");
+            return null;
+        }
+        File manifestOriginFile = new File(fileUrl.getPath());
+        if (!manifestOriginFile.exists()) {
+            logger.error("manifest.plist not exist, file path: [{}]", manifestOriginFile.getPath());
+            return null;
+        }
 
         //生成文件父路径
         //String newFileParentPath = ipaOriginFile.getParent() + File.separator + nameAndVersion;
@@ -383,7 +390,11 @@ public class IpaUtil {
 
         //生成manifest.plist文件
         File aimFile = new File(newFileParentPath + File.separator + manifestOriginFile.getName());
-        IpaUtil.changePlistContent(manifestOriginFile, aimFile, softwarePackageUrl, displayImageUrl, fullSizeImageUrl, res.getBundleId(), res.getBundleVersion(), res.getDisplayName());
+        boolean changeResult = IpaUtil.changePlistContent(manifestOriginFile, aimFile, softwarePackageUrl, displayImageUrl, fullSizeImageUrl, res.getBundleId(), res.getBundleVersion(), res.getDisplayName());
+        if (!changeResult) {
+            logger.error("changePlistContent failed");
+            return null;
+        }
 
         //复制ipa文件到目标路径
         String ipaDesPathStr = newFileParentPath + File.separator + ipaOriginFileName;

@@ -13,10 +13,11 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 /**
- * 通用加解密或Hash算法
+ * 编码, 通用加解密或Hash算法
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
@@ -24,6 +25,7 @@ public final class Coder {
     private static final String KEY_SHA = "SHA";
     private static final String KEY_MD5 = "MD5";
     private static final String KEY_MAC = "HmacMD5";
+    private static final String KEY_HmacSHA256 = "HmacSHA256";
     private static Logger logger = LoggerFactory.getLogger(Coder.class);
     private static char[] hexChar = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -201,4 +203,48 @@ public final class Coder {
         return mac.doFinal(data);
     }
 
+    /**
+     * HmacSHA256加密
+     *
+     * @param data 待加密数据
+     * @param key  密钥
+     * @return 加密后转为大写的字符串
+     */
+    public static String encryptHmacSha256(String data, String key) throws Exception {
+        Mac sha256Hmac = Mac.getInstance(KEY_HmacSHA256);
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), KEY_HmacSHA256);
+        sha256Hmac.init(secretKey);
+        byte[] byteArray = sha256Hmac.doFinal(data.getBytes(StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        for (byte item : byteArray) {
+            sb.append(Integer.toHexString((item & 0xFF) | 0x100).substring(1, 3));
+        }
+        return sb.toString().toUpperCase();
+    }
+
+    /**
+     * unicode编码转中文
+     */
+    public static String unicodeToCn(String unicode) {
+        String[] strArray = unicode.split("\\\\u");
+        String returnStr = "";
+
+        //unicode字符串以 \ u 开头，分割出的第一个字符是""
+        for (int i = 1; i < strArray.length; i++) {
+            returnStr += (char) Integer.valueOf(strArray[i], 16).intValue();
+        }
+        return returnStr;
+    }
+
+    /**
+     * 中文转unicode编码
+     */
+    public static String cnToUnicode(String cn) {
+        char[] charArray = cn.toCharArray();
+        String returnStr = "";
+        for (char eachChar : charArray) {
+            returnStr += "\\u" + Integer.toString(eachChar, 16);
+        }
+        return returnStr;
+    }
 }

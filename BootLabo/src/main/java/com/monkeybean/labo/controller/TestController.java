@@ -593,4 +593,38 @@ public class TestController {
         logger.info("simpleTest3 execute");
     }
 
+    @ApiOperation(value = "测试微信长链转短链接")
+    @GetMapping("long/short/convert")
+    public String convertLong2Short(@RequestParam(value = "appid") String appId, @RequestParam(value = "secret") String appSecret, @RequestParam(value = "url") String longUrl) {
+        return WxUtil.long2ShortUrl(appId, appSecret, longUrl);
+    }
+
+    /**
+     * requestUrl格式如： http://test.jenkins.com/jenkins/view/API/job/Update-test/buildWithParameters
+     */
+    @ApiOperation(value = "测试jenkins接口调用")
+    @GetMapping("jenkins/call")
+    public String callJenkins(@RequestParam String requestUrl, @RequestParam String user, @RequestParam String pwd, @RequestParam String env,
+                              @RequestParam String areaName, @RequestParam String packageName, @RequestParam String token) {
+        String url = requestUrl + "?ENV=" + env + "&AREA=" + areaName + "&PACKAGE_IOS=" + packageName + "&token=" + token;
+        return OkHttpUtil.doGetBasicAuth(url, user, pwd);
+    }
+
+    @ApiOperation(value = "测试多聊群助手消息推送")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tid", value = "群Id", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "title", value = "消息标题", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "content", value = "消息内容", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "info", value = "用户信息, json数组格式", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "url", value = "详情跳转url", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "record", value = "战绩Id", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "time", value = "战绩时间, 格式为yyyy-MM-dd HH:mm:ss", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "app", value = "商户id", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "secret", value = "商户密钥", required = true, dataType = "string", paramType = "query")
+    })
+    @GetMapping("duoliao/push")
+    public String pushRecordToDuoLiao(String tid, String title, String content, String info, String url, String record, String time, String app, String secret) {
+        return DuoLiaoUtil.pushRecord(tid, title, content, info, url, record, time, app, secret);
+    }
+
 }

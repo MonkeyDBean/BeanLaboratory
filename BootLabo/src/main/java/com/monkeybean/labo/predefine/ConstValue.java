@@ -73,6 +73,11 @@ public class ConstValue {
     public static final String SEND_FAIL = "fail";
 
     /**
+     * 短信验证码申请成功或得到相应的标志
+     */
+    public static final String MESSAGE_OK = "OK";
+
+    /**
      * session的expires设置为2小时
      */
     public static final int MAX_SESSION_TIME = 7200;

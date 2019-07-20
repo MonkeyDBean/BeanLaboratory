@@ -1,11 +1,13 @@
 package com.monkeybean.labo.util;
 
 import com.monkeybean.labo.component.reqres.res.IpaParseRes;
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
 
@@ -78,11 +80,7 @@ public class IpaUtilTest {
     }
 
     @Test
-    public void changePlistContent() {
-        URL fileUrl = this.getClass().getClassLoader().getResource("back_test/manifest.plist");
-        if (fileUrl == null) {
-            return;
-        }
+    public void changePlistContent() throws Exception {
         String urlPrefix = "https://test.domain.com/package_ios";
         String name = "ReDx001";
         String version = "12345";
@@ -94,7 +92,30 @@ public class IpaUtilTest {
         String bundleIdentifierValue = "com.monkey.bean";
         String bundleVersionValue = "1.0.0.0";
         String titleValue = "测试标题";
-        File originFile = new File(fileUrl.getPath());
+
+        //方式1
+//        URL fileUrl = this.getClass().getClassLoader().getResource("manifest.plist");
+//        if (fileUrl == null) {
+//            return;
+//        }
+//        File originFile = new File(fileUrl.getPath());
+
+        //方式2
+//        Resource resource = new ClassPathResource("manifest.plist");
+//        File originFile = resource.getFile();
+
+        //方式3
+//        File originFile = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "manifest.plist");
+//        if (!originFile.exists()) {
+//            System.out.println("manifest.plist is not exist");
+//            return;
+//        }
+
+        //方式4, 若读取的文件在tar包内, 读取文件报类似file:/data/xxx/xxx.jar!/BOOT-INF/classes!/xx.xx的错误, 此时以读取流的方式解决
+        InputStream stream = IpaUtil.class.getClassLoader().getResourceAsStream("manifest.plist");
+        File originFile = new File("/temp/manifest.plist");
+        FileUtils.copyInputStreamToFile(stream, originFile);
+        stream.close();
         String newFileParentPath = originFile.getParent() + File.separator + version;
         File parentDir = new File(newFileParentPath);
         if (!parentDir.exists()) {

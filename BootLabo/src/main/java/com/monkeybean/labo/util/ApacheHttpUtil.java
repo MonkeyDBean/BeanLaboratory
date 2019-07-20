@@ -76,11 +76,12 @@ public final class ApacheHttpUtil {
      *
      * @param url    请求url
      * @param params post参数
+     * @return 成功返回响应信息, 失败返回null
      */
-    private static String doPostForm(String url, Map<String, Object> params) {
+    public static String doPostForm(String url, Map<String, Object> params) {
+        String result = null;
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             HttpPost post = new HttpPost(url);
-            String result = "-1";
             List<NameValuePair> valuePairs = new ArrayList<>();
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 valuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
@@ -95,10 +96,10 @@ public final class ApacheHttpUtil {
                 EntityUtils.consume(entity);
             }
             response.close();
-            return result;
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            logger.info("doPostForm IOException: [{}]", e);
         }
+        return result;
     }
 
     /**

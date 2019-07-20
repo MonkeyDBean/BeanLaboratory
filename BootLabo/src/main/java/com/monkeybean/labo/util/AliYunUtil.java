@@ -18,14 +18,81 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 阿里云短信服务
  * 接口文档地址：https://help.aliyun.com/document_detail/55284.html?spm=5176.10629532.106.1.31791cberqSoem
  * <p>
- * Created by MonkeyBean on 2018/05/26.
+ * Created by MonkeyBean on 2018/05/19.
  */
 public final class AliYunUtil {
+
+    /**
+     * 阿里云申请短信, 返回码集合
+     * key为response code ; 若为严重级别(服务不可用),value为true
+     * 错误码参考：https://help.aliyun.com/document_detail/55284.html?spm=5176.10629532.106.1.31791cberqSoem
+     * 解决方法参考：https://help.aliyun.com/knowledge_detail/57717.html?spm=a2c4g.11186623.2.9.PreCc6
+     */
+    public static final ConcurrentHashMap<String, Boolean> responseCodeMap = new ConcurrentHashMap<String, Boolean>() {
+        {
+            //请求成功
+            put("OK", false);
+
+            //RAM权限DENY
+            put("isp.RAM_PERMISSION_DENY", true);
+
+            //业务停机: 请先查看账户余额，若余额大于零，则请通过创建工单联系工程师处理
+            put("isv.OUT_OF_SERVICE", true);
+
+            //未开通云通信产品的阿里云客户
+            put("isv.PRODUCT_UN_SUBSCRIPT", true);
+
+            //产品未开通
+            put("isv.PRODUCT_UNSUBSCRIBE", true);
+
+            //账户不存在
+            put("isv.ACCOUNT_NOT_EXISTS", true);
+
+            //账户异常
+            put("isv.ACCOUNT_ABNORMAL", true);
+
+            //短信模板不合法
+            put("isv.SMS_TEMPLATE_ILLEGAL", true);
+
+            //短信签名不合法
+            put("isv.SMS_SIGNATURE_ILLEGAL", true);
+
+            //参数异常
+            put("isv.INVALID_PARAMETERS", true);
+
+            //系统错误
+            put("isv.SYSTEM_ERROR", true);
+
+            //非法手机号
+            put("isv.MOBILE_NUMBER_ILLEGAL", false);
+
+            //手机号码数量超过限制
+            put("isv.MOBILE_COUNT_OVER_LIMIT", true);
+
+            //模板缺少变量
+            put("isv.TEMPLATE_MISSING_PARAMETERS", true);
+
+            //业务限流
+            put("isv.BUSINESS_LIMIT_CONTROL", false);
+
+            //JSON参数不合法，只接受字符串值
+            put("isv.INVALID_JSON_PARAM", true);
+
+            //黑名单管控
+            put("isv.BLACK_KEY_CONTROL_LIMIT", true);
+
+            //参数超出长度限制
+            put("isv.PARAM_LENGTH_LIMIT", true);
+
+        }
+    };
+
     /**
      * 云通信短信API产品及产品域名,开发者无需替换
      */

@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 微信授权(公众号、小程序)相关工具类
+ * 微信授权(公众号、小程序)相关工具类, 微信后台需配置服务器ip白名单
  * <p>
  * 微信网页授权：https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
  * 小程序开发文档：https://developers.weixin.qq.com/miniprogram/dev/api/wx.login.html
@@ -16,38 +16,38 @@ import org.slf4j.LoggerFactory;
  */
 public class WxUtil {
     /**
+     * 微信长链接转短链接URL
+     * 官方文档: https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1443433600
+     */
+    private static final String LONG_SHORT_CONVERT_URL = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token=%s";
+    /**
      * 微信公众号授权相关服务域名
      */
     private static final String WEB_AUTHORIZE_URL = "https://open.weixin.qq.com/connect/oauth2/authorize";
     private static final String WEB_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
     private static final String WEB_USER_INFO_URL = "https://api.weixin.qq.com/sns/userinfo";
     private static final String WEB_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+    private static final String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$appId&secret=$appSecret";
     /**
      * 微信小程序授权相关服务域名
      */
     private static final String MINI_SESSION_URL = "https://api.weixin.qq.com/sns/jscode2session";
     private static final String MINI_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token";
+    /**
+     * accessToken的有效期为两小时(7200秒), 此处设置为7100秒
+     */
+    private static final long ACCESS_TOKEN_VALID_TIME = 7100 * 1000L;
     private static Logger logger = LoggerFactory.getLogger(WxUtil.class);
+    /**
+     * 微信accessToken
+     */
+    private static volatile String accessToken = null;
+    /**
+     * 最近一次accessToken的获取时间
+     */
+    private static volatile Long accessTokenTime = null;
 
     private WxUtil() {
-    }
-
-    /**
-     * 封装请求微信服务器
-     *
-     * @param url 请求url
-     * @return 成功为微信返回的json数据，失败为null
-     */
-    private static JSONObject requestWx(String url) {
-        String response = OkHttpUtil.doGet(url);
-        JSONObject json = JSONObject.parseObject(response);
-        logger.debug("requestWx, request url is: [{}], wx res: [{}]", url, json);
-        Integer errCode = json.getInteger("errcode");
-        if (errCode != null && errCode != 0) {
-            logger.warn("requestWx error, request url is: [{}], wx res: [{}]", url, json);
-            return null;
-        }
-        return json;
     }
 
     /**
@@ -77,6 +77,66 @@ public class WxUtil {
                 + "#wechat_redirect";
         logger.debug("getWxAuthUrl: [{}]", authUrl);
         return authUrl;
+    }
+
+    /**
+     * 长链接转短链接
+     *
+     * @param appId     应用Id
+     * @param appSecret 应用密钥
+     * @param originUrl 长连接
+     * @return 成功返回短链接, 失败返回null
+     */
+    public static String long2ShortUrl(String appId, String appSecret, String originUrl) {
+        String accessToken = getAccessTokenCache(appId, appSecret);
+        if (accessToken != null) {
+            String url = String.format(LONG_SHORT_CONVERT_URL, accessToken);
+            JSONObject bodyObject = new JSONObject();
+            bodyObject.put("action", "long2short");
+            bodyObject.put("long_url", originUrl);
+            JSONObject resObject = requestWxPost(url, bodyObject.toJSONString());
+            if (resObject != null) {
+                return resObject.getString("short_url");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取微信访问accessToken, 若缓存有效则直接读取, 否则请求微信获取
+     * 若服务为多节点, accessToken可放置Redis等共享缓存或持久化存储中
+     *
+     * @param appId     应用Id
+     * @param appSecret 应用密钥
+     * @return 失败返回null, 成功返回accessToken
+     */
+    public static String getAccessTokenCache(String appId, String appSecret) {
+        if (accessToken == null || accessTokenTime == null || System.currentTimeMillis() - accessTokenTime > ACCESS_TOKEN_VALID_TIME) {
+            String validAccessToken = getAccessToken(appId, appSecret);
+            if (validAccessToken != null) {
+                accessToken = validAccessToken;
+                accessTokenTime = System.currentTimeMillis();
+            }
+        }
+        return accessToken;
+    }
+
+    /**
+     * 获取微信访问accessToken, 无需授权码(code)
+     * 同一参数限200次/天, accessToken有效期为两小时
+     *
+     * @param appId     应用Id
+     * @param appSecret 应用密钥
+     * @return 失败返回null, 成功返回accessToken
+     */
+    private static String getAccessToken(String appId, String appSecret) {
+        String url = ACCESS_TOKEN_URL.replace("$appId", appId).replace("$appSecret", appSecret);
+        JSONObject jsonObject = requestWx(url);
+        String accessToken = null;
+        if (jsonObject != null) {
+            accessToken = jsonObject.getString("access_token");
+        }
+        return accessToken;
     }
 
     /**
@@ -151,6 +211,43 @@ public class WxUtil {
                 + "?grant_type=client_credential&appid=" + appId
                 + "&secret=" + appSecret;
         return requestWx(url);
+    }
+
+    /**
+     * 封装请求微信服务器, get请求
+     *
+     * @param url 请求url
+     * @return 成功为微信返回的json数据，失败为null
+     */
+    private static JSONObject requestWx(String url) {
+        String response = OkHttpUtil.doGet(url);
+        JSONObject json = JSONObject.parseObject(response);
+        logger.debug("requestWx, request url is: [{}], wx res: [{}]", url, json);
+        Integer errCode = json.getInteger("errcode");
+        if (errCode != null && errCode != 0) {
+            logger.warn("requestWx error, request url is: [{}], wx res: [{}]", url, json);
+            return null;
+        }
+        return json;
+    }
+
+    /**
+     * 封装请求微信服务器, post请求
+     *
+     * @param url  请求url
+     * @param body body参数, json格式
+     * @return 成功为微信返回的json数据，失败为null
+     */
+    private static JSONObject requestWxPost(String url, String body) {
+        String response = OkHttpUtil.doPost(url, body);
+        JSONObject json = JSONObject.parseObject(response);
+        logger.debug("requestWxPost, request url is: [{}], body: [{}], wx res: [{}]", url, body, json);
+        Integer errCode = json.getInteger("errcode");
+        if (errCode != null && errCode != 0) {
+            logger.warn("requestWxPost error, request url is: [{}], body: [{}], wx res: [{}]", url, body, json);
+            return null;
+        }
+        return json;
     }
 
     /**

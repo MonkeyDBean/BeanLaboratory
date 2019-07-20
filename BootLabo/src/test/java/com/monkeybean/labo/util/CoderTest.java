@@ -24,4 +24,26 @@ public class CoderTest {
         logger.info("encodeMd5ByteAndBase64, origin: {}, result: {}", origin, result);
     }
 
+    @Test
+    public void encryptHmacSha256() throws Exception {
+        String origin = "a12345678";
+        String key = "testKey";
+        String result = Coder.encryptHmacSha256(origin, key);
+        logger.info("encryptHmacSha256, origin: {}, key: {}, result: {}", origin, key, result);
+    }
+
+    @Test
+    public void unicodeToCn() {
+        String origin = "\\u6d4b\\u8bd5\\u75\\u6e\\u69\\u63\\u6f\\u64\\u65\\u8f6c\\u7801";
+        String result = Coder.unicodeToCn(origin);
+        logger.info("unicodeToCn, origin: {}, result: {}", origin, result);
+    }
+
+    @Test
+    public void cnToUnicode() {
+        String origin = "测试unicode转码";
+        String result = Coder.cnToUnicode(origin);
+        logger.info("cnToUnicode, origin: {}, result: {}", origin, result);
+    }
+
 }

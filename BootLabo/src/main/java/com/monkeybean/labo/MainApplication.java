@@ -36,6 +36,27 @@ public class MainApplication {
     public static void main(String[] args) {
 
         SpringApplicationBuilder builder = new SpringApplicationBuilder(MainApplication.class);
+
+//        //加载Secret配置项, 安全性要求高的私密配置如数据库配置可放置K8s Secret, 而不是本地或配置中心等隐私性较差的地方
+//        //secretDirectory为环境变量key, value为secret所在目录
+//        final String secretDirectory = "DIR_SECRET";
+//        String secretFileDirStr = System.getenv(secretDirectory);
+//        Properties p = new Properties();
+//        try {
+//            File secretFileDir = new File(secretFileDirStr);
+//            for (File file : secretFileDir.listFiles()) {
+//                if (!file.isDirectory()) {
+//                    InputStream in = new BufferedInputStream(new FileInputStream(file));
+//                    p.load(in);
+//                    in.close();
+//                }
+//            }
+//        } catch (IOException e) {
+//            logger.error("get secretFile, IOException: [{}]", e);
+//            return;
+//        }
+//        builder.properties(p).build();
+
         builder.bannerMode(Banner.Mode.LOG).run(args);
 
         //若打成war包，已重写的SpringApplicationBuilder，直接起应用

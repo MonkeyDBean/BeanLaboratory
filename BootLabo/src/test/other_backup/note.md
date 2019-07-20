@@ -50,3 +50,27 @@ CookieSerializer cookieSerializer() {
     return defaultCookieSerializer;
 }
 ```
+
+## nginx 配置
+```
+# rewirte重定向导致post请求变为get, 解决方案为不使用rewrite或return, 使用proxy_pass
+
+# location匹配规则如下
+语法规则： location [=|~|~*|^~] /uri/ { … }
+= 开头表示精确匹配
+
+^~ 开头表示uri以某个常规字符串开头
+
+~ 开头表示区分大小写的正则匹配
+
+~* 开头表示不区分大小写的正则匹配
+
+!~和!~*分别为区分大小写不匹配及不区分大小写不匹配的正则
+
+/ 通用匹配，任何请求都会匹配到。
+
+多个location匹配顺序为：
+首先匹配 =，其次匹配^~, 其次是按文件中顺序的正则匹配，最后是交给 / 通用匹配。当有匹配成功时候，停止匹配，按当前匹配规则处理请求。
+```
+[nginx配置参考1](https://www.cnblogs.com/bluestorm/p/4574688.html)
+[nginx配置参考2](http://outofmemory.cn/code-snippet/742/nginx-location-configuration-xiangxi-explain)
