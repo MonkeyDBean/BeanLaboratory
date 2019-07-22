@@ -1,4 +1,4 @@
-package com.monkeybean.labo.dao;
+package com.monkeybean.labo.dao.primary;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monkeybean.labo.dao.secondary.SecondaryDataDao">
+
+    <select id="queryTestRecord" resultType="Map" parameterType="Map">
+        select
+        *, date_format(create_time, "%Y-%m-%d %T") as createTime_format
+        from
+        test_record
+        <where>
+            <choose>
+                <when test="recordId != null">
+                    record_id = #{recordId}
+                </when>
+                <otherwise>
+                    id = #{id}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+</mapper>

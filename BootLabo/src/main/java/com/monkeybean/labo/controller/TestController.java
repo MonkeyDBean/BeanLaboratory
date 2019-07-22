@@ -11,7 +11,9 @@ import com.monkeybean.labo.component.processor.ProcessUnit;
 import com.monkeybean.labo.component.processor.ProcessorFactory;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.component.reqres.req.OtherProjectInfoReq;
-import com.monkeybean.labo.dao.LaboDataDao;
+import com.monkeybean.labo.dao.primary.LaboDataDao;
+import com.monkeybean.labo.dao.secondary.SecondaryDataDao;
+import com.monkeybean.labo.dao.third.ThirdDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
@@ -70,6 +72,10 @@ public class TestController {
 
     private final LaboDoService laboDoService;
 
+    private final SecondaryDataDao secondaryDataDao;
+
+    private final ThirdDataDao thirdDataDao;
+
     /**
      * 存储已登录账户的session, 通过以下三个接口验证强制单终端在线机制：cookie/diff、session/login、session/info
      * key为账户Id, value为账户最后一次登录的session
@@ -77,11 +83,13 @@ public class TestController {
     private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
 
     @Autowired
-    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao, LaboDoService laboDoService) {
+    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao, LaboDoService laboDoService, SecondaryDataDao secondaryDataDao, ThirdDataDao thirdDataDao) {
         this.otherConfig = otherConfig;
         this.identityService = identityService;
         this.laboDataDao = laboDataDao;
         this.laboDoService = laboDoService;
+        this.secondaryDataDao = secondaryDataDao;
+        this.thirdDataDao = thirdDataDao;
     }
 
     @ApiOperation(value = "测试reCaptcha")
@@ -627,4 +635,35 @@ public class TestController {
         return DuoLiaoUtil.pushRecord(tid, title, content, info, url, record, time, app, secret);
     }
 
+    @ApiOperation(value = "测试各数据库查数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "primaryUserId", value = "primary数据库账户Id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "secondId", value = "secondary数据库测试记录Id", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "thirdDbName", value = "third数据库名称", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "thirdTableName", value = "third数据库表名称", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "thirdRecordId", value = "third数据库表记录Id", required = true, dataType = "int", paramType = "query")
+    })
+    @GetMapping("db/data/query")
+    public List<Map<String, Object>> getDbData(int primaryUserId, int secondId, String thirdDbName, String thirdTableName, int thirdRecordId) {
+        List<Map<String, Object>> resList = new ArrayList<>();
+
+        //primary
+        Map<String, Object> primaryDataMap = laboDoService.queryAccountInfoById(primaryUserId);
+        resList.add(primaryDataMap);
+
+        //secondary
+        Map<String, Object> secondParamMap = new HashMap<>();
+        secondParamMap.put("id", secondId);
+        Map<String, Object> secondaryDataMap = secondaryDataDao.queryTestRecord(secondParamMap);
+        resList.add(secondaryDataMap);
+
+        //third
+        Map<String, Object> thirdParamMap = new HashMap<>();
+        thirdParamMap.put("dBName", thirdDbName);
+        thirdParamMap.put("tableName", thirdTableName);
+        thirdParamMap.put("id", thirdRecordId);
+        Map<String, Object> thirdDataMap = thirdDataDao.queryRecordInfo(thirdParamMap);
+        resList.add(thirdDataMap);
+        return resList;
+    }
 }

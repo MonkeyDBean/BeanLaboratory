@@ -1,6 +1,6 @@
 package com.monkeybean.labo.service.database;
 
-import com.monkeybean.labo.dao.LaboDataDao;
+import com.monkeybean.labo.dao.primary.LaboDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
