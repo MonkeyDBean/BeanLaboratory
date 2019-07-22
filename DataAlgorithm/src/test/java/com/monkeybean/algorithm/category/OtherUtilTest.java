@@ -103,6 +103,66 @@ public class OtherUtilTest {
     }
 
     /**
+     * 测试list remove方法
+     */
+    @Test
+    public void testListRemove() {
+
+        //初始化
+        List<Object> list = new ArrayList<>();
+        for (int i = 1; i <= 3; i++) {
+            list.add(i);
+        }
+        list.add(3);
+        list.add(3);
+        list.add(4);
+        Integer aimObject = 3;
+
+        //移除测试
+        //1.不可用：正序删除时, 删除当前位置的值，下一个值就会补到当前位置; 只要list中有相邻2个相同的元素，就过滤不完;
+//        for(int i = 0; i < list.size(); i ++){
+//            if(aimObject.equals(list.get(i))){
+//                list.remove(i);
+//            }
+//        }
+
+        //2.可用: 正序删除, 需执行i--操作
+//        for(int i = 0; i < list.size(); i ++){
+//            if(aimObject.equals(list.get(i))){
+//                list.remove(i);
+//                i--;
+//            }
+//        }
+//
+//        //3.可用：倒序删除
+//        for(int i = list.size() - 1; i >= 0; i --){
+//            if(aimObject.equals(list.get(i))){
+//                list.remove(i);
+//            }
+//        }
+//
+//        //4.可用: 使用迭代器
+//        Iterator it = list.iterator();
+//        list = new ArrayList<>();
+//        while(it.hasNext()){
+//            Object value = it.next();
+//            if (aimObject.equals(value)) {
+//                it.remove();
+//            }else{
+//                list.add(value);
+//            }
+//        }
+//
+        //5.可用：removeIf
+        list.removeIf(aimObject::equals);
+
+        //输出移除结果
+        for (Object element : list) {
+            System.out.println("element is: " + element);
+        }
+    }
+
+    /**
      * 排序测试类
      */
     private class SortTestClass {
