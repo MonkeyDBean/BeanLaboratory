@@ -103,6 +103,11 @@ public class FtpPoolConfig {
             ftpClient.setBufferSize(props.getBufferSize());
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             ftpClient.setRemoteVerificationEnabled(false);
+
+            //Ftp主动模式与被动模式的区别如下, 参考：https://blog.csdn.net/axing2015/article/details/90692292
+            //主动模式：客户端连接服务端时，告诉服务端需要通讯(数据交换)，申请开辟一个端口，专门用于我们之间的通信，即C(client)端主动向S(Server)端发起的请求
+            //被动模式: 服务起来时，S端便开启一个端口告诉C端，我们之间的通讯就在这个端口下，即C端被动的接受服务端
+            //此时设置为被动模式, 连接端口不变
             ftpClient.enterLocalPassiveMode();
             return new DefaultPooledObject<>(ftpClient);
         }

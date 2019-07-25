@@ -16,7 +16,7 @@
     <artifactId>BootLabo</artifactId>
     <packaging>jar</packaging>
     <!--<packaging>war</packaging>-->
-    <version>1.0</version>
+    <version>1.0.0</version>
 
     <name>BootLabo</name>
     <description>MonkeyBean Laboratory : SpringBoot 2.x General Web Explore</description>
@@ -58,6 +58,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <!-- scope explain: https://blog.csdn.net/qq_36874292/article/details/81072717 -->
             <scope>test</scope>
         </dependency>
 
@@ -189,7 +190,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.11.0</version>
+            <version>3.14.2</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->

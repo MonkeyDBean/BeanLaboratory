@@ -14,9 +14,9 @@ public abstract class ExtendAbstractService<T> extends AbstractService<T> {
      * 此方法低频使用, 实际多为联表查询, 在mapper.xml中手写sql更加便捷
      */
     public List<T> findNotDeletedByCondition(Condition condition) {
-        if(condition.getOredCriteria().isEmpty()){
+        if (condition.getOredCriteria().isEmpty()) {
             condition.createCriteria().andEqualTo("is_deleted", false);
-        }else{
+        } else {
             condition.getOredCriteria().get(0).andEqualTo("is_deleted", false);
         }
         return mapper.selectByCondition(condition);

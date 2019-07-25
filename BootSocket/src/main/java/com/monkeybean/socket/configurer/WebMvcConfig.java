@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,27 +42,37 @@ import java.util.List;
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
-    @Value("${spring.profiles.active}")
-    private String env;//当前激活的配置文件
 
-    //使用阿里 FastJson 作为JSON MessageConverter
+    /**
+     * 当前激活的配置文件
+     */
+    @Value("${spring.profiles.active}")
+    private String env;
+
+    /**
+     * 使用阿里 FastJson 作为JSON MessageConverter
+     */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
-        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);//保留空的字段
+
+        //保留空的字段
+        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);
         //SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
         //SerializerFeature.WriteNullNumberAsZero//Number null -> 0
         // 按需配置，更多参考FastJson文档
 
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
-        converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));
+        converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
         converters.add(converter);
     }
 
 
-    //统一异常处理
+    /**
+     * 统一异常处理
+     */
     @Override
     @SuppressWarnings("unchecked")
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
@@ -103,7 +112,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         });
     }
 
-    //解决跨域问题
+    /**
+     * 解决跨域问题
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -113,7 +124,9 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
                 .allowCredentials(true);
     }
 
-    //添加拦截器
+    /**
+     * 添加拦截器
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
