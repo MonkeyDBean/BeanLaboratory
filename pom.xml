@@ -28,6 +28,7 @@
         <module>DingTalkTest</module>
         <module>LdapTest</module>
         <module>CrawlerTest</module>
+        <module>BootDynamicDataSource</module>
     </modules>
 
     <properties>
