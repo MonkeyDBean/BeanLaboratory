@@ -6,6 +6,7 @@ import com.monkeybean.dynamicds.model.TestRecord;
 import com.monkeybean.dynamicds.reqres.Result;
 import com.monkeybean.dynamicds.reqres.ReturnCode;
 import com.monkeybean.dynamicds.service.TestRecordService;
+import com.monkeybean.dynamicds.service.impl.PublicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,29 +14,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by MonkeyBean on 2019/7/21.
  */
-@Api(value = "测试接口")
-@RequestMapping(path = "test")
+@Api(value = "简单数据接口测试")
+@RequestMapping(path = "test/simple")
 @RestController
 public class TestController {
 
     private final TestRecordService testRecordService;
 
+    private final PublicService publicService;
+
     @Autowired
-    public TestController(TestRecordService testRecordService) {
+    public TestController(TestRecordService testRecordService, PublicService publicService) {
         this.testRecordService = testRecordService;
+        this.publicService = publicService;
     }
 
     @ApiOperation(value = "新增测试记录")
     @PostMapping("record/data/add")
     public Result<String> addRecordData() {
-        String recordId = UUID.randomUUID().toString();
-        String recordData = "Test_" + recordId.substring(0, 8);
-        testRecordService.addTestRecord(recordId, recordData);
+        publicService.generateTestRecord();
         return new Result<>(ReturnCode.SUCCESS, ConstantValue.SUCCESS_FLAG);
     }
 

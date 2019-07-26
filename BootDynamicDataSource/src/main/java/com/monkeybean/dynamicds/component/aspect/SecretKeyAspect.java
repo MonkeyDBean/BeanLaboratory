@@ -38,7 +38,15 @@ public class SecretKeyAspect {
     public void queryDataSourceKeysPoint() {
     }
 
-    @Around("queryDataSourceKeysPoint()")
+    @Pointcut("execution(public * com.monkeybean.dynamicds.controller.DynamicTaskController.*(..))")
+    public void dynamicTaskControllerPoint() {
+    }
+
+    @Pointcut("queryDataSourceKeysPoint() || dynamicTaskControllerPoint()")
+    public void secretKeyPoint() {
+    }
+
+    @Around("secretKeyPoint()")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();

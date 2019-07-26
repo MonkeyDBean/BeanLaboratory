@@ -5,5 +5,6 @@ package com.monkeybean.dynamicds.constant;
  */
 public final class ConstantValue {
     public static final String SUCCESS_FLAG = "Success";
+    public static final String FAIL_FLAG = "FAILED";
     public static final int HTTP_CODE_UN_AUTHORIZED = 401;
 }

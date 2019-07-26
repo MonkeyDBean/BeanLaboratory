@@ -23,9 +23,14 @@ public class PublicConfig {
      */
     private String secretKey;
 
+    /**
+     * 测试初始定时任务
+     */
+    private String testCron;
+
     @PostConstruct
-    public void constructFinish() {
-        log.info("PublicConfig Construct Finish, secretKey is [{}]", secretKey);
+    private void constructFinish() {
+        log.info("PublicConfig Construct Finish, secretKey is [{}], testCron: [{}]", secretKey, testCron);
     }
 
 }
