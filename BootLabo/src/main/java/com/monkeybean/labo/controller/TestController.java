@@ -615,7 +615,16 @@ public class TestController {
     public String callJenkins(@RequestParam String requestUrl, @RequestParam String user, @RequestParam String pwd, @RequestParam String env,
                               @RequestParam String areaName, @RequestParam String packageName, @RequestParam String token) {
         String url = requestUrl + "?ENV=" + env + "&AREA=" + areaName + "&PACKAGE_IOS=" + packageName + "&token=" + token;
-        return OkHttpUtil.doGetBasicAuth(url, user, pwd);
+        int callTimes = 0;
+        String responseStr = null;
+        while (responseStr == null && callTimes < 3) {
+            responseStr = OkHttpUtil.doGetBasicAuth(url, user, pwd);
+            callTimes++;
+            if (responseStr == null) {
+                logger.error("callJenkins failed, url: [{}], user: [{}]", url, user);
+            }
+        }
+        return responseStr;
     }
 
     @ApiOperation(value = "测试多聊群助手消息推送")
