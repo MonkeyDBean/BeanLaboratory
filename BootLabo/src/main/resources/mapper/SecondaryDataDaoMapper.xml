@@ -19,4 +19,30 @@
         </where>
     </select>
 
+    <select id="queryShortLongRecord" resultType="Map" parameterType="Map">
+        select
+        long_url as longUrl, short_url as shortUrl, short_flag as shortFlag, date_format(create_time, "%Y-%m-%d %T") as createTime
+        from
+        short_long_record
+        <where>
+            <choose>
+                <when test="longUrl != null">
+                    long_url = #{longUrl}
+                </when>
+                <when test="shortUrl != null">
+                    short_url = #{shortUrl}
+                </when>
+                <otherwise>
+                    short_flag = #{shortFlag}
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <insert id="addShortLongRecord" parameterType="Map">
+        insert into
+        short_long_record(long_url, short_url, short_flag, create_time)
+        values(#{longUrl}, #{shortUrl}, #{shortFlag}, CURRENT_TIMESTAMP);
+    </insert>
+
 </mapper>

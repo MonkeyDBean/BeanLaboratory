@@ -30,7 +30,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +64,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         // 按需配置，更多参考FastJson文档
 
         converter.setFastJsonConfig(config);
-        converter.setDefaultCharset(Charset.forName("UTF-8"));
+        converter.setDefaultCharset(StandardCharsets.UTF_8);
+//        converter.setDefaultCharset(Charset.forName("UTF-8"));
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON_UTF8));
         converters.add(converter);
     }
@@ -154,7 +155,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
     }
 
     private void responseResult(HttpServletResponse response, Result result) {
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         response.setStatus(200);
         try {

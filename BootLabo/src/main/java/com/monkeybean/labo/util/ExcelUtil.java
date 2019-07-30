@@ -33,24 +33,19 @@ public class ExcelUtil {
             sheet.setColumnWidth(i, 30 * 256);
         }
 
-        // 创建两种单元格格式(分别用于列名及数据)
-        CellStyle cellStyle1 = wb.createCellStyle();
-        CellStyle cellStyle2 = wb.createCellStyle();
-
-        // 创建两种字体
-        Font font1 = wb.createFont();
-        Font font2 = wb.createFont();
-
         // 创建第一种字体样式（用于列名）
+        Font font1 = wb.createFont();
         font1.setFontHeightInPoints((short) 10);
         font1.setColor(IndexedColors.BLACK.getIndex());
         font1.setBold(true);
 
         // 创建第二种字体样式（用于值）
+        Font font2 = wb.createFont();
         font2.setFontHeightInPoints((short) 10);
         font2.setColor(IndexedColors.BLACK.getIndex());
 
         // 设置第一种单元格的样式（用于列名）
+        CellStyle cellStyle1 = wb.createCellStyle();
         cellStyle1.setFont(font1);
         cellStyle1.setBorderLeft(BorderStyle.THIN);
         cellStyle1.setBorderRight(BorderStyle.THIN);
@@ -59,6 +54,7 @@ public class ExcelUtil {
         cellStyle1.setAlignment(HorizontalAlignment.CENTER);
 
         // 设置第二种单元格的样式（用于值）
+        CellStyle cellStyle2 = wb.createCellStyle();
         cellStyle2.setFont(font2);
         cellStyle2.setBorderLeft(BorderStyle.THIN);
         cellStyle2.setBorderRight(BorderStyle.THIN);

@@ -52,6 +52,7 @@ public final class Coder {
         String desPassword = "";
         try {
             byte[] enc = DesUtil.encrypt(passwordMd5.getBytes(), key);
+
             //加密结果需要转换成hex才能存入数据库
             desPassword = Hex.encodeHexString(enc);
         } catch (Exception e) {

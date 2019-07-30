@@ -183,11 +183,11 @@ public class IpaUtil {
                                 //获取图标名称
                                 NSDictionary iconDict = (NSDictionary) rootDict.get("CFBundleIcons");
                                 if (iconDict != null && iconDict.containsKey("CFBundlePrimaryIcon")) {
-                                    NSDictionary CFBundlePrimaryIcon = (NSDictionary) iconDict.get("CFBundlePrimaryIcon");
-                                    if (CFBundlePrimaryIcon.containsKey("CFBundleIconFiles")) {
-                                        NSArray CFBundleIconFiles = (NSArray) CFBundlePrimaryIcon.get("CFBundleIconFiles");
+                                    NSDictionary cfBundlePrimaryIcon = (NSDictionary) iconDict.get("CFBundlePrimaryIcon");
+                                    if (cfBundlePrimaryIcon.containsKey("CFBundleIconFiles")) {
+                                        NSArray cfBundleIconFiles = (NSArray) cfBundlePrimaryIcon.get("CFBundleIconFiles");
                                         List<String> iconNameList = new ArrayList<>();
-                                        for (NSObject icon : CFBundleIconFiles.getArray()) {
+                                        for (NSObject icon : cfBundleIconFiles.getArray()) {
                                             String iconName = icon.toString();
                                             if (iconName.contains(".png")) {
                                                 iconName = iconName.replace(".png", "");
@@ -341,14 +341,14 @@ public class IpaUtil {
             return null;
         }
         final String imagePattern = ".png";
-        String versionName = originNameArray[originNameArray.length - 3];
-        String nameAndVersion = name + versionName;
-        String urlPrefix = domain + "/" + nameAndVersion + "/";
-        String softwarePackageUrl = urlPrefix + ipaOriginFileName;
-        String displayImageName = "Icon-57" + imagePattern;
-        String displayImageUrl = urlPrefix + displayImageName;
-        String fullSizeImageName = "Icon-512" + imagePattern;
-        String fullSizeImageUrl = urlPrefix + fullSizeImageName;
+        final String versionName = originNameArray[originNameArray.length - 3];
+        final String nameAndVersion = name + versionName;
+        final String urlPrefix = domain + "/" + nameAndVersion + "/";
+        final String softwarePackageUrl = urlPrefix + ipaOriginFileName;
+        final String displayImageName = "Icon-57" + imagePattern;
+        final String displayImageUrl = urlPrefix + displayImageName;
+        final String fullSizeImageName = "Icon-512" + imagePattern;
+        final String fullSizeImageUrl = urlPrefix + fullSizeImageName;
 
         //plist原始文件
         URL fileUrl = IpaUtil.class.getClassLoader().getResource("manifest.plist");
@@ -399,15 +399,15 @@ public class IpaUtil {
         //复制ipa文件到目标路径
         String ipaDesPathStr = newFileParentPath + File.separator + ipaOriginFileName;
         File ipaDesFile = new File(ipaDesPathStr);
-//        if(ipaDesFile.exists()){
-//            logger.warn("ipaDesFile is exist: [{}]", ipaDesPathStr);
-//            boolean deleteIpaDesFile = ipaDesFile.delete();
-//            if(!deleteIpaDesFile){
-//                logger.error("ipaDesFile delete failed: [{}]", ipaDesPathStr);
-//                return;
-//            }
-//        }
-//        Files.copy(ipaOriginFile.toPath(), ipaDesFile.toPath());
+        //if(ipaDesFile.exists()){
+        //logger.warn("ipaDesFile is exist: [{}]", ipaDesPathStr);
+        //boolean deleteIpaDesFile = ipaDesFile.delete();
+        //if(!deleteIpaDesFile){
+        //logger.error("ipaDesFile delete failed: [{}]", ipaDesPathStr);
+        //return;
+        //}
+        //}
+        //Files.copy(ipaOriginFile.toPath(), ipaDesFile.toPath());
         try {
             FileUtils.copyFile(ipaOriginFile, ipaDesFile);
         } catch (IOException e) {

@@ -12,12 +12,12 @@ import com.monkeybean.labo.component.processor.ProcessorFactory;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.component.reqres.req.OtherProjectInfoReq;
 import com.monkeybean.labo.dao.primary.LaboDataDao;
-import com.monkeybean.labo.dao.secondary.SecondaryDataDao;
 import com.monkeybean.labo.dao.third.ThirdDataDao;
 import com.monkeybean.labo.predefine.ConstValue;
 import com.monkeybean.labo.predefine.ReturnCode;
 import com.monkeybean.labo.service.IdentityService;
 import com.monkeybean.labo.service.database.LaboDoService;
+import com.monkeybean.labo.service.database.SecondaryDoService;
 import com.monkeybean.labo.util.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -72,7 +72,7 @@ public class TestController {
 
     private final LaboDoService laboDoService;
 
-    private final SecondaryDataDao secondaryDataDao;
+    private final SecondaryDoService secondaryDoService;
 
     private final ThirdDataDao thirdDataDao;
 
@@ -83,12 +83,12 @@ public class TestController {
     private ConcurrentHashMap<Integer, HttpSession> tempCache = new ConcurrentHashMap<>();
 
     @Autowired
-    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao, LaboDoService laboDoService, SecondaryDataDao secondaryDataDao, ThirdDataDao thirdDataDao) {
+    public TestController(OtherConfig otherConfig, IdentityService identityService, LaboDataDao laboDataDao, LaboDoService laboDoService, SecondaryDoService secondaryDoService, ThirdDataDao thirdDataDao) {
         this.otherConfig = otherConfig;
         this.identityService = identityService;
         this.laboDataDao = laboDataDao;
         this.laboDoService = laboDoService;
-        this.secondaryDataDao = secondaryDataDao;
+        this.secondaryDoService = secondaryDoService;
         this.thirdDataDao = thirdDataDao;
     }
 
@@ -308,7 +308,7 @@ public class TestController {
 
         //get json参数放到map中
         String queryString = request.getQueryString();
-        JSONObject json = JSONObject.parseObject(URLDecoder.decode(queryString, "UTF-8"));
+        JSONObject json = JSONObject.parseObject(URLDecoder.decode(queryString, StandardCharsets.UTF_8.toString()));
         Map<String, Object> map = JSONObject.toJavaObject(json, Map.class);
         if (!map.containsKey(postFieldKey)) {
             return null;
@@ -601,12 +601,6 @@ public class TestController {
         logger.info("simpleTest3 execute");
     }
 
-    @ApiOperation(value = "测试微信长链转短链接")
-    @GetMapping("long/short/convert")
-    public String convertLong2Short(@RequestParam(value = "appid") String appId, @RequestParam(value = "secret") String appSecret, @RequestParam(value = "url") String longUrl) {
-        return WxUtil.long2ShortUrl(appId, appSecret, longUrl);
-    }
-
     /**
      * requestUrl格式如： http://test.jenkins.com/jenkins/view/API/job/Update-test/buildWithParameters
      */
@@ -661,9 +655,7 @@ public class TestController {
         resList.add(primaryDataMap);
 
         //secondary
-        Map<String, Object> secondParamMap = new HashMap<>();
-        secondParamMap.put("id", secondId);
-        Map<String, Object> secondaryDataMap = secondaryDataDao.queryTestRecord(secondParamMap);
+        Map<String, Object> secondaryDataMap = secondaryDoService.queryTestRecord(secondId);
         resList.add(secondaryDataMap);
 
         //third
@@ -675,4 +667,67 @@ public class TestController {
         resList.add(thirdDataMap);
         return resList;
     }
+
+    @ApiOperation(value = "测试短链生成")
+    @GetMapping("url/shorten/generate")
+    public List<String> generateShortenUrl(@RequestParam String origin) {
+        List<String> dataList = new ArrayList<>();
+        Map<String, Object> dbRecord = secondaryDoService.querySLRecordByLongUrl(origin);
+        String shortUrl = "unexpected data error";
+        if (dbRecord != null) {
+            shortUrl = dbRecord.get("shortUrl").toString();
+        } else {
+            String[] shortFlagArray = ShortenUrlUtil.generateShortUrl(origin, otherConfig.getShortSecret());
+            Map<String, Object> tempRecord = null;
+            String useShortFlag = null;
+            for (String shortFlag : shortFlagArray) {
+                tempRecord = secondaryDoService.querySLRecordByShortFlag(shortFlag);
+                if (tempRecord == null) {
+                    useShortFlag = shortFlag;
+                    break;
+                }
+            }
+            if (tempRecord == null) {
+                if (useShortFlag != null) {
+                    shortUrl = otherConfig.getShortDomian() + useShortFlag;
+                    secondaryDoService.addShortLongRecord(origin, shortUrl, useShortFlag);
+                }
+            }
+        }
+        dataList.add(shortUrl);
+
+        //测试第三方api
+        dataList.add(WxUtil.long2ShortUrl(otherConfig.getWxAppId(), otherConfig.getWxAppKey(), origin));
+        dataList.add(ShortenUrlUtil.convertShortUrlBySina(origin, otherConfig.getSinaAppKey()));
+        dataList.add(ShortenUrlUtil.convertShortUrlByBaidu(origin, otherConfig.getBaiduToken()));
+        return dataList;
+    }
+
+    @ApiOperation(value = "短链跳转")
+    @GetMapping("url/shorten/jump/{shortFlag}")
+    public String jumpShortenUrl(@PathVariable String shortFlag, HttpServletResponse response) throws IOException {
+        Map<String, Object> dbRecord = secondaryDoService.querySLRecordByShortFlag(shortFlag);
+        if (dbRecord != null) {
+            response.sendRedirect(dbRecord.get("longUrl").toString());
+            return "success";
+        }
+        return "unknown";
+    }
+
+//    /**
+//     * 测试redis时, 将注释解开
+//     */
+//    @ApiOperation(value = "Redis存数据")
+//    @PostMapping("redis/save")
+//    public String saveDataToRedis(@RequestParam String key, @RequestParam String value, @RequestParam long expire) {
+//        RedisUtil.setValue(key, value, expire);
+//        return "success";
+//    }
+//
+//    @ApiOperation(value = "Redis读数据")
+//    @PostMapping("redis/get")
+//    public Object getDataFromRedis(@RequestParam String key) {
+//        return RedisUtil.getValue(key);
+//    }
+
 }

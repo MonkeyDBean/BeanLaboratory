@@ -180,7 +180,7 @@ public final class AliYunUtil {
         //初始化acsClient,暂不支持region化
         IClientProfile profile = DefaultProfile.getProfile(AliYunUtil.END_POINT_AREA, accessKeyId, accessKeySecret);
         DefaultProfile.addEndpoint(AliYunUtil.END_POINT_AREA, AliYunUtil.END_POINT_AREA, AliYunUtil.PRODUCT, AliYunUtil.DOMAIN);
-        IAcsClient acsClient = new DefaultAcsClient(profile);
+        final IAcsClient acsClient = new DefaultAcsClient(profile);
 
         //组装请求对象
         QuerySendDetailsRequest request = new QuerySendDetailsRequest();

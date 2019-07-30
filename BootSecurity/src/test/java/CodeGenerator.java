@@ -8,6 +8,7 @@ import org.mybatis.generator.internal.DefaultShellCallback;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -220,7 +221,7 @@ public class CodeGenerator {
     private static freemarker.template.Configuration getConfiguration() throws IOException {
         freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
         cfg.setDirectoryForTemplateLoading(new File(TEMPLATE_FILE_PATH));
-        cfg.setDefaultEncoding("UTF-8");
+        cfg.setDefaultEncoding(StandardCharsets.UTF_8.toString());
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
         return cfg;
     }

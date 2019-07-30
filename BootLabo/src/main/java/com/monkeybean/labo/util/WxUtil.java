@@ -239,7 +239,7 @@ public class WxUtil {
      * @return 成功为微信返回的json数据，失败为null
      */
     private static JSONObject requestWxPost(String url, String body) {
-        String response = OkHttpUtil.doPost(url, body);
+        String response = OkHttpUtil.doPost(url, body, null);
         JSONObject json = JSONObject.parseObject(response);
         logger.debug("requestWxPost, request url is: [{}], body: [{}], wx res: [{}]", url, body, json);
         Integer errCode = json.getInteger("errcode");

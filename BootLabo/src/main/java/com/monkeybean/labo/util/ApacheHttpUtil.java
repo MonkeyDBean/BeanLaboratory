@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public final class ApacheHttpUtil {
         ObjectMapper mapper = new ObjectMapper();
         String url = null;
         try {
-            url = URLEncoder.encode(mapper.writeValueAsString(param), "utf-8");
+            url = URLEncoder.encode(mapper.writeValueAsString(param), StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
             logger.error("mapToUrl UnsupportedEncodingException e: [{}]", e);
         } catch (JsonProcessingException e) {
@@ -54,7 +55,7 @@ public final class ApacheHttpUtil {
      *
      * @param url 请求地址
      */
-    private static String doGet(String url) {
+    public static String doGet(String url) {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
             String result = "{ \"result\" : -1 }";
             HttpGet httpGet = new HttpGet(url);
@@ -86,13 +87,13 @@ public final class ApacheHttpUtil {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 valuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue().toString()));
             }
-            post.setEntity(new UrlEncodedFormEntity(valuePairs, "UTF-8"));
+            post.setEntity(new UrlEncodedFormEntity(valuePairs, StandardCharsets.UTF_8));
             CloseableHttpResponse response = httpclient.execute(post);
             logger.info("post request, url: [{}], params: [{}], response: [{}]", url, params, response.getStatusLine());
             int status = response.getStatusLine().getStatusCode();
             if (status >= 200 && status < 300) {
                 HttpEntity entity = response.getEntity();
-                result = EntityUtils.toString(entity, "UTF-8");
+                result = EntityUtils.toString(entity, StandardCharsets.UTF_8);
                 EntityUtils.consume(entity);
             }
             response.close();

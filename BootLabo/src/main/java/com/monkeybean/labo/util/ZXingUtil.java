@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,7 +79,7 @@ public final class ZXingUtil {
 
     private static BitMatrix generateBitMatrix(String content, Integer width, Integer height, boolean isFill) {
         Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
-        hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+        hints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
         if (isFill) {
             hints.put(EncodeHintType.MARGIN, 0);
         }
@@ -137,7 +138,7 @@ public final class ZXingUtil {
         Binarizer binarizer = new HybridBinarizer(source);
         BinaryBitmap binaryBitmap = new BinaryBitmap(binarizer);
         HashMap hints = new HashMap();
-        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        hints.put(EncodeHintType.CHARACTER_SET, StandardCharsets.UTF_8);
         String codeContent = null;
         try {
             Result result = formatReader.decode(binaryBitmap, hints);

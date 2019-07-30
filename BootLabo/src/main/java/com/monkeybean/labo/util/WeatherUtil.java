@@ -1,13 +1,12 @@
 package com.monkeybean.labo.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.HashMap;
 
@@ -17,9 +16,6 @@ import java.util.HashMap;
  * Created by MonkeyBean on 2018/7/19.
  */
 public final class WeatherUtil {
-
-    private static final String UTF8 = "UTF-8";
-    private static Logger logger = LoggerFactory.getLogger(WeatherUtil.class);
 
     private WeatherUtil() {
     }
@@ -46,10 +42,10 @@ public final class WeatherUtil {
     private static String generateSignature(String data, String key) throws SignatureException {
         String result;
         try {
-            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(WeatherUtil.UTF8), "HmacSHA1");
+            SecretKeySpec signingKey = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA1");
             Mac mac = Mac.getInstance("HmacSHA1");
             mac.init(signingKey);
-            byte[] rawHmac = mac.doFinal(data.getBytes(WeatherUtil.UTF8));
+            byte[] rawHmac = mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
             result = new sun.misc.BASE64Encoder().encode(rawHmac);
         } catch (Exception e) {
             throw new SignatureException("Failed to generate HMAC : " + e.getMessage());
@@ -69,7 +65,7 @@ public final class WeatherUtil {
      */
     private static String generateDiaryWeatherURL(String userId, String secretKey, String location) throws SignatureException, UnsupportedEncodingException {
         String params = "ts=" + System.currentTimeMillis() + "&ttl=30&uid=" + userId;
-        String signature = URLEncoder.encode(generateSignature(params, secretKey), WeatherUtil.UTF8);
+        String signature = URLEncoder.encode(generateSignature(params, secretKey), StandardCharsets.UTF_8.toString());
         return "https://api.seniverse.com/v3/weather/daily.json?" + params + "&sig=" + signature + "&location=" + location + "&language=zh-Hans&&unit=c&&start=0";
     }
 

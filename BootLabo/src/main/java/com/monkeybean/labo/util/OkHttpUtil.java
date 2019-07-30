@@ -2,6 +2,7 @@ package com.monkeybean.labo.util;
 
 import com.monkeybean.labo.component.config.HttpProxyConfig;
 import okhttp3.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,10 +44,10 @@ public class OkHttpUtil {
         }
 
         //自定义Dispatcher(内部调度机制为final, 维护三个线程队列：readyAsyncCalls, runningAsyncCalls, runningSyncCalls), 设置maxRequests及maxRequestsPerHost
-//        Dispatcher dispatcher = new Dispatcher();
-//        dispatcher.setMaxRequestsPerHost(10);
-//        dispatcher.setMaxRequests(100);
-//        builder.dispatcher(dispatcher);
+        //Dispatcher dispatcher = new Dispatcher();
+        //dispatcher.setMaxRequestsPerHost(10);
+        //dispatcher.setMaxRequests(100);
+        //builder.dispatcher(dispatcher);
 
         OkHttpUtil.client = builder.build();
     }
@@ -142,15 +143,20 @@ public class OkHttpUtil {
     /**
      * Http Post 同步请求
      *
-     * @param url  请求地址
-     * @param json post body为json的数据
+     * @param url         请求地址
+     * @param json        post body为json的数据
+     * @param headerToken header中对应的Token值, 无则传null
+     * @return 成功返回响应内容, 失败返回null
      */
-    public static String doPost(String url, String json) {
+    public static String doPost(String url, String json, String headerToken) {
         RequestBody body = RequestBody.create(JSON, json);
-        Request request = new Request.Builder()
+        Request.Builder builder = new Request.Builder()
                 .url(url)
-                .post(body)
-                .build();
+                .post(body);
+        if (StringUtils.isNotEmpty(headerToken)) {
+            builder.addHeader("Token", headerToken);
+        }
+        Request request = builder.build();
         try {
             Response response = OkHttpUtil.client.newCall(request).execute();
             if (response.isSuccessful()) {
@@ -171,7 +177,7 @@ public class OkHttpUtil {
      * @param req  body数据
      * @param type body数据类型
      */
-    public static String doPost(String url, String req, MediaType type) {
+    public static String doPostBySetMedia(String url, String req, MediaType type) {
         RequestBody body = RequestBody.create(type, req);
         Request request = new Request.Builder()
                 .url(url)

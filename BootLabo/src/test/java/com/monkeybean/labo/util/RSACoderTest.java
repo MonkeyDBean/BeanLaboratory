@@ -2,6 +2,7 @@ package com.monkeybean.labo.util;
 
 import junit.framework.TestCase;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -24,8 +25,9 @@ public class RSACoderTest extends TestCase {
         System.out.println("privateKey length: " + privateKey.length());
         System.out.println("sign: " + sign);
         System.out.println("sign length: " + sign.length());
+
 //        RSACoder.verify(data.getBytes("ISO-8859-1"), publicKey, sign);
-        RSACoder.verify(data.getBytes("UTF-8"), publicKey, sign);
+        RSACoder.verify(data.getBytes(StandardCharsets.UTF_8), publicKey, sign);
         assertTrue(RSACoder.verify(data.getBytes(), publicKey, sign));
     }
 

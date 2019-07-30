@@ -41,6 +41,8 @@
         </encoder>
     </appender>
 
+    <logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="WARN"/>
+
     <!-- 全局日志级别, 如需调整,修改这里 -->
     <root level="INFO">
         <appender-ref ref="Console"/>

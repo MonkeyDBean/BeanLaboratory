@@ -76,7 +76,7 @@ public class DuoLiaoUtil {
         try {
 
             //官方仅php接入示例, 使用json_encode编码userInfo, 编码后为json数组, php编码测试如下(在线编译：https://c.runoob.com/compile)：
-//            <?php echo json_encode([['headstr'=>'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563431510935&di=9d2246d4caeeffd811c2f4d9e2d101a7&imgtype=0&src=http%3A%2F%2Fpic.pc6.com%2Fup%2F2013-9%2F2013923115413.png','g_name'=>'昵称1','score'=>'+500','game_id'=>'11111'],['headstr'=>'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563431535243&di=962daaa6900d6c61448b83a76588f627&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201606%2F26%2F20160626222622_QkZ4j.thumb.700_0.jpeg','g_name'=>'昵称2','score'=>'+1000','game_id'=>'22222']]);?>
+            //<?php echo json_encode([['headstr'=>'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563431510935&di=9d2246d4caeeffd811c2f4d9e2d101a7&imgtype=0&src=http%3A%2F%2Fpic.pc6.com%2Fup%2F2013-9%2F2013923115413.png','g_name'=>'昵称1','score'=>'+500','game_id'=>'11111'],['headstr'=>'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1563431535243&di=962daaa6900d6c61448b83a76588f627&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201606%2F26%2F20160626222622_QkZ4j.thumb.700_0.jpeg','g_name'=>'昵称2','score'=>'+1000','game_id'=>'22222']]);?>
             JSONObject.parseArray(userInfo);
         } catch (Exception e) {
             logger.warn("userInfo is illegal, userInfo is: [{}], e: [{}]", userInfo, e);

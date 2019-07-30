@@ -1,10 +1,7 @@
 package com.monkeybean.labo.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 字符校验工具类
@@ -12,8 +9,6 @@ import java.nio.ByteBuffer;
  * Created by MonkeyBean on 2018/05/26.
  */
 public final class FilterUtf8Mb4Util {
-
-    private static Logger logger = LoggerFactory.getLogger(FilterUtf8Mb4Util.class);
 
     private FilterUtf8Mb4Util() {
     }
@@ -25,12 +20,7 @@ public final class FilterUtf8Mb4Util {
      * @return 过滤后的字符串
      */
     public static String filterOffUtf8Mb4(String text) {
-        byte[] bytes = new byte[0];
-        try {
-            bytes = text.getBytes("utf-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("filterOffUtf8Mb4 text to bytes, UnsupportedEncodingException: [{}]", e);
-        }
+        byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
         ByteBuffer buffer = ByteBuffer.allocate(bytes.length);
         int i = 0;
         while (i < bytes.length) {
@@ -55,12 +45,7 @@ public final class FilterUtf8Mb4Util {
             }
         }
         buffer.flip();
-        try {
-            return new String(buffer.array(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            logger.error("filterOffUtf8Mb4 result, UnsupportedEncodingException: [{}]", e);
-            return "";
-        }
+        return new String(buffer.array(), StandardCharsets.UTF_8);
     }
 
     /**

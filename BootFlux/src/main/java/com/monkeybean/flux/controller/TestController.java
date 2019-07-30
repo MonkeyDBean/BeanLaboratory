@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -31,7 +32,7 @@ public class TestController {
     public Mono<String> getDbUrl() throws IOException {
         Properties properties = new Properties();
         InputStream inputStream = Object.class.getResourceAsStream("/application.properties");
-        properties.load(new InputStreamReader(inputStream, "UTF-8"));
+        properties.load(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
         return Mono.just("db url is:  " + properties.getProperty("mongo.url"));
     }
 }

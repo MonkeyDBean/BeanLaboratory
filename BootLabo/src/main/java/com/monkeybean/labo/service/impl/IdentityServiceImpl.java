@@ -95,7 +95,8 @@ public class IdentityServiceImpl implements IdentityService {
             return new Result<>(ReturnCode.SUCCESS, verifyCode);
         }
 
-        Map<String, Object> sendResult = AliYunUtil.sendMessage(this.messageConfig.getAccessKeyId(), this.messageConfig.getAccessKeySecret(), this.messageConfig.getSignName(), messageConfig.getTemplateId(), phone, verifyCode);
+        Map<String, Object> sendResult = AliYunUtil.sendMessage(this.messageConfig.getAccessKeyId(), this.messageConfig.getAccessKeySecret(),
+                this.messageConfig.getSignName(), messageConfig.getTemplateId(), phone, verifyCode);
         if (ConstValue.SEND_SUCCESS.equals(sendResult.get("result").toString())) {
             SendSmsResponse sendSmsResponse = (SendSmsResponse) sendResult.get("response");
             String responseCode = sendSmsResponse.getCode();

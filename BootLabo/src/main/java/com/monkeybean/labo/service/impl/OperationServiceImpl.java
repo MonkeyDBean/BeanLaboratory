@@ -301,11 +301,11 @@ public class OperationServiceImpl implements OperationService {
                             //使用工具类
                             FileUtils.copyInputStreamToFile(file.getInputStream(), imageFile);
 
-//                            //不使用工具类
-//                            FileOutputStream outputStream = new FileOutputStream(imageFile);
-//                            outputStream.write(fileBytes);
-//                            outputStream.flush();
-//                            outputStream.close();
+                            //不使用工具类
+                            //FileOutputStream outputStream = new FileOutputStream(imageFile);
+                            //outputStream.write(fileBytes);
+                            //outputStream.flush();
+                            //outputStream.close();
                             logger.info("file store success, accountId: {}, fileName: {}", accountId, fileName);
                         } catch (IOException e) {
                             logger.error("accountId: {}, fileName: {}, file IOException: {}", accountId, fileName, e);

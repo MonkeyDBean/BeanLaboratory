@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Encoder;
 
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -163,7 +164,7 @@ public class UcPaasUtil {
             //群发号码重复
             put("105138", true);
 
-            //	账号未认证
+            //账号未认证
             put("105140", true);
 
             //主账号需为企业认证
@@ -361,13 +362,13 @@ public class UcPaasUtil {
         httppost.setHeader("Authorization", auth);
         BasicHttpEntity requestBody = new BasicHttpEntity();
         try {
-            requestBody.setContent(new ByteArrayInputStream(body.getBytes("UTF-8")));
-            requestBody.setContentLength(body.getBytes("UTF-8").length);
+            requestBody.setContent(new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)));
+            requestBody.setContentLength(body.getBytes(StandardCharsets.UTF_8).length);
             httppost.setEntity(requestBody);
             HttpResponse response = httpClient.execute(httppost);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
-                String requestResult = EntityUtils.toString(entity, "UTF-8");
+                String requestResult = EntityUtils.toString(entity, StandardCharsets.UTF_8);
                 JSONObject resJson = JSONObject.parseObject(requestResult);
                 String respCode = resJson.getJSONObject("resp").getString("respCode");
                 if ("000000".equals(respCode)) {

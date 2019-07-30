@@ -88,10 +88,10 @@ public class UtilController {
         if (!Pattern.matches(ConstValue.LEGAL_PASSWORD, password)) {
             return new Result<>(ReturnCode.PWD_SIMPLE);
         }
-        String paramTimeStr = String.valueOf(nowDateTime.getMillis());
-        int loop = Integer.parseInt(paramTimeStr.substring(paramTimeStr.length() - 1));
-        String singleMd5Pwd = DigestUtils.md5Hex(password);
-        String dbPwd = Coder.encryptPassWithSlat(singleMd5Pwd, otherConfig.getSqlSalt());
+        final String paramTimeStr = String.valueOf(nowDateTime.getMillis());
+        final int loop = Integer.parseInt(paramTimeStr.substring(paramTimeStr.length() - 1));
+        final String singleMd5Pwd = DigestUtils.md5Hex(password);
+        final String dbPwd = Coder.encryptPassWithSlat(singleMd5Pwd, otherConfig.getSqlSalt());
         String requestPwd = singleMd5Pwd;
         for (int i = 0; i < loop; i++) {
             requestPwd = DigestUtils.md5Hex(requestPwd);
@@ -99,9 +99,9 @@ public class UtilController {
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("originPwd", password);
         data.put("singleMd5Pwd", singleMd5Pwd);
-        data.put("requestSTime", paramTimeStr);
         data.put("requestPwd", requestPwd);
         data.put("dbPwd", dbPwd);
+        data.put("requestSTime", paramTimeStr);
         return new Result<>(ReturnCode.SUCCESS, data);
     }
 

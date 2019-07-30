@@ -91,6 +91,36 @@ public class OtherConfig implements InitializingBean {
      */
     private String testStr;
 
+    /**
+     * 新浪应用key
+     */
+    private String sinaAppKey;
+
+    /**
+     * 微信appId
+     */
+    private String wxAppId;
+
+    /**
+     * 微信appKey
+     */
+    private String wxAppKey;
+
+    /**
+     * 百度token
+     */
+    private String baiduToken;
+
+    /**
+     * 短链接域名
+     */
+    private String shortDomian;
+
+    /**
+     * 短链接密钥
+     */
+    private String shortSecret;
+
     public String getSqlSalt() {
         return sqlSalt;
     }
@@ -209,6 +239,54 @@ public class OtherConfig implements InitializingBean {
 
     public void setTestStr(String testStr) {
         this.testStr = testStr;
+    }
+
+    public String getSinaAppKey() {
+        return sinaAppKey;
+    }
+
+    public void setSinaAppKey(String sinaAppKey) {
+        this.sinaAppKey = sinaAppKey;
+    }
+
+    public String getWxAppId() {
+        return wxAppId;
+    }
+
+    public void setWxAppId(String wxAppId) {
+        this.wxAppId = wxAppId;
+    }
+
+    public String getWxAppKey() {
+        return wxAppKey;
+    }
+
+    public void setWxAppKey(String wxAppKey) {
+        this.wxAppKey = wxAppKey;
+    }
+
+    public String getBaiduToken() {
+        return baiduToken;
+    }
+
+    public void setBaiduToken(String baiduToken) {
+        this.baiduToken = baiduToken;
+    }
+
+    public String getShortDomian() {
+        return shortDomian;
+    }
+
+    public void setShortDomian(String shortDomian) {
+        this.shortDomian = shortDomian;
+    }
+
+    public String getShortSecret() {
+        return shortSecret;
+    }
+
+    public void setShortSecret(String shortSecret) {
+        this.shortSecret = shortSecret;
     }
 
     @Override
