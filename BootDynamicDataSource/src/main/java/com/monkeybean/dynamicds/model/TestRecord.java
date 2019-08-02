@@ -1,8 +1,6 @@
 package com.monkeybean.dynamicds.model;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,6 +11,9 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class TestRecord implements Serializable {
     private static final long serialVersionUID = -3953740355459708922L;
 
@@ -24,11 +25,13 @@ public class TestRecord implements Serializable {
     /**
      * 记录Id
      */
+    @NonNull
     private String recordId;
 
     /**
      * 记录数据
      */
+    @NonNull
     private String recordData;
 
     /**

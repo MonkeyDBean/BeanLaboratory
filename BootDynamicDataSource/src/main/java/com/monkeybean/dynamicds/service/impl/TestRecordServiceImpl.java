@@ -28,9 +28,7 @@ public class TestRecordServiceImpl implements TestRecordService {
 
     @Override
     public void addTestRecord(String recordId, String recordData) {
-        TestRecord testRecord = new TestRecord();
-        testRecord.setRecordId(recordId);
-        testRecord.setRecordData(recordData);
+        TestRecord testRecord = new TestRecord(recordId, recordData);
         testRecordDao.addTestRecord(testRecord);
     }
 
