@@ -1,4 +1,4 @@
-package com.monkeybean.labo.component.config.redis;
+package com.monkeybean.rl.component.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

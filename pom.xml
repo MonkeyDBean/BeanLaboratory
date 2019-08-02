@@ -29,6 +29,7 @@
         <module>LdapTest</module>
         <module>CrawlerTest</module>
         <module>BootDynamicDataSource</module>
+        <module>RedisLabo</module>
     </modules>
 
     <properties>

@@ -8,7 +8,7 @@ import java.util.Set;
  * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
-public class ConstValue {
+public final class ConstValue {
 
     /**
      * 合法日期正则（YYYY-MM-DD）

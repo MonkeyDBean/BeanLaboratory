@@ -714,20 +714,4 @@ public class TestController {
         return "unknown";
     }
 
-//    /**
-//     * 测试redis时, 将注释解开
-//     */
-//    @ApiOperation(value = "Redis存数据")
-//    @PostMapping("redis/save")
-//    public String saveDataToRedis(@RequestParam String key, @RequestParam String value, @RequestParam long expire) {
-//        RedisUtil.setValue(key, value, expire);
-//        return "success";
-//    }
-//
-//    @ApiOperation(value = "Redis读数据")
-//    @PostMapping("redis/get")
-//    public Object getDataFromRedis(@RequestParam String key) {
-//        return RedisUtil.getValue(key);
-//    }
-
 }

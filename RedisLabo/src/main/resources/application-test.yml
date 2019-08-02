@@ -1,0 +1,25 @@
+server:
+  port: 8095
+  servlet:
+    context-path: /monkey_redis
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  messages:
+    encoding: UTF-8
+  session:
+    store-type: redis
+
+redis:
+  address:
+  port:
+  password:
+  dbIndex: 0
+  connectTimeout: 3000
+  readTimeout: 5000

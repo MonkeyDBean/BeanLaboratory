@@ -3,7 +3,7 @@
 
     <!-- 部署时去掉property声明，日志路径通过py脚本指定 -->
     <property name="log_path" value="./logs_file/"/>
-    <property name="log_name" value="BootLabo"/>
+    <property name="log_name" value="RedisLabo"/>
 
     <!-- 控制台输出日志 -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
@@ -40,6 +40,8 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
+
+    <logger name="org.springframework.session.web.http.SessionRepositoryFilter.SESSION_LOGGER" level="WARN"/>
 
     <!-- 全局日志级别, 如需调整,修改这里 -->
     <root level="INFO">
