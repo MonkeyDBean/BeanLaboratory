@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 import static junit.framework.TestCase.assertTrue;
 
 /**
+ * 单元测试场景: https://tasdikrahman.me/2019/03/13/what-should-and-should-not-be-tested-in-unit-tests/
+ * <p>
  * Created by MonkeyBean on 2018/7/26.
  */
 public class OtherTest {
