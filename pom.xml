@@ -30,6 +30,7 @@
         <module>CrawlerTest</module>
         <module>BootDynamicDataSource</module>
         <module>RedisLabo</module>
+        <module>LBSimulate</module>
     </modules>
 
     <properties>
