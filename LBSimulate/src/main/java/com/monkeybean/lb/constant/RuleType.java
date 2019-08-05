@@ -32,14 +32,19 @@ public enum RuleType {
     IP_HASH(5),
 
     /**
-     * 一致性哈希
+     * Key哈希
      */
-    CONSISTENCY(6),
+    KEY_HASH(6),
 
     /**
      * 最佳可用策略
      */
-    BEST_AVAILABLE(7);
+    BEST_AVAILABLE(7),
+
+    /**
+     * 一致性Hash
+     */
+    CONSISTENCY_HASH(8);
 
     /**
      * 标识

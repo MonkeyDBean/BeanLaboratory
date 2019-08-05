@@ -1,6 +1,7 @@
 package com.monkeybean.lb.request;
 
 import com.monkeybean.lb.load.LoadBalancer;
+import com.monkeybean.lb.util.CommonUtil;
 
 import java.util.Random;
 
@@ -10,8 +11,6 @@ import java.util.Random;
 public class RequestFactory {
 
     private static volatile RequestFactory factory;
-
-    private Random random = new Random(System.currentTimeMillis());
 
     private String[] keyPool = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
             "a", "b", "c", "d", "e", "f", "j", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -49,16 +48,12 @@ public class RequestFactory {
      * 随机生成请求
      */
     public void randomGenerateRequest() {
-
         //随机ip
-        String ip = "";
-        for (int i = 0; i < 4; i++) {
-            ip += random.nextInt(256) + ".";
-        }
-        ip = ip.substring(0, ip.lastIndexOf("."));
+        String ip = CommonUtil.randomIp();
 
         //随机key
         String key = "";
+        final Random random = new Random();
         for (int i = 0; i < random.nextInt(10) + 4; i++) {
             key += keyPool[random.nextInt(keyPool.length)];
         }

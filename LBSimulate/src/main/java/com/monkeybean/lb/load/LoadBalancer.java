@@ -5,6 +5,7 @@ import com.monkeybean.lb.eas.AppService;
 import com.monkeybean.lb.load.strategy.LoadForward;
 import com.monkeybean.lb.load.strategy.LoadForwardFactory;
 import com.monkeybean.lb.request.RequestInfo;
+import com.monkeybean.lb.util.CommonUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,6 +74,7 @@ public final class LoadBalancer {
         System.out.println("load forward strategy is: " + getLfName());
         for (InstanceInfo instance : instanceMap.values()) {
             System.out.println("instanceId: " + instance.getInstanceId()
+                    + ", ip: " + instance.getIp()
                     + ", heavy: " + instance.getHeavy()
                     + ", healthScore: " + instance.getHealthScore()
                     + ", counter: " + instance.getCounter());
@@ -85,14 +87,38 @@ public final class LoadBalancer {
      * @return 成功返回实例Id, 失败返回null
      */
     public String generateService() {
-        final Random random = new Random(System.currentTimeMillis());
+        final Random random = new Random();
         final double cpu = AppService.minInitCPU * 2 + random.nextInt(4) * 0.1;
         final double memory = AppService.minInitMemory * 2 + random.nextInt(2000) * 0.1;
         final int heavy = random.nextInt(10) + 1;
         final String instanceId = UUID.randomUUID().toString();
-        boolean createResult = createService(instanceId, cpu, memory, heavy);
-        System.out.println("generateService, instanceId: " + instanceId + ", createResult: " + createResult);
-        return createResult ? instanceId : null;
+
+        //此处限制ip最多随机3次, 若均重复, 则不创建实例
+        boolean ipSame;
+        int loop = 0;
+        String ip = "";
+        while (loop < 3) {
+            ip = CommonUtil.randomIp();
+            ipSame = false;
+            for (InstanceInfo instance : instanceMap.values()) {
+                if (ip.equals(instance.getIp())) {
+                    System.out.println("generateService, random the same ip: " + ip);
+                    ipSame = true;
+                    break;
+                }
+            }
+            if (!ipSame) {
+                break;
+            }
+            loop++;
+        }
+        if (loop < 3) {
+            boolean createResult = createService(instanceId, ip, cpu, memory, heavy);
+            System.out.println("generateService, instanceId: " + instanceId + ", ip: " + ip + ", createResult: " + createResult);
+            return createResult ? instanceId : null;
+        }
+        System.out.println("create service failed in ip random process, instanceId: " + instanceId);
+        return null;
     }
 
     /**
@@ -100,24 +126,25 @@ public final class LoadBalancer {
      *
      * @param instanceId 实例Id
      * @param initCPU    初始CPU
+     * @param ip         节点ip
      * @param initMemory 初始内存
      * @param heavy      服务权重
      * @return 成功返回true, 失败返回false
      */
-    public boolean createService(String instanceId, double initCPU, double initMemory, int heavy) {
+    public boolean createService(String instanceId, String ip, double initCPU, double initMemory, int heavy) {
         if (!AppService.checkAllocateResource(initCPU, initMemory)) {
             System.out.println("createService error, checkAllocateResource isn't pass, instanceId is: " + instanceId + ", initCPU: " + initCPU + ", initMemory: " + initMemory);
             return false;
         }
         AppService appService = new AppService(instanceId, initCPU, initMemory);
-        return addInstanceToMap(instanceId, new InstanceInfo(instanceId, heavy, appService));
+        return addInstanceToMap(instanceId, new InstanceInfo(instanceId, ip, heavy, appService));
     }
 
     /**
      * 随机下线一个应用服务
      */
     public void randomRemoveService() {
-        final Random random = new Random(System.currentTimeMillis());
+        final Random random = new Random();
         int index = random.nextInt(instanceMap.size());
         String instanceId = new ArrayList<>(instanceMap.keySet()).get(index);
         removeService(instanceId);
@@ -184,7 +211,7 @@ public final class LoadBalancer {
      * 随机更换负载策略
      */
     public void randomChangeLf() {
-        final Random random = new Random(System.currentTimeMillis());
+        final Random random = new Random();
         RuleType[] types = RuleType.values();
         int index = random.nextInt(types.length);
         RuleType newRule = types[index];

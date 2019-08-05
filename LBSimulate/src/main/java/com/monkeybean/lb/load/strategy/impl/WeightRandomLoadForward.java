@@ -18,8 +18,6 @@ public class WeightRandomLoadForward implements LoadForward {
 
     private final RuleType ruleType;
 
-    private final Random random = new Random(System.currentTimeMillis());
-
     public WeightRandomLoadForward(RuleType ruleType) {
         this.ruleType = ruleType;
     }
@@ -41,7 +39,8 @@ public class WeightRandomLoadForward implements LoadForward {
             heavySum += each.getHeavy();
             heavySumList.add(heavySum);
         }
-        int randomPosition = this.random.nextInt(heavySum);
+        final Random random = new Random();
+        int randomPosition = random.nextInt(heavySum);
         for (int i = 0; i < heavySumList.size(); i++) {
             if (randomPosition < heavySumList.get(i)) {
                 InstanceInfo instanceInfo = instanceList.get(i);

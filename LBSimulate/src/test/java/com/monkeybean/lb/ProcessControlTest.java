@@ -37,18 +37,17 @@ public class ProcessControlTest {
 
             //等待消息队列处理完成
             Thread.sleep(300);
-
         }
 
         //验证源地址hash
         System.out.println("");
         LoadBalancer.getInstance().setLf(RuleType.IP_HASH.getCode());
         LoadBalancer.getInstance().printInstanceList();
-        String requestOrigin1 = "http://127.0.0.1:80?key=test1";
+        String requestOrigin1 = "http://127.0.0.1:80?key=test_test";
         RequestFactory.getInstance().generateRequest(requestOrigin1);
-        String requestOrigin2 = "http://127.0.0.1:80?key=test2";
+        String requestOrigin2 = "http://127.0.0.1:80?key=test_test";
         RequestFactory.getInstance().generateRequest(requestOrigin2);
-        String requestOrigin3 = "http://127.0.0.1:80?key=test3";
+        String requestOrigin3 = "http://127.0.0.1:80?key=test_test";
         RequestFactory.getInstance().generateRequest(requestOrigin3);
         String requestOrigin4 = "http://172.16.2.123:80?key=test_test";
         RequestFactory.getInstance().generateRequest(requestOrigin4);
@@ -56,13 +55,13 @@ public class ProcessControlTest {
 
         //验证key hash
         System.out.println("");
-        LoadBalancer.getInstance().setLf(RuleType.CONSISTENCY.getCode());
+        LoadBalancer.getInstance().setLf(RuleType.KEY_HASH.getCode());
         LoadBalancer.getInstance().printInstanceList();
-        requestOrigin1 = "http://172.16.2.123:80?key=test12345";
+        requestOrigin1 = "http://127.0.0.1:80?key=test1";
         RequestFactory.getInstance().generateRequest(requestOrigin1);
-        requestOrigin2 = "http://172.16.2.163:80?key=test12345";
+        requestOrigin2 = "http://127.0.0.1:80?key=test1";
         RequestFactory.getInstance().generateRequest(requestOrigin2);
-        requestOrigin3 = "http://192.168.2.10:80?key=test12345";
+        requestOrigin3 = "http://127.0.0.1:80?key=test12345";
         RequestFactory.getInstance().generateRequest(requestOrigin3);
         requestOrigin4 = "http://127.0.0.1:80?key=1_test_test_1";
         RequestFactory.getInstance().generateRequest(requestOrigin4);
@@ -73,6 +72,16 @@ public class ProcessControlTest {
         String newInstanceId = LoadBalancer.getInstance().generateService();
         LoadBalancer.getInstance().printInstanceList();
         RequestFactory.getInstance().batchGenerateRequest(5);
+        Thread.sleep(300);
+
+        //验证一致性Hash
+        System.out.println("");
+        LoadBalancer.getInstance().setLf(RuleType.CONSISTENCY_HASH.getCode());
+        LoadBalancer.getInstance().printInstanceList();
+        RequestFactory.getInstance().generateRequest(requestOrigin1);
+        RequestFactory.getInstance().generateRequest(requestOrigin2);
+        RequestFactory.getInstance().generateRequest(requestOrigin3);
+        RequestFactory.getInstance().generateRequest(requestOrigin4);
         Thread.sleep(300);
 
         //移除实例

@@ -38,7 +38,8 @@ public class ProcessControl {
                 double initCPU = Double.parseDouble(prop.getProperty(serverFlag + ".cpu"));
                 double initMemory = Double.parseDouble(prop.getProperty(serverFlag + ".memory"));
                 int heavy = Integer.parseInt(prop.getProperty(serverFlag + ".heavy"));
-                boolean createResult = LoadBalancer.getInstance().createService(instanceId, initCPU, initMemory, heavy);
+                String ip = prop.getProperty(serverFlag + ".ip");
+                boolean createResult = LoadBalancer.getInstance().createService(instanceId, ip, initCPU, initMemory, heavy);
                 System.out.println("createService, instanceId: " + instanceId + ", createResult: " + createResult);
             }
         } catch (IOException e) {

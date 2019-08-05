@@ -18,6 +18,10 @@ public class InstanceInfo {
      */
     private final String instanceId;
     /**
+     * 服务节点ip
+     */
+    private final String ip;
+    /**
      * 消息处理队列
      */
     private final BlockingQueue<RequestInfo> processQueue;
@@ -46,21 +50,26 @@ public class InstanceInfo {
      */
     private AppService appService;
 
-    public InstanceInfo(String instanceId, AppService appService) {
+    public InstanceInfo(String instanceId, String ip, AppService appService) {
         this.instanceId = instanceId;
+        this.ip = ip;
         this.appService = appService;
         this.appService.attachObserver(this);
         this.processQueue = new LinkedBlockingDeque<>();
         this.init();
     }
 
-    public InstanceInfo(String instanceId, int heavy, AppService appService) {
-        this(instanceId, appService);
+    public InstanceInfo(String instanceId, String ip, int heavy, AppService appService) {
+        this(instanceId, ip, appService);
         this.heavy = heavy;
     }
 
     public String getInstanceId() {
         return this.instanceId;
+    }
+
+    public String getIp() {
+        return ip;
     }
 
     public int getCounter() {
@@ -102,7 +111,7 @@ public class InstanceInfo {
                 try {
                     RequestInfo request = this.processQueue.take();
                     this.appService.getProcessQueue().add(request);
-                    System.out.println("request forward, from instanceInfo to appService, instanceId is: " + this.instanceId + ", counter is: " + this.counter + ", origin request is" + request.getOrigin());
+                    System.out.println("request forward, from instanceInfo to appService, instanceId is: " + this.instanceId + ", counter is: " + this.counter + ", origin request is: " + request.getOrigin());
                 } catch (InterruptedException e) {
                     System.out.println("take request from processQueue in instanceInfo, interruptedException, instanceId: " + this.instanceId);
                     Thread.currentThread().interrupt();
@@ -128,7 +137,10 @@ public class InstanceInfo {
      * 模拟心跳
      */
     private void heartBeat() {
+
+        //打印心跳状态
         //System.out.println("heartbeat execute between instanceInfo and appService, instanceId: " + this.instanceId + ", curTime is: " + System.currentTimeMillis());
+
         if (this.appService.getStatus() != ServerStatus.RUNNING) {
             boolean removeResult = LoadBalancer.getInstance().removeService(this.instanceId);
             System.out.println("heartBeat check, appService status is not running, remove from LoadBalancer, instanceId: " + this.instanceId + ", removeResult" + removeResult);

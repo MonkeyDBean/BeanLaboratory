@@ -151,7 +151,11 @@ public class AppService {
 
                     //模拟请求处理
                     RequestInfo request = this.processQueue.take();
-                    System.out.println("request process successful in appService, instanceId: " + this.instanceId + ", request origin: " + request.getOrigin() + ", request ip: " + request.getIp() + ", request key" + request.getKey());
+                    System.out.println("request process successful in appService, instanceId: " + this.instanceId
+                            + ", request origin: " + request.getOrigin()
+                            + ", request ip: " + request.getIp()
+                            + ", request key: " + request.getKey()
+                            + ", curTime: " + System.currentTimeMillis());
 
                     //模拟资源使用(仅增多, 不释放)
                     this.usedCPU += AppService.modifyCPU;
@@ -211,9 +215,9 @@ public class AppService {
      * 模拟计算服务健康分数
      */
     private double calculateHealthScore() {
-        double cpuHealth = (this.availableCPU + AppService.minInitCPU) / this.initCPU;
-        double memoryHealth = (this.availableMemory + AppService.minInitMemory) / this.initMemory;
-        return (cpuHealth * 0.3 + memoryHealth + 0.7) * 100;
+        double cpuHealthScore = (this.availableCPU + AppService.minInitCPU) / this.initCPU;
+        double memoryHealthScore = (this.availableMemory + AppService.minInitMemory) / this.initMemory;
+        return (cpuHealthScore + memoryHealthScore) * 100 / 2;
     }
 
     /**

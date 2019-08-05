@@ -17,8 +17,6 @@ public class RandomLoadForward implements LoadForward {
 
     private final RuleType ruleType;
 
-    private final Random random = new Random(System.currentTimeMillis());
-
     public RandomLoadForward(RuleType ruleType) {
         this.ruleType = ruleType;
     }
@@ -34,7 +32,8 @@ public class RandomLoadForward implements LoadForward {
             System.out.println("RandomLoadForward handler failed, instanceList is null or empty");
             return;
         }
-        InstanceInfo instanceInfo = instanceList.get(this.random.nextInt(instanceList.size()));
+        final Random random = new Random();
+        InstanceInfo instanceInfo = instanceList.get(random.nextInt(instanceList.size()));
         instanceInfo.addToQueue(request);
         System.out.println("RandomLoadForward, add request to instanceInfo queue, instanceId is: " + instanceInfo.getInstanceId() + ", origin request is: " + request.getOrigin());
     }

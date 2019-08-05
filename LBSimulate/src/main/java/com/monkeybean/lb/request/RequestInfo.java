@@ -18,7 +18,7 @@ public class RequestInfo {
     private String ip;
 
     /**
-     * 请求Key, 用于一致性Hash计算
+     * 用于Key Hash分流计算
      */
     private String key;
 

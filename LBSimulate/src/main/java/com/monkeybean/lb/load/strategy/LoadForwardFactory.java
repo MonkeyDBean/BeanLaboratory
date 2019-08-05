@@ -18,22 +18,25 @@ public class LoadForwardFactory {
         LoadForward fg;
         switch (rule) {
             case WEIGHT_RANDOM:
-                fg = new WeightRandomLoadForward(RuleType.WEIGHT_RANDOM);
+                fg = new WeightRandomLoadForward(rule);
                 break;
             case ROUND:
-                fg = new RoundLoadForward(RuleType.ROUND);
+                fg = new RoundLoadForward(rule);
                 break;
             case WEIGHT_ROUND:
-                fg = new WeightRoundLoadForward(RuleType.WEIGHT_ROUND);
+                fg = new WeightRoundLoadForward(rule);
                 break;
             case IP_HASH:
-                fg = new IpHashLoadForward(RuleType.IP_HASH);
+                fg = new IpHashLoadForward(rule);
                 break;
-            case CONSISTENCY:
-                fg = new ConsistencyLoadForward(RuleType.CONSISTENCY);
+            case KEY_HASH:
+                fg = new KeyHashLoadForward(rule);
                 break;
             case BEST_AVAILABLE:
-                fg = new BestAvailableLoadForward(RuleType.BEST_AVAILABLE);
+                fg = new BestAvailableLoadForward(rule);
+                break;
+            case CONSISTENCY_HASH:
+                fg = new ConsistencyLoadForward(rule);
                 break;
             default:
                 fg = new RandomLoadForward(RuleType.RANDOM);
