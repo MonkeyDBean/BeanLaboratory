@@ -40,7 +40,7 @@ public class SortUtil {
      * @param n 数组长度
      */
     public static int[] initArray(final int n) {
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         int field = n * 10;
         int[] array = new int[n];
         for (int i = 0; i < n; i++) {

@@ -70,7 +70,7 @@ public class VolatileTest {
     private static void testIncrease() throws InterruptedException {
         System.out.println("testIncrease start");
         final VolatileTest test = new VolatileTest();
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0; i < THREAD_NUM; i++) {
             int threadFlag = i;
             new Thread(() -> {

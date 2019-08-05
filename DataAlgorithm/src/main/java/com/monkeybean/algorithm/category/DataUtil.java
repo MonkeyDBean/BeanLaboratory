@@ -160,7 +160,7 @@ public class DataUtil {
      */
     public static List<Integer> shufflePump(List<Integer> origin) {
         List<Integer> result = new ArrayList<>();
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0, tmpIndex, cycleNum = origin.size(); i < cycleNum; i++) {
 //            tmpIndex = (int) (Math.random() * origin.size());
             tmpIndex = random.nextInt(origin.size());
@@ -176,7 +176,7 @@ public class DataUtil {
      * @return 乱序后的数组列表
      */
     public static List<Integer> shuffleSwap(List<Integer> origin) {
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0, tmpElement, tmpIndex = random.nextInt(origin.size()); i < origin.size(); i++, tmpIndex = random.nextInt(origin.size())) {
             if (tmpIndex != i) {
                 tmpElement = origin.get(tmpIndex);
@@ -196,7 +196,7 @@ public class DataUtil {
      * @return 乱序后的数组
      */
     public static int[] shuffleSwap(int[] origin) {
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0, tmpIndex; i < origin.length; i++) {
             tmpIndex = random.nextInt(origin.length);
             if (tmpIndex != i) {

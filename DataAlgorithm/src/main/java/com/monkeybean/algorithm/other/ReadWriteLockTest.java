@@ -22,7 +22,7 @@ public class ReadWriteLockTest {
     public static void main(String[] args) {
         ReadWriteLockTest testObject = new ReadWriteLockTest();
         String key = "test";
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0; i < 10; i++) {
             new Thread(() -> {
                 for (int j = 0; j < 5; j++) {

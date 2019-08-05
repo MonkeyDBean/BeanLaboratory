@@ -15,6 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 编码, 通用加解密或Hash算法
@@ -33,10 +34,34 @@ public final class Coder {
     }
 
     /**
-     * 对字节数组做md5散列
+     * 校验Md5
+     *
+     * @param originStr 原始字符串
+     * @return 成功则返回MD5字符串小写形式, 失败返回null
      */
-    public static String getMd5(byte[] msg) throws Exception {
-        MessageDigest md = MessageDigest.getInstance(KEY_MD5);
+    public static String checkMd5(String originStr) {
+        if (originStr == null || "".equals(originStr)) {
+            return null;
+        }
+        return checkMd5(originStr.getBytes());
+    }
+
+    /**
+     * 对字节数组做md5散列
+     *
+     * @return 成功则返回MD5字符串小写形式, 失败返回null
+     */
+    public static String checkMd5(byte[] msg) {
+        if (msg == null || msg.length == 0) {
+            return null;
+        }
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance(KEY_MD5);
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Coder, NoSuchAlgorithmException error: [{}]", e);
+            return null;
+        }
         md.update(msg);
         byte[] digest = md.digest();
         return DatatypeConverter.printHexBinary(digest).toLowerCase();

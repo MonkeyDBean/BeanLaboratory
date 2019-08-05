@@ -70,7 +70,7 @@ public class OtherUtilTest {
     @Test
     public void testComparator() {
         List<SortTestClass> dataList = new ArrayList<>();
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         for (int i = 0; i < 10; i++) {
             int heavy = random.nextInt(100);
             String des = "testData" + heavy;

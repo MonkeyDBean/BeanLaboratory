@@ -17,7 +17,7 @@ public class RandomUtil {
      * @return 不包含上限，[0, count)区间的随机正整数
      */
     private static int getRandom(int count) {
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         return random.nextInt(count);
     }
 

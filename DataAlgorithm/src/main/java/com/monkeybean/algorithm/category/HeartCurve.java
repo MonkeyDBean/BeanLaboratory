@@ -52,7 +52,7 @@ public class HeartCurve extends JFrame {
         Graphics drawOffScreen = offScreen.getGraphics();
 
         //随机颜色
-        Random random = new Random(System.currentTimeMillis());
+        Random random = new Random();
         Color color;
         int randomSeq = random.nextInt(6);
         switch (randomSeq) {

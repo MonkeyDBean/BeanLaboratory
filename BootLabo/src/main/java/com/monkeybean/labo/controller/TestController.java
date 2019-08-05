@@ -161,7 +161,7 @@ public class TestController {
                 byte[] fileBytes = FileUtil.readAsByteArray(file);
 
                 //仅测试，不通过md5校验文件是否已存在，直接写入
-                String hash = Coder.getMd5(fileBytes);
+                String hash = Coder.checkMd5(fileBytes);
                 String mappingPath = FileCommonUtil.generateMappingPath(aimPath, hash, FilenameUtils.getExtension(file.getName()));
                 logger.info("mappingPath is: {}", mappingPath);
                 writer = new FileOutputStream(mappingPath);
