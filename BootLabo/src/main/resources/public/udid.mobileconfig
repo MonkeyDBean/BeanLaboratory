@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>PayloadContent</key>
+        <dict>
+            <!-- 下载该配置文件并主动安装描述文件后，由苹果方发出上报数据的后端地址配置如下(post请求) -->
+            <key>URL</key>
+            <string>http://172.16.2.123:8096/monkey/testtest/udid/device</string>
+            <key>DeviceAttributes</key>
+            <array>
+                <string>UDID</string>
+                <string>IMEI</string>
+                <string>ICCID</string>
+                <string>VERSION</string>
+                <string>PRODUCT</string>
+            </array>
+        </dict>
+        <!-- 组织名称 -->
+        <key>PayloadOrganization</key>
+        <string>com.monkeybean</string>
+        <!-- 安装时显示的标题 -->
+        <key>PayloadDisplayName</key>
+        <string>查询设备UDID</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <!-- 随机UUID(填写唯一字符串即可) -->
+        <key>PayloadUUID</key>
+        <string>7447E7BC-9987-4586-A833-680140D988A8</string>
+        <key>PayloadIdentifier</key>
+        <string>com.monkeybean.profile-service</string>
+        <!-- 描述 -->
+        <key>PayloadDescription</key>
+        <string>本文件仅用来获取设备UDID</string>
+        <key>PayloadType</key>
+        <string>Profile Service</string>
+    </dict>
+</plist>

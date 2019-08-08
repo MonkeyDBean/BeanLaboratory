@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * 其他通用工具类
@@ -99,22 +101,32 @@ public final class CommonUtil {
     /**
      * 调用脚本, 读取执行结果
      *
-     * @param filePath 脚本路径, 脚本文件格式可以为bat, shell, python
+     * @param filePath   脚本路径, 脚本文件格式可以为bat, sh, py, rb, php
+     * @param paramArray 参数数组
      * @return 失败返回null
      */
-    public static String callScript(String filePath) {
+    public static String callScript(String filePath, String[] paramArray) {
 
         //若为python脚本, 加命令前缀
         //解析python文件，也可考虑引入jython依赖(https://mvnrepository.com/artifact/org.python/jython-standalone), 调用PythonInterpreter
-        String format = filePath.substring(filePath.length() - 2, filePath.length());
+        String format = filePath.substring(filePath.lastIndexOf(".") + 1);
+        String command = "";
         if ("py".equalsIgnoreCase(format)) {
-            filePath = "python " + filePath;
+            command = "python " + filePath;
+        } else if ("php".equalsIgnoreCase(format)) {
+            command = "php " + filePath;
+        } else if ("rb".equalsIgnoreCase(format)) {
+            command = "ruby " + filePath;
+        }
+        command += " ";
+        if (paramArray != null && paramArray.length > 0) {
+            command += Arrays.stream(paramArray).collect(Collectors.joining(" "));
         }
         Process proc;
         try {
-            proc = Runtime.getRuntime().exec(filePath);
-        } catch (IOException e) {
-            logger.error("callScript Runtime exec IOException: [{}]", e);
+            proc = Runtime.getRuntime().exec(command);
+        } catch (Exception e) {
+            logger.error("callScript, exec Exception: [{}]", e);
             return null;
         }
         StringBuilder originContentSBuilder = new StringBuilder();

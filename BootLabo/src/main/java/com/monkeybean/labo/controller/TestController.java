@@ -452,9 +452,9 @@ public class TestController {
     @ApiOperation(value = "测试调用shell/python/bat等, 读取执行结果")
     @ApiImplicitParam(name = "file", value = "脚本路径", required = true, dataType = "string", paramType = "query")
     @GetMapping("script/call")
-    public String callScript(String file) {
+    public String callScript(String file, @RequestParam(required = false) String[] params) {
         if (StringUtils.isNotEmpty(file)) {
-            return CommonUtil.callScript(file);
+            return CommonUtil.callScript(file, params);
         }
         logger.warn("callScript, param illegal");
         return null;
@@ -712,6 +712,19 @@ public class TestController {
             return "success";
         }
         return "unknown";
+    }
+
+    @ApiOperation(value = "解析请求, 获取udid等设备信息")
+    @PostMapping(value = "udid/device")
+    public void parseDeviceInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Map<String, Object> data = IpaUtil.parseMobileProvisionToMap(request.getInputStream());
+        String product = data.get("PRODUCT").toString();
+        String version = data.get("VERSION").toString();
+        String imei = data.get("IMEI").toString();
+        String udid = data.get("UDID").toString();
+        logger.info("parseResult, product: [{}], version: [{}], imei: [{}], udid: [{}]", product, version, imei, udid);
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "http://172.16.2.123:8096/monkey/html/udid_display.html?product=" + product + "&version=" + version + "&imei=" + imei + "&udid=" + udid);
     }
 
 }

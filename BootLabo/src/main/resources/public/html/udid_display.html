@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>udid等设备信息的解析结果</title>
+</head>
+<body>
+<p id="product">Product: <strong></strong></p>
+<p id="version">Version: <strong></strong></p>
+<p id="imei">IMEI: <strong></strong></p>
+<p id="udid">UDID: <strong></strong></p>
+<script type="text/javascript">
+    var paramKeyValues = {};
+    window.onload = function () {
+        parseUrlParam();
+        setElementText();
+    }
+    function parseUrlParam(){
+        var paramArray = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < paramArray.length; i++) {
+            var keyValue = paramArray[i].split('=');
+            paramKeyValues[keyValue[0]]=keyValue[1];
+        }
+        console.log(paramKeyValues);
+    }
+    function setElementText(){
+        document.getElementById('product').getElementsByTagName('strong')[0].innerHTML=getUrlParamValue('product');
+        document.getElementById('version').getElementsByTagName('strong')[0].innerHTML=getUrlParamValue('version');
+        document.getElementById('imei').getElementsByTagName('strong')[0].innerHTML=getUrlParamValue('imei');
+        document.getElementById('udid').getElementsByTagName('strong')[0].innerHTML=getUrlParamValue('udid');
+    }
+    function getUrlParamValue(name){
+        return paramKeyValues[name];
+    }
+</script>
+</body>
+</html>
