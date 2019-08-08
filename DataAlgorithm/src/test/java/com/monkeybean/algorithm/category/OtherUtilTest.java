@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by MonkeyBean on 2018/8/6.
@@ -87,19 +89,81 @@ public class OtherUtilTest {
         }
     }
 
+    /**
+     * java8 新特性: Stream, 用声明的方式处理数据
+     * Stream使用类似SQL语句从数据库查询数据的直观方式来提供一种对Java高阶抽象的集合运算
+     * <p>
+     * Stream是来自数据源的元素队列并支持聚合操作：
+     * 1.Java中的Stream并不会存储元素(只是提供操作管道抓取数据), 而是按需计算
+     * 2.数据源可以是集合, 数组, I/O channel, generator等
+     * 3.聚合操作是类似SQL语句的操作, 比如filter, map, reduce, find, match, sorted等
+     * <p>
+     * 与之前的Collection操作不同, Stream操作还有两个基础的特征
+     * 1.流式调用(中间操作都会返回流对象本身)
+     * 2.内部迭代(以往的集合遍历使用Iterator或For-Each都是显式外部迭代)
+     * <p>
+     * 集合接口有两种方式生成流
+     * 1.stream() : 为集合创建串行流
+     * 2.parallelStream() : 为集合创建并行流
+     * <p>
+     * reference: https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/
+     */
     @Test
-    public void testMapStream() {
-        List<Integer> origin = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            origin.add(i);
-        }
-        origin.add(9);
-        origin.add(10);
-        System.out.println("list is: ");
-        Arrays.stream(origin.toArray()).forEach(System.out::println);
-        System.out.println("max is: " + origin.stream().mapToInt(e -> e).max().orElse(0));
-        System.out.println("count is: " + origin.stream().mapToInt(e -> e).count());
-        System.out.println("sum is: " + origin.stream().mapToInt(e -> e).distinct().sum());
+    public void testStream() {
+
+        //所有Stream操作均以lambda表达式为参数
+        //unordered不会打乱流, 它的作用是：消除流中必须保持的有序约束，允许之后的操作不必考虑有序, 可以加快一些方法的执行速度
+        Random random = new Random();
+        System.out.println("random print: ");
+        random.ints().unordered().limit(5).map(Math::abs).forEach(System.out::println);
+
+        //summaryStatistics
+        List<Integer> numbers = Arrays.asList(10, 8, 1, 2, 3, 3, 7, 3, 7, 6);
+        IntSummaryStatistics stats = numbers.stream().mapToInt(i -> i).summaryStatistics();
+        System.out.println("statistics count: " + stats.getCount());
+        System.out.println("statistics max: " + stats.getMax());
+        System.out.println("statistics min: " + stats.getMin());
+        System.out.println("statistics sum: " + stats.getSum());
+        System.out.println("statistics average: " + stats.getAverage());
+
+        //parallelStream, parallel
+        List<Integer> squaresList = numbers.parallelStream().map(i -> i * i).distinct().collect(Collectors.toList());
+        System.out.println("forEach: ");
+
+        //对于并行流, forEach输出的顺序不一定(效率更高), forEachOrdered与元素的顺序严格一致
+        Stream.of(squaresList).parallel().forEach(System.out::println);
+        //写法不同, 作用同上
+        //squaresList.parallelStream().forEach(System.out::println);
+
+        System.out.println("forEachOrdered: ");
+        Stream.of(squaresList).parallel().forEachOrdered(System.out::println);
+        System.out.println("max is: " + squaresList.stream().mapToInt(i -> i).max().orElse(0));
+        System.out.println("average is: " + squaresList.stream().mapToInt(i -> i).average().orElse(0));
+        System.out.println("count is: " + squaresList.stream().mapToInt(i -> i).count());
+        System.out.println("sum is: " + squaresList.stream().mapToInt(i -> i).sum());
+
+        //filter, joining
+        List<String> stringList = Arrays.asList("abc", "", "bc", "efg", "abcd", "", "jkl");
+        Arrays.stream(stringList.toArray()).forEach(System.out::println);
+        String joinDelimiterStr = stringList.stream().filter(s -> !s.isEmpty()).collect(Collectors.joining(","));
+        boolean matchResult = stringList.stream().noneMatch(String::isEmpty);
+        System.out.println("joinDelimiterStr: " + joinDelimiterStr + ", testAllMatch: " + matchResult);
+
+        //reduce
+        Integer sum = numbers.stream().reduce(0, Integer::sum);
+        System.out.println("reduce sum is: " + sum);
+
+        //iterate与reduce作用相似(接收种子值), limit为生成数量, skip扔掉前n个元素, distinct去重, sorted排序
+        System.out.println("stream iterate: ");
+        Stream.iterate(1, i -> (i + 2) % 5).limit(10).skip(7).distinct().sorted().forEach(System.out::println);
+
+        //generate
+        System.out.println("generate uuid: ");
+        Stream.generate(UUID.randomUUID()::toString).findFirst().ifPresent(System.out::println);
+
+        //partitioningBy
+        Map<Boolean, List<Integer>> resultMap = Stream.generate(new Random()::nextInt).parallel().limit(100).map(Math::abs).collect(Collectors.partitioningBy(i -> i < 2000000000));
+        System.out.println(resultMap.size());
     }
 
     /**
