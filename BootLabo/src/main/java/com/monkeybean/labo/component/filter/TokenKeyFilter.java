@@ -89,7 +89,7 @@ public class TokenKeyFilter implements Filter {
 
         //无需安全校验的接口
         if (servletPath.contains("swagger") || servletPath.contains("api-docs")
-                || servletPath.contains(".txt") || servletPath.contains(".html") || servletPath.contains("favicon.ico")
+                || servletPath.contains(".txt") || servletPath.contains("html") || servletPath.contains("favicon.ico")
                 || servletPath.contains("code/status") || servletPath.contains("kapcha") || servletPath.contains("sys/time/get")
                 || servletPath.contains("view/display")) {
             chain.doFilter(httpServletRequest, httpServletResponse);
