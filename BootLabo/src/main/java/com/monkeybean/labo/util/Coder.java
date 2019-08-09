@@ -23,7 +23,8 @@ import java.security.NoSuchAlgorithmException;
  * Created by MonkeyBean on 2018/05/26.
  */
 public final class Coder {
-    private static final String KEY_SHA = "SHA";
+    private static final String KEY_SHA1 = "SHA-1";
+    private static final String KEY_SHA256 = "SHA-256";
     private static final String KEY_MD5 = "MD5";
     private static final String KEY_MAC = "HmacMD5";
     private static final String KEY_HmacSHA256 = "HmacSHA256";
@@ -147,14 +148,14 @@ public final class Coder {
     /**
      * BASE64编码
      */
-    public static String encryptBASE64(byte[] key) throws Exception {
+    public static String encodeBASE64(byte[] key) throws Exception {
         return (new BASE64Encoder().encodeBuffer(key));
     }
 
     /**
      * BASE64解码
      */
-    public static byte[] decryptBASE64(String key) throws Exception {
+    public static byte[] decodeBASE64(String key) throws Exception {
         return (new BASE64Decoder()).decodeBuffer(key);
     }
 
@@ -172,7 +173,7 @@ public final class Coder {
             md.update(origin.getBytes());
 
             //base64调用封装
-            result = encryptBASE64(encryptHex(md.digest()).getBytes());
+            result = encodeBASE64(encryptHex(md.digest()).getBytes());
 
             //base64使用方法库
             //result = new String(Base64.encodeBase64(encryptHex(md.digest()).getBytes()));
@@ -202,12 +203,35 @@ public final class Coder {
     }
 
     /**
-     * SHA编码
+     * SHA1摘要
      */
-    public static byte[] encryptSHA(byte[] data) throws Exception {
-        MessageDigest sha = MessageDigest.getInstance(KEY_SHA);
-        sha.update(data);
-        return sha.digest();
+    public static String encodeSHA1(String data) throws Exception {
+        MessageDigest sha = MessageDigest.getInstance(KEY_SHA1);
+        sha.update(data.getBytes());
+        return encryptHex(sha.digest());
+    }
+
+    /**
+     * SHA1摘要
+     */
+    public static String encodeSHA1ByDigestUtils(String data) {
+        return DigestUtils.sha1Hex(data.getBytes());
+    }
+
+    /**
+     * SHA256摘要
+     */
+    public static String encodeSHA256(String data) throws Exception {
+        MessageDigest sha = MessageDigest.getInstance(KEY_SHA256);
+        sha.update(data.getBytes());
+        return encryptHex(sha.digest());
+    }
+
+    /**
+     * SHA256摘要
+     */
+    public static String encodeSHA256ByDigestUtils(String data) {
+        return DigestUtils.sha256Hex(data.getBytes());
     }
 
     /**
@@ -216,14 +240,14 @@ public final class Coder {
     public static String initMacKey() throws Exception {
         KeyGenerator keyGenerator = KeyGenerator.getInstance(KEY_MAC);
         SecretKey secretKey = keyGenerator.generateKey();
-        return encryptBASE64(secretKey.getEncoded());
+        return encodeBASE64(secretKey.getEncoded());
     }
 
     /**
      * HMAC加密
      */
     public static byte[] encryptHMAC(byte[] data, String key) throws Exception {
-        SecretKey secretKey = new SecretKeySpec(decryptBASE64(key), KEY_MAC);
+        SecretKey secretKey = new SecretKeySpec(decodeBASE64(key), KEY_MAC);
         Mac mac = Mac.getInstance(secretKey.getAlgorithm());
         mac.init(secretKey);
         return mac.doFinal(data);
