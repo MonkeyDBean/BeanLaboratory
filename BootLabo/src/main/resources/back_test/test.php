@@ -9,5 +9,8 @@ for ($x=1; $x<$argc; $x++) {
 if(strpos($all_param, $concat_str) !== false){
     $all_param=$all_param.$concat_str;
 }
-echo 'all param concat is '.$all_param
+echo 'all param concat is '.$all_param;
+
+# 参数单位为秒
+# sleep(2)
 ?>

@@ -37,3 +37,6 @@ if(all_param.include? concat_str)
 end
 # puts "file name is #{__FILE__}";
 puts "all param concat is: #{all_param}";
+
+# sleep参数单位为秒
+# sleep(2)

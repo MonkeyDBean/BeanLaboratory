@@ -125,6 +125,7 @@ public final class CommonUtil {
         Process proc;
         try {
             proc = Runtime.getRuntime().exec(command);
+            //proc.waitFor();
         } catch (Exception e) {
             logger.error("callScript, exec Exception: [{}]", e);
             return null;
@@ -140,6 +141,7 @@ public final class CommonUtil {
             logger.error("callScript StreamReader IOException: [{}]", e);
         }
         return originContentSBuilder.toString();
+        //return "call ok";
     }
 
 }

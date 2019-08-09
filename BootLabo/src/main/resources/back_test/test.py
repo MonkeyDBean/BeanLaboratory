@@ -2,6 +2,7 @@
 # encoding: utf-8
 import sys
 import datetime
+import time
 
 concat_str='-----'
 all_param=''
@@ -15,3 +16,6 @@ if(concat_str in all_param):
 nowTime = datetime.datetime.now()
 contentText = "current time is: " + nowTime.strftime("%Y-%m-%d %H:%M:%S") + "; all param concat is: " + all_param
 print(contentText)
+
+# 参数单位为秒
+# time.sleep(2)
