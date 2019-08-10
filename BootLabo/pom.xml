@@ -398,6 +398,7 @@
                 </configuration>
             </plugin>
 
+            <!-- maven依赖项打入目标包 -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
