@@ -450,11 +450,20 @@ public class TestController {
     }
 
     @ApiOperation(value = "测试调用shell/python/bat等, 读取执行结果")
-    @ApiImplicitParam(name = "file", value = "脚本路径", required = true, dataType = "string", paramType = "query")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file", value = "脚本路径", required = true, dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "log", value = "是否生成日志", required = true, dataType = "boolean", paramType = "query")
+    })
     @GetMapping("script/call")
-    public String callScript(String file, @RequestParam(required = false) String[] params) {
-        if (StringUtils.isNotEmpty(file)) {
-            return CommonUtil.callScript(file, params);
+    public String callScript(String file, @RequestParam(required = false) String[] params, boolean log) {
+        if (StringUtils.isNotEmpty(file) && StringUtils.isNoneEmpty(params)) {
+            boolean isWindows = false;
+            Properties props = System.getProperties();
+            String osName = props.getProperty("os.name");
+            if (!StringUtils.isEmpty(osName) && osName.toLowerCase().contains("windows")) {
+                isWindows = true;
+            }
+            return CommonUtil.callScript(file, params, log, isWindows);
         }
         logger.warn("callScript, param illegal");
         return null;
@@ -714,6 +723,11 @@ public class TestController {
         return "unknown";
     }
 
+    /**
+     * 查看IOS设备的udid
+     * <p>
+     * 通过蒲公英核对udid是否正确: 在Safari浏览器打开http://www.pgyer.com/tools/udid, 根据提示安装配置文件, 可在网页看到udid
+     */
     @ApiOperation(value = "解析请求, 获取udid等设备信息")
     @PostMapping(value = "udid/device")
     public void parseDeviceInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -101,47 +101,64 @@ public final class CommonUtil {
     /**
      * 调用脚本, 读取执行结果
      *
-     * @param filePath   脚本路径, 脚本文件格式可以为bat, sh, py, rb, php
-     * @param paramArray 参数数组
+     * @param filePath    脚本路径, 脚本文件格式可以为bat, sh, py, rb, php
+     * @param paramArray  参数数组, 每个字符串不包含空格, 若字符串有空格, 调用脚本时, 参数需加双引号
+     * @param generateLog 是否生成日志, 日志路径为脚本文件同级目录
+     * @param isWindows   运行环境是否为windows平台
      * @return 失败返回null
      */
-    public static String callScript(String filePath, String[] paramArray) {
+    public static String callScript(String filePath, String[] paramArray, boolean generateLog, boolean isWindows) {
 
         //若为python脚本, 加命令前缀
         //解析python文件，也可考虑引入jython依赖(https://mvnrepository.com/artifact/org.python/jython-standalone), 调用PythonInterpreter
         String format = filePath.substring(filePath.lastIndexOf(".") + 1);
-        String command = "";
+        String command;
         if ("py".equalsIgnoreCase(format)) {
             command = "python " + filePath;
         } else if ("php".equalsIgnoreCase(format)) {
             command = "php " + filePath;
         } else if ("rb".equalsIgnoreCase(format)) {
             command = "ruby " + filePath;
+        } else {
+            command = filePath;
         }
         command += " ";
         if (paramArray != null && paramArray.length > 0) {
             command += Arrays.stream(paramArray).collect(Collectors.joining(" "));
         }
+        if (generateLog) {
+            command = command + " > " + String.valueOf(System.currentTimeMillis()) + ".log 2>&1";
+        }
         Process proc;
         try {
-            proc = Runtime.getRuntime().exec(command);
+
+            //若输出重定向到文件, 即command中有>符号, 需调用exec()的重载方法 或者 将包含重定向指令的command封装在脚本中
+            //原因是在exec(str)中, 不能把str完全看作命令行执行的command, 尤其是str中不可包含重定向符号 '<' 或 '>' 以及管道符 '|'
+            if (generateLog && !isWindows) {
+                proc = Runtime.getRuntime().exec(new String[]{"bash", "-c", command});
+            } else {
+                proc = Runtime.getRuntime().exec(command);
+            }
             //proc.waitFor();
         } catch (Exception e) {
             logger.error("callScript, exec Exception: [{}]", e);
             return null;
         }
-        StringBuilder originContentSBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
-            String eachLine = br.readLine();
-            while (eachLine != null) {
-                originContentSBuilder.append(eachLine);
-                eachLine = br.readLine();
+        if (!generateLog) {
+            StringBuilder originContentSBuilder = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+                String eachLine = br.readLine();
+                while (eachLine != null) {
+                    originContentSBuilder.append(eachLine);
+                    eachLine = br.readLine();
+                }
+            } catch (IOException e) {
+                logger.error("callScript StreamReader IOException: [{}]", e);
             }
-        } catch (IOException e) {
-            logger.error("callScript StreamReader IOException: [{}]", e);
+            return originContentSBuilder.toString();
+        } else {
+            return "call ok";
         }
-        return originContentSBuilder.toString();
-        //return "call ok";
     }
 
 }

@@ -4,13 +4,13 @@
 **/logs
 **/logs_file
 **/log_path_IS_UNDEFINED
+**/*.log
 **/labo_release
 **/application-d*.*
 **/info_config.json
 out
 **/test_file.out
 **/application_bk.yml
-
 
 # 过滤规则
 ## config.php      表示忽略当前路径的 config.php 文件
