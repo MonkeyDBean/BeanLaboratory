@@ -5,6 +5,7 @@ import com.monkeybean.dynamicds.constant.ConstantValue;
 import com.monkeybean.dynamicds.model.TestRecord;
 import com.monkeybean.dynamicds.reqres.Result;
 import com.monkeybean.dynamicds.reqres.ReturnCode;
+import com.monkeybean.dynamicds.service.ProfileService;
 import com.monkeybean.dynamicds.service.TestRecordService;
 import com.monkeybean.dynamicds.service.impl.PublicService;
 import com.monkeybean.dynamicds.service.impl.TestAsyncService;
@@ -36,11 +37,14 @@ public class TestController {
 
     private final TestAsyncService testAsyncService;
 
+    private final ProfileService profileService;
+
     @Autowired
-    public TestController(TestRecordService testRecordService, PublicService publicService, TestAsyncService testAsyncService) {
+    public TestController(TestRecordService testRecordService, PublicService publicService, TestAsyncService testAsyncService, ProfileService profileService) {
         this.testRecordService = testRecordService;
         this.publicService = publicService;
         this.testAsyncService = testAsyncService;
+        this.profileService = profileService;
     }
 
     @ApiOperation(value = "新增测试记录")
@@ -102,6 +106,12 @@ public class TestController {
         res[2] = asynchronousMethodCallTime;
         res[3] = asynchronousCalculate;
         return res;
+    }
+
+    @ApiOperation(value = "测试@Profile注解")
+    @GetMapping("profile")
+    public String testProfile() {
+        return profileService.getProfileInfo();
     }
 
 }
