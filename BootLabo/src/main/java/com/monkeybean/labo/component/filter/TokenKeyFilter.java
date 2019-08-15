@@ -6,6 +6,7 @@ import com.monkeybean.labo.util.LegalUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -82,7 +83,7 @@ public class TokenKeyFilter implements Filter {
             }
         } else {
             logger.error("today request: {} is up to peak, count is: {}, dailyRequestMaxNum: {}", servletPath, dailyCount, dailyRequestMaxNum);
-            httpServletResponse.setStatus(401);
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         }
         CacheData.getRequestCountMap().put(servletPath, CacheData.getRequestCountMap().getOrDefault(servletPath, 0) + 1);
@@ -100,7 +101,7 @@ public class TokenKeyFilter implements Filter {
                 chain.doFilter(httpServletRequest, httpServletResponse);
             } else {
                 logger.warn("sniff key is wrong");
-                httpServletResponse.setStatus(401);
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
             return;
         } else { //安全校验
@@ -121,7 +122,7 @@ public class TokenKeyFilter implements Filter {
                 logger.debug("filter sessionId: {}", httpServletRequest.getSession().getId());
                 if (httpServletRequest.getSession().getAttribute(ConstValue.ACCOUNT_IDENTITY) == null) {
                     logger.debug("session filter 403, param accountId is null");
-                    httpServletResponse.setStatus(403);
+                    httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
                     return;
                 }
             }
@@ -143,13 +144,13 @@ public class TokenKeyFilter implements Filter {
         String sign = request.getParameter("sign");
         if (timeParamStr == null || sign == null || !LegalUtil.isLegalTimestamp(timeParamStr)) {
             logger.warn("safe param lack or illegal");
-            response.setStatus(401);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
         long internalTime = Math.abs(System.currentTimeMillis() - Long.parseLong(timeParamStr));
         if (internalTime > ConstValue.TIME_OUT) {
             logger.warn("stime is illegal, stime is: {}, internalTime is: {}", timeParamStr, internalTime);
-            response.setStatus(401);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
 
@@ -167,7 +168,7 @@ public class TokenKeyFilter implements Filter {
         logger.debug("signOriginData is :{}, right sign is :{}", signOriginData, paramSign);
         if (!paramSign.equalsIgnoreCase(sign)) {
             logger.warn("sign is wrong, originSign is :{}, right sign is :{}", sign, paramSign);
-            response.setStatus(401);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
         return true;
