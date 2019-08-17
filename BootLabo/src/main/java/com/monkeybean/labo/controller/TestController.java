@@ -723,14 +723,33 @@ public class TestController {
         return "unknown";
     }
 
+    @ApiOperation(value = "测试苹果上报session")
+    @GetMapping(value = "udid/pre")
+    public Result<String> udidPreDeal(HttpSession session) {
+
+        //过期(预先设置最大时间)则重新设置
+        Long accessTime = System.currentTimeMillis();
+        session.setAttribute("accessTime", accessTime);
+        logger.info("udidPreDeal, generate session token is: [{}]", accessTime);
+        return new Result<>(ReturnCode.SUCCESS);
+    }
+
     /**
      * 查看IOS设备的udid
      * <p>
      * 通过蒲公英核对udid是否正确: 在Safari浏览器打开http://www.pgyer.com/tools/udid, 根据提示安装配置文件, 可在网页看到udid
+     * <p>
+     * 若用于超级签名, 用于排队机制(滑动窗口或令牌桶算法等), 至少为伪排队
      */
     @ApiOperation(value = "解析请求, 获取udid等设备信息")
     @PostMapping(value = "udid/device")
     public void parseDeviceInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        Object sessionToken = request.getSession().getAttribute("token");
+//        if (sessionToken == null) {
+//            logger.warn("parseDeviceInfo, session token is null");
+//            return;
+//        }
+//        logger.info("parseDeviceInfo, session token is: [{}]", sessionToken);
         Map<String, Object> data = IpaUtil.parseMobileProvisionToMap(request.getInputStream());
         String product = data.get("PRODUCT").toString();
         String version = data.get("VERSION").toString();

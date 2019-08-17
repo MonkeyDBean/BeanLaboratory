@@ -15,6 +15,7 @@ public enum ReturnCode {
     SERVER_EXCEPTION(10001, "System, server run exception", "服务处理异常, 请稍后重试"),
     MESSAGE_APPLY_FAILED(10005, "System, apply message code error", "短信验证码申请失败"),
     DB_DATA_ERROR(10010, "System, database exception", "数据库数据异常"),
+    PARAM_ILLEGAL(10014, "param is illegal", "参数非法"),
 
     /**
      * 业务逻辑错误

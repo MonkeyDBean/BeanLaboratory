@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Properties;
 import java.util.regex.Pattern;
 
 /**
@@ -120,6 +121,12 @@ public class OtherConfig implements InitializingBean {
      * 短链接密钥
      */
     private String shortSecret;
+
+    /**
+     * 重新加载配置的密钥
+     * 此方案为不使用SpringCloud配置中心及Apollo重载配置(仅测试, 不推荐)
+     */
+    private String reloadKey;
 
     public String getSqlSalt() {
         return sqlSalt;
@@ -289,6 +296,14 @@ public class OtherConfig implements InitializingBean {
         this.shortSecret = shortSecret;
     }
 
+    public String getReloadKey() {
+        return reloadKey;
+    }
+
+    public void setReloadKey(String reloadKey) {
+        this.reloadKey = reloadKey;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
 
@@ -297,5 +312,35 @@ public class OtherConfig implements InitializingBean {
             this.imagePattern = Pattern.compile(imageRegex);
         }
         logger.info("OtherConfig properties init or refresh");
+    }
+
+    /**
+     * 重新加载配置
+     */
+    public void reloadConfig(Properties properties) throws Exception {
+        final String prefix = "other.";
+        this.sqlSalt = properties.getProperty(prefix + "sqlSalt");
+        this.reCaptchaSecretKey = properties.getProperty(prefix + "reCaptchaSecretKey");
+        this.loginTempKey = properties.getProperty(prefix + "loginTempKey");
+        this.simulate = Boolean.parseBoolean((properties.getProperty(prefix + "simulate")));
+        this.imageMaxSize = Integer.parseInt(properties.getProperty(prefix + "imageMaxSize"));
+        this.baseStorePath = properties.getProperty(prefix + "baseStorePath");
+        this.baseAccessPath = properties.getProperty(prefix + "baseAccessPath");
+        this.mailActiveAddress = properties.getProperty(prefix + "mailActiveAddress");
+        this.dailyRequestMaxNum = Integer.parseInt(properties.getProperty(prefix + "dailyRequestMaxNum"));
+        this.mailSendMaxNum = Integer.parseInt(properties.getProperty(prefix + "mailSendMaxNum"));
+        this.weatherUserId = properties.getProperty(prefix + "weatherUserId");
+        this.weatherApiKey = properties.getProperty(prefix + "weatherApiKey");
+        this.imageRegex = properties.getProperty(prefix + "imageRegex");
+        this.testStr = properties.getProperty(prefix + "testStr");
+        this.sinaAppKey = properties.getProperty(prefix + "sinaAppKey");
+        this.wxAppId = properties.getProperty(prefix + "wxAppId");
+        this.wxAppKey = properties.getProperty(prefix + "wxAppKey");
+        this.baiduToken = properties.getProperty(prefix + "baiduToken");
+        this.shortDomian = properties.getProperty(prefix + "shortDomian");
+        this.shortSecret = properties.getProperty(prefix + "shortSecret");
+        this.reloadKey = properties.getProperty(prefix + "reloadKey");
+        this.afterPropertiesSet();
+        logger.info("otherConfig reload finish, curTime: [{}]", System.currentTimeMillis());
     }
 }

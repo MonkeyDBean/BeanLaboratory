@@ -1,5 +1,6 @@
 package com.monkeybean.labo.controller;
 
+import com.monkeybean.labo.component.config.OtherConfig;
 import com.monkeybean.labo.component.reqres.Result;
 import com.monkeybean.labo.predefine.ReturnCode;
 import io.swagger.annotations.Api;
@@ -7,10 +8,20 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -27,6 +38,15 @@ import java.util.Properties;
 @RequestMapping(path = "general")
 @RestController
 public class GeneralController {
+    private static Logger logger = LoggerFactory.getLogger(GeneralController.class);
+    private final OtherConfig otherConfig;
+    @Value("${spring.profiles.active}")
+    private String activeEnv;
+
+    @Autowired
+    public GeneralController(OtherConfig otherConfig) {
+        this.otherConfig = otherConfig;
+    }
 
     @ApiOperation(value = "嗅探服务器运行是否正常")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "code：0")})
@@ -64,6 +84,26 @@ public class GeneralController {
     @GetMapping(path = "sys/time/get")
     public Result<Long> getSystemTime() {
         return new Result<>(ReturnCode.SUCCESS, System.currentTimeMillis());
+    }
+
+    /**
+     * 请求格式如 http://ip:port/monkey/general/config/reload?123
+     */
+    @ApiOperation(value = "重新加载OtherConfig配置, 实现动态更新")
+    @GetMapping(path = "config/reload")
+    public Result<String> reloadConfig() throws Exception {
+        Properties properties = new Properties();
+        String filePath = "application-" + activeEnv + ".properties";
+        Resource resource = new ClassPathResource(filePath);
+        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(resource.getFile()))) {
+            properties.load(inputStream);
+            inputStream.close();
+        } catch (IOException e) {
+            logger.error("reloadConfig, read file, IOException: [{}]", e);
+            return new Result<>(ReturnCode.SERVER_EXCEPTION);
+        }
+        otherConfig.reloadConfig(properties);
+        return new Result<>(ReturnCode.SUCCESS);
     }
 
 }
