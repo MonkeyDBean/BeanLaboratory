@@ -725,12 +725,10 @@ public class TestController {
 
     @ApiOperation(value = "测试苹果上报session")
     @GetMapping(value = "udid/pre")
-    public Result<String> udidPreDeal(HttpSession session) {
-
-        //过期(预先设置最大时间)则重新设置
-        Long accessTime = System.currentTimeMillis();
-        session.setAttribute("accessTime", accessTime);
-        logger.info("udidPreDeal, generate session token is: [{}]", accessTime);
+    public Result<String> udidPreSession(HttpSession session) {
+        String token = Coder.checkMd5(UUID.randomUUID().toString());
+        session.setAttribute("token", token);
+        logger.info("udidPreSession, session token is: [{}]", token);
         return new Result<>(ReturnCode.SUCCESS);
     }
 
@@ -739,7 +737,8 @@ public class TestController {
      * <p>
      * 通过蒲公英核对udid是否正确: 在Safari浏览器打开http://www.pgyer.com/tools/udid, 根据提示安装配置文件, 可在网页看到udid
      * <p>
-     * 若用于超级签名, 用于排队机制(滑动窗口或令牌桶算法等), 至少为伪排队
+     * 若用于超级签名：无法介入苹果设备上报流程，可在之前加伪签名安全校验(无需考虑传输安全，因为苹果mobileconfig文件上报地址及plist文件下载地址必须为https), 上报udid重定向后需加伪排队(滑动窗口或令牌桶算法等)限流和降级等
+     * 最终文件需传至CDN，考虑并发，多点一致与动态扩容等
      */
     @ApiOperation(value = "解析请求, 获取udid等设备信息")
     @PostMapping(value = "udid/device")
