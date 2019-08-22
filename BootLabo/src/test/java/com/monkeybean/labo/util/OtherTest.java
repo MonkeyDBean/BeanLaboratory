@@ -7,6 +7,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -261,7 +266,25 @@ public class OtherTest {
     public void testCopyOnArrayList() {
         List<String> list = new CopyOnWriteArrayList<>();
         list.add("simpleUse");
-        logger.info("CopyOnWriteArrayList element 0 is :" + list.get(0));
+        logger.info("CopyOnWriteArrayList element 0 is : [{}]", list.get(0));
+    }
+
+    /**
+     * 读取文件内容并打印
+     */
+    @Test
+    public void testReadFileContent() {
+        String filePath = "E:" + File.separator + "desk_store" + File.separator + "test";
+        File aimFile = new File(filePath);
+        Long fileLength = aimFile.length();
+        byte[] fileContent = new byte[fileLength.intValue()];
+        try (InputStream in = new FileInputStream(aimFile)) {
+            in.read(fileContent);
+            String contentStr = new String(fileContent, StandardCharsets.UTF_8);
+            logger.info("filePath: [{}], contentStr: [{}]", filePath, contentStr);
+        } catch (IOException e) {
+            logger.error("testReadFileContent, IOException: [{}]", e);
+        }
     }
 
 }
