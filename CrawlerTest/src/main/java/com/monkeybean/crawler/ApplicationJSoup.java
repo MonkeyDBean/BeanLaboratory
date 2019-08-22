@@ -46,7 +46,8 @@ public class ApplicationJSoup {
 
         //请求资源, 写入文件
         try (BufferedWriter output = new BufferedWriter(new FileWriter(file, true))) {
-            for (String chapterUrl : chapterUrlList) {
+            for (int i = 0; i < chapterUrlList.size(); i++) {
+                String chapterUrl = chapterUrlList.get(i);
                 Document doc = downloadDocument(chapterUrl, userAgent);
                 String chapterTitle = doc.select("#BookCon h1").text();
                 String chapterContent = replaceUnless(doc);
@@ -56,6 +57,7 @@ public class ApplicationJSoup {
                 output.write("\r\n");
                 output.flush();
                 System.out.println("write finish: " + chapterTitle);
+                System.out.println("progress rate: " + String.format("%.2f", (i + 1) * 100.0 / chapterUrlList.size()) + "%");
                 Thread.sleep(1000);
             }
         }
