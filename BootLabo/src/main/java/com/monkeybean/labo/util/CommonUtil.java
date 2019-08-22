@@ -103,7 +103,7 @@ public final class CommonUtil {
      *
      * @param filePath    脚本路径, 脚本文件格式可以为bat, sh, py, rb, php
      * @param paramArray  参数数组, 每个字符串不包含空格, 若字符串有空格, 调用脚本时, 参数需加双引号
-     * @param generateLog 是否生成日志, 日志路径为脚本文件同级目录
+     * @param generateLog 是否生成日志, 日志路径为脚本文件同级目录. true为生成日志, 且脚本执行设为异步; false则不生成日志, 阻塞至脚本执行完毕, 读取执行结果
      * @param isWindows   运行环境是否为windows平台
      * @return 失败返回null
      */
@@ -139,12 +139,25 @@ public final class CommonUtil {
             } else {
                 proc = Runtime.getRuntime().exec(command);
             }
+
+            //等待子进程执行完成
             //proc.waitFor();
+
+            if (proc.isAlive()) {
+                logger.info("callScript, process is alive, time: [{}]", System.currentTimeMillis());
+                //杀死子进程, 强制终止
+                //proc.destroy();
+                //杀死子进程, 强制终止, jdk1.8新增, 作用默认同destroy()方法
+                //proc.destroyForcibly();
+                //logger.info("callScript, destroyForcibly has been called");
+            }
         } catch (Exception e) {
             logger.error("callScript, exec Exception: [{}]", e);
             return null;
         }
         if (!generateLog) {
+
+            //同步
             StringBuilder originContentSBuilder = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
                 String eachLine = br.readLine();
@@ -157,6 +170,8 @@ public final class CommonUtil {
             }
             return originContentSBuilder.toString();
         } else {
+
+            //异步, 无需等待脚本执行完毕
             return "call ok";
         }
     }
