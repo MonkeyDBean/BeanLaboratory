@@ -1,8 +1,11 @@
 package com.monkeybean.labo.service.database;
 
 import com.monkeybean.labo.dao.secondary.SecondaryDataDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +15,7 @@ import java.util.Map;
  */
 @Service
 public class SecondaryDoService {
+    private static Logger logger = LoggerFactory.getLogger(SecondaryDoService.class);
     private final SecondaryDataDao secondaryDataDao;
 
     @Autowired
@@ -66,4 +70,13 @@ public class SecondaryDoService {
         param.put("shortFlag", shortFlag);
         secondaryDataDao.addShortLongRecord(param);
     }
+
+    @Transactional
+    public void testTransaction(String longUrl, String shortUrl, String shortFlag) {
+        addShortLongRecord(longUrl, shortUrl, shortFlag);
+        if (querySLRecordByShortFlag(shortFlag) != null) {
+            logger.info("testTransaction, querySLRecordByShortFlag is not null shortFlag: [{}]", shortFlag);
+        }
+    }
+
 }

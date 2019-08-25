@@ -712,6 +712,19 @@ public class TestController {
         return dataList;
     }
 
+    /**
+     * 测试事务
+     */
+    @GetMapping("url/transaction")
+    public String testTransaction() {
+        String flag = UUID.randomUUID().toString().substring(0, 6);
+        String longUrl = "longUrl" + flag;
+        String shortUrl = "shortUrl" + flag;
+        String shortFlag = "flag" + flag;
+        secondaryDoService.testTransaction(longUrl, shortUrl, shortFlag);
+        return "success";
+    }
+
     @ApiOperation(value = "短链跳转")
     @GetMapping("url/shorten/jump/{shortFlag}")
     public String jumpShortenUrl(@PathVariable String shortFlag, HttpServletResponse response) throws IOException {

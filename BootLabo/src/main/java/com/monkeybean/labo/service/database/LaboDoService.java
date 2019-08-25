@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Service
 public class LaboDoService {
-
     private static final String PARAM_PHONE = "phone";
     private static final String PARAM_ACCOUNT_ID = "accountId";
     private static final String PARAM_FILE_NAME = "fileName";

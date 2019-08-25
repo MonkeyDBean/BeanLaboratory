@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -254,6 +255,15 @@ public class OtherTest {
         DecimalFormat df = new DecimalFormat("###,###.##");
         String decimalResStr = df.format(Double.valueOf(originStr));
         assertTrue(decimalResStr.equals(aimStr));
+    }
+
+    @Test
+    public void testPutIfAbsent() {
+        Map<String, Integer> map = new ConcurrentHashMap<>();
+        String key = "testKey";
+        map.putIfAbsent(key, 111);
+        map.putIfAbsent(key, 222);
+        logger.info("testPutIfAbsent, value is : [{}]", map.get(key));
     }
 
     /**
