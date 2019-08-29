@@ -3,6 +3,8 @@ package com.monkeybean.labo.component.reqres;
 import com.monkeybean.labo.predefine.ReturnCode;
 
 /**
+ * 数据返回格式
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 public class Result<T> {

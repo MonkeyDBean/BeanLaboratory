@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 缓存
+ * 缓存数据
  * <p>
  * Created by MonkeyBean on 2018/5/26.
  */

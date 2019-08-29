@@ -15,6 +15,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 /**
+ * 主数据库配置
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @Configuration

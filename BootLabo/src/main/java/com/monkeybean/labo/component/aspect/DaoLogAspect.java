@@ -18,7 +18,7 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
-public class DaoLogAspect {
+public final class DaoLogAspect {
 
     private static Logger logger = LoggerFactory.getLogger(DaoLogAspect.class);
 

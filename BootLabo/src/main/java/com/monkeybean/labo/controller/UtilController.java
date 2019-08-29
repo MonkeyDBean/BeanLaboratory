@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * 工具类接口, 协助调试
+ * <p>
  * Created by MonkeyBean on 2018/5/26.
  */
 @Api(value = "工具类相关api")

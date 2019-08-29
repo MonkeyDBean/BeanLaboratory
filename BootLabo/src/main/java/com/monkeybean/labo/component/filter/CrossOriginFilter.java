@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 访问控制, 允许跨域
  * 若使用session策略作为用户身份区分，建议前后端为同一域名下，通过nginx路径匹配，反向代理到后端，避免跨域问题的出现
  * <p>
  * Created by MonkeyBean on 2018/05/26.

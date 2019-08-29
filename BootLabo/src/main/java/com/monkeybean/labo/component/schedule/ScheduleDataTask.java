@@ -14,6 +14,8 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.stereotype.Component;
 
 /**
+ * 定时任务
+ * <p>
  * Created by MonkeyBean on 2018/5/26.
  */
 @Component

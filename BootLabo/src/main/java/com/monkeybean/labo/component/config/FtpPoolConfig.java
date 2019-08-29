@@ -18,6 +18,8 @@ import javax.annotation.PreDestroy;
 import java.io.IOException;
 
 /**
+ * Ftp线程池配置
+ * <p>
  * Created by MonkeyBean on 2019/6/26.
  */
 @Component

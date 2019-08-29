@@ -26,7 +26,7 @@ import java.util.Arrays;
  */
 @Aspect
 @Component
-public class WebLogAspect {
+public final class WebLogAspect {
 
     private static Logger logger = LoggerFactory.getLogger(WebLogAspect.class);
     private final OtherConfig otherConfig;

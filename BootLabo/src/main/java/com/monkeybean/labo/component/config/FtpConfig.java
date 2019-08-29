@@ -4,6 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
+ * Ftp参数配置类
+ * <p>
  * Created by MonkeyBean on 2019/6/26.
  */
 @ConfigurationProperties(prefix = "ftp")

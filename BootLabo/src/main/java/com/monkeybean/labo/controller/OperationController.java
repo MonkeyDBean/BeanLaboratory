@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 用户操作接口
+ * <p>
  * Created by MonkeyBean on 2018/5/26.
  */
 @Api(value = "用户操作模块")

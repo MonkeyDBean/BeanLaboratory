@@ -25,6 +25,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
+ * 身份相关接口
+ * <p>
  * Created by MonkeyBean on 2018/5/26.
  */
 @RequestMapping(path = "identity")

@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 @Component
 //值越小, 优先级越高, 不指定则优先级最低
 @Order(1)
-public class TestAspect {
+public final class TestAspect {
     private static final Logger logger = LoggerFactory.getLogger(TestAspect.class);
 
     @Before("@annotation(testAnnotation)")

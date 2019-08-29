@@ -4,6 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
+ * http代理配置
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @ConfigurationProperties(prefix = "proxy")

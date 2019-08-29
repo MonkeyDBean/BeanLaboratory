@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
+ * 返回视图的接口
+ * <p>
  * Created by MonkeyBean on 2018/06/02.
  */
 @RequestMapping(path = "view/display")

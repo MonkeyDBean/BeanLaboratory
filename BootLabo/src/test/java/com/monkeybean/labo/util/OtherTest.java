@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 
 /**
  * 单元测试场景: https://tasdikrahman.me/2019/03/13/what-should-and-should-not-be-tested-in-unit-tests/
@@ -73,7 +73,21 @@ public class OtherTest {
     @Test
     public void testSplit() {
         String testStr = "test";
-        logger.info("split 0 is: \n" + testStr.split(",")[0]);
+        logger.info("split 0 is: [{}]", testStr.split(",")[0]);
+    }
+
+    @Test
+    public void testStrToList() {
+        String[] strArray = {"123", "456", "789"};
+        List<String> resList1 = new ArrayList<>();
+        Collections.addAll(resList1, strArray);
+        for (String eachElement : resList1) {
+            logger.info("str2List, use addAll, element: [{}]", eachElement);
+        }
+        List<Integer> resList2 = Arrays.stream(strArray).unordered().map(Integer::parseInt).collect(Collectors.toList());
+        for (Integer eachElement : resList2) {
+            logger.info("str2List, use stream, element: [{}]", eachElement);
+        }
     }
 
     @Test
@@ -113,7 +127,7 @@ public class OtherTest {
         list4.addAll(list3);
         list4 = new ArrayList<>(new HashSet<>(list4));
         String list4ResultStr = list4.stream().collect(Collectors.joining(","));
-        logger.info("list4Result: " + list4ResultStr);
+        logger.info("list4Result: [{}]", list4ResultStr);
     }
 
     @Test
@@ -134,7 +148,7 @@ public class OtherTest {
         hm.put("b", 2456);
         hm.put("d", "dd");
         String result = JSON.toJSONString(hm);
-        logger.info("JSON.toJSONString, result: " + result);
+        logger.info("JSON.toJSONString, result: [{}]", result);
     }
 
     @Test
@@ -185,10 +199,10 @@ public class OtherTest {
         vector.addElement("test");
         vector.addElement(24);
         vector.addElement(new Long(12));
-        logger.info("vector lastIndexOf 'test' is: " + vector.lastIndexOf("test"));
+        logger.info("vector lastIndexOf 'test' is: [{}]", vector.lastIndexOf("test"));
         Enumeration<String> elements = vector.elements();
         while (elements.hasMoreElements()) {
-            logger.info("vector element: " + String.valueOf(elements.nextElement()));
+            logger.info("vector element: [{}]", String.valueOf(elements.nextElement()));
         }
     }
 
@@ -205,7 +219,7 @@ public class OtherTest {
         String[] values = {"test", "test11", "testAa", "not", "test_", "test.."};
         for (String value : values) {
             matcher.reset(value);
-            logger.info("value: " + value + ", matches: " + matcher.matches());
+            logger.info("value: [{}], matches: [{}]", value, matcher.matches());
         }
         String performanceTestStr = "test1234";
         matcher.reset(performanceTestStr);
@@ -220,7 +234,7 @@ public class OtherTest {
             performanceTestStr.matches(regexPattern);
         }
         long intervalString = System.currentTimeMillis() - start;
-        logger.info("intervalPattern: " + intervalPattern + ", intervalString: " + intervalString);
+        logger.info("intervalPattern: [{}], intervalString: [{}]", intervalPattern, intervalString);
         assertTrue(intervalPattern < intervalString);
     }
 
@@ -257,13 +271,54 @@ public class OtherTest {
         assertTrue(decimalResStr.equals(aimStr));
     }
 
+    /**
+     * putIfAbsent为原子操作(不会出现线程安全问题), 用于并发多线程可能出现同一时刻对同一数据进行操作的情况
+     * 若指定的键与值已有关联, 则返回关联的值, 否则将指定键与给定值关联并返回null
+     */
     @Test
     public void testPutIfAbsent() {
         Map<String, Integer> map = new ConcurrentHashMap<>();
         String key = "testKey";
-        map.putIfAbsent(key, 111);
-        map.putIfAbsent(key, 222);
-        logger.info("testPutIfAbsent, value is : [{}]", map.get(key));
+        Integer firstValue = 111;
+        Integer secondValue = 222;
+        Integer firstOperateValue = map.putIfAbsent(key, firstValue);
+        Integer secondOperateValue = map.putIfAbsent(key, secondValue);
+        assert firstOperateValue == null;
+        assertEquals(firstValue, secondOperateValue);
+        logger.info("testPutIfAbsent, key is: [{}], curValue is : [{}], firstOperateValue: [{}], secondOperateValue: [{}]", key, map.get(key), firstOperateValue, secondOperateValue);
+    }
+
+    /**
+     * computeIfAbsent, 指定键存在则返回已关联的值, 不存在则将指定键与给定值关联并返回给定值
+     * computeIfAbsent为不存在时计算, computeIfPresent为存在时计算, 均为原子操作
+     */
+    @Test
+    public void testComputeIfAbsent() {
+        Map<String, List<Integer>> map = new ConcurrentHashMap<>();
+        String key = "testKey";
+        Integer firstValue = 111;
+        Integer secondValue = 222;
+        List<Integer> firstOperateList = map.computeIfAbsent(key, k -> new ArrayList<>());
+        firstOperateList.add(firstValue);
+        List<Integer> secondOperateList = map.computeIfAbsent(key, k -> new ArrayList<>());
+        secondOperateList.add(secondValue);
+        assert secondOperateList.contains(firstValue) && secondOperateList.contains(secondValue);
+    }
+
+    /**
+     * computeIfPresent, 指定键存在则执行计算操作并与键关联, 返回计算后的值; 不存在则返回null
+     */
+    @Test
+    public void testComputeIfPresent() {
+        Map<String, Integer> map = new ConcurrentHashMap<>();
+        String key = "testKey";
+        Integer firstValue = 111;
+        Integer secondValue = 222;
+        Integer firstOperate = map.computeIfPresent(key, (k, v) -> firstValue);
+        assertNull(firstOperate);
+        map.put(key, firstValue);
+        Integer secondOperate = map.computeIfPresent(key, (k, v) -> secondValue);
+        assertEquals(secondValue, secondOperate);
     }
 
     /**

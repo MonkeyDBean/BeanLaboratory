@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Properties;
 
 /**
+ * 图形验证码配置
+ * <p>
  * Created by MonkeyBean on 2018/05/26.
  */
 @Configuration
