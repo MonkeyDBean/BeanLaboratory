@@ -1,5 +1,7 @@
 package com.monkeybean.lb.constant;
 
+import com.monkeybean.lb.cache.CacheData;
+
 /**
  * 负载均衡策略类型
  * <p>
@@ -53,8 +55,19 @@ public enum RuleType {
 
     RuleType(int code) {
         this.code = code;
+        CacheData.ruleTypeCodeMap.put(code, this.name());
     }
 
+    /**
+     * 获取标识码参数
+     */
+    public static RuleType generate(String name) {
+        return RuleType.valueOf(name);
+    }
+
+    /**
+     * 获取参数标识码
+     */
     public int getCode() {
         return code;
     }

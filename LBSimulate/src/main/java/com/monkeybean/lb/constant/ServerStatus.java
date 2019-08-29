@@ -1,5 +1,7 @@
 package com.monkeybean.lb.constant;
 
+import com.monkeybean.lb.cache.CacheData;
+
 /**
  * 服务状态
  * <p>
@@ -21,8 +23,12 @@ public enum ServerStatus {
 
     ServerStatus(int code) {
         this.code = code;
+        CacheData.serverStatusCodeMap.put(code, this.name());
     }
 
+    /**
+     * 获取标识码参数
+     */
     public int getCode() {
         return code;
     }

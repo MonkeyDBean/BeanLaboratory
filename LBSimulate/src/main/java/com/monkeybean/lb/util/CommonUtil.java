@@ -3,6 +3,8 @@ package com.monkeybean.lb.util;
 import java.util.Random;
 
 /**
+ * 通用工具类
+ *
  * Created by MonkeyBean on 2019/8/2.
  */
 public final class CommonUtil {

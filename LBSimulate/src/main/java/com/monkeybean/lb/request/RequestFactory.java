@@ -6,6 +6,8 @@ import com.monkeybean.lb.util.CommonUtil;
 import java.util.Random;
 
 /**
+ * 请求创建工厂
+ *
  * Created by MonkeyBean on 2019/8/2.
  */
 public class RequestFactory {

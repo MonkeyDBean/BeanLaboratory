@@ -4,6 +4,8 @@ import com.monkeybean.lb.constant.RuleType;
 import com.monkeybean.lb.load.strategy.impl.*;
 
 /**
+ * 负载策略创建工厂
+ *
  * Created by MonkeyBean on 2019/8/2.
  */
 public class LoadForwardFactory {

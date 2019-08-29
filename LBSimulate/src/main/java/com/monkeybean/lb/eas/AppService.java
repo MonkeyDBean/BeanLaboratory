@@ -7,6 +7,8 @@ import com.monkeybean.lb.request.RequestInfo;
 import java.util.concurrent.*;
 
 /**
+ * 应用服务运行模拟类
+ *
  * Created by MonkeyBean on 2019/8/2.
  */
 public class AppService {
