@@ -127,7 +127,7 @@ public class TokenKeyFilter implements Filter {
                 }
             }
         }
-        chain.doFilter(httpServletRequest, httpServletResponse);
+        chain.doFilter(new ParameterRequestWrapper(httpServletRequest), httpServletResponse);
     }
 
     /**

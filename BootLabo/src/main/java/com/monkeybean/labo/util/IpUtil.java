@@ -20,6 +20,8 @@ public final class IpUtil {
 
     /**
      * 获取请求ip地址
+     * <p>
+     * reference: https://blog.csdn.net/youanyyou/article/details/79406454
      */
     public static String getIpAddress(HttpServletRequest request) {
         String ips = request.getHeader("x-forwarded-for");
@@ -32,6 +34,8 @@ public final class IpUtil {
             ips = request.getHeader("HTTP_CLIENT_IP");
         if (ips == null || ips.length() == 0 || "unknown".equalsIgnoreCase(ips))
             ips = request.getHeader("HTTP_X_FORWARDED_FOR");
+        if (ips == null || ips.length() == 0 || "unknown".equalsIgnoreCase(ips))
+            ips = request.getHeader("X-Real-IP");
         if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
             ips = request.getRemoteAddr();
         if (ips == null || ips.length() == 0 || ips.equalsIgnoreCase(unknownStr))
