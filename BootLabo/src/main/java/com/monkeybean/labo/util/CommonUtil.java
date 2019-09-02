@@ -158,6 +158,13 @@ public final class CommonUtil {
         if (!generateLog) {
 
             //同步
+            int exitValue = proc.exitValue();
+
+            //脚本退出值为约定值, 惯例为: 成功为0, 异常为1
+            if (exitValue != 0) {
+                logger.error("callScript, exitValue Exception: [{}]", exitValue);
+                return null;
+            }
             StringBuilder originContentSBuilder = new StringBuilder();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
                 String eachLine = br.readLine();
@@ -167,6 +174,7 @@ public final class CommonUtil {
                 }
             } catch (IOException e) {
                 logger.error("callScript StreamReader IOException: [{}]", e);
+                return null;
             }
             return originContentSBuilder.toString();
         } else {
