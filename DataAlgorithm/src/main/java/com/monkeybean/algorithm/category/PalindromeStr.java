@@ -74,6 +74,8 @@ public class PalindromeStr {
             if (toLower(charArray[i]) != toLower(charArray[j])) {
                 return false;
             }
+            i++;
+            j--;
         }
         return true;
     }
@@ -103,7 +105,7 @@ public class PalindromeStr {
             i++;
             j--;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -111,7 +113,7 @@ public class PalindromeStr {
      */
     private static char toLower(char ch) {
         if (ch >= 'A' && ch <= 'Z') {
-            ch = (char) (ch - 32);
+            ch = (char) (ch + 32);
         }
         return ch;
     }

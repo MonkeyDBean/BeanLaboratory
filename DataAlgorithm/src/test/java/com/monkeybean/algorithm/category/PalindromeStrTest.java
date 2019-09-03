@@ -12,6 +12,10 @@ public class PalindromeStrTest {
         String str = "a, ; bA";
         int loopTime = 100000;
         System.out.println("originStr is: \"" + str + "\", loopTime is: " + loopTime);
+        System.out.println("method1 execute res: " + PalindromeStr.verify(str, 1));
+        System.out.println("method2 execute res: " + PalindromeStr.verify(str, 2));
+        System.out.println("method3 execute res: " + PalindromeStr.verify(str, 3));
+        System.out.println("method4 execute res: " + PalindromeStr.verify(str, 4));
         long curTime = System.currentTimeMillis();
         for (int i = 0; i < loopTime; i++) {
             PalindromeStr.verify(str, 1);
