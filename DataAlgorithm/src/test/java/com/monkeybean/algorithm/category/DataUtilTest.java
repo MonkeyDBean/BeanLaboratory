@@ -14,6 +14,38 @@ public class DataUtilTest {
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
     @Test
+    public void testPickNum() {
+        int n1 = 2;
+        int m1 = 5;
+        int[] originArray1 = {1, 2, 3, 4, 5, 6};
+        int[] selectArray1 = new int[n1];
+        DataUtil.pickNum(originArray1, n1, m1, selectArray1, 0, true);
+
+        System.out.println("------");
+        int n2 = 3;
+        int m2 = 10;
+        int[] originArray2 = {1, 2, 3, 4, 5, 6};
+        int[] selectArray2 = new int[n2];
+        DataUtil.pickNum(originArray2, n2, m2, selectArray2, 0, true);
+
+        System.out.println("------");
+        int n3 = 2;
+        int m3 = -5;
+        int[] originArray3 = {-6, -5, -4, -3, -2, -1};
+        int[] selectArray3 = new int[n3];
+        DataUtil.pickNum(originArray3, n3, m3, selectArray3, 0, true);
+
+        System.out.println("------");
+        int n4 = 3;
+        int m4 = 0;
+        int[] originArray4 = {6, -3, -2, 1, 4, 2, 5, 3};
+        int[] selectArray4 = new int[n4];
+        DataUtil.pickNum(originArray4, n4, m4, selectArray4, 0, false);
+        SortUtil.bubbleSort(originArray4);
+        DataUtil.pickNum(originArray4, n4, m4, selectArray4, 0, true);
+    }
+
+    @Test
     public void testBinarySearch() {
         int n = 50;
         int[] array = new int[n];

@@ -10,6 +10,56 @@ import java.util.*;
 public class DataUtil {
 
     /**
+     * 从数组选n个数, 和为m
+     * 数组各元素值唯一, 无重复元素
+     * 打印符合条件的数组
+     *
+     * @param originArray 给定数组
+     * @param n           元素个数
+     * @param m           元素和
+     * @param selectArray 存放选出元素的数组, 长度为n
+     * @param startIndex  起始索引, 上次选出的元素位置向后偏移1, 初始为0
+     * @param inorder     数组是否有序(升序)
+     */
+    public static void pickNum(int[] originArray, int n, int m, int[] selectArray, int startIndex, boolean inorder) {
+        if (originArray == null || originArray.length == 0 || n < 1) {
+            return;
+        }
+
+        //提前终止部分情况
+        if (inorder) {
+            if (originArray[startIndex] > m) {
+                return;
+            }
+            if (m < 0 && originArray[originArray.length - 1] < m) {
+                return;
+            }
+        }
+
+        //正常终止条件, 打印
+        if (n == 1) {
+            for (int i = startIndex; i < originArray.length; i++) {
+                if (originArray[i] == m) {
+                    selectArray[selectArray.length - n] = originArray[i];
+                    System.out.println("one of successful result is: ");
+                    for (int j = 0; j < selectArray.length; j++) {
+                        System.out.print(selectArray[j] + "\t");
+                    }
+                    System.out.println("\n");
+                    return;
+                }
+            }
+            return;
+        }
+
+        //递归调用
+        for (int i = startIndex; i <= originArray.length - n; i++) {
+            selectArray[selectArray.length - n] = originArray[i];
+            pickNum(originArray, n - 1, m - originArray[i], selectArray, i + 1, inorder);
+        }
+    }
+
+    /**
      * 二分查找
      *
      * @param array 有序源数组
