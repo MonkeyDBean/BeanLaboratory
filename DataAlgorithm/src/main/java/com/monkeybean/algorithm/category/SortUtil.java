@@ -349,6 +349,98 @@ public class SortUtil {
     }
 
     /**
+     * 基数排序
+     * 用于数据分布均匀的场景
+     *
+     * @param data   源数组
+     * @param maxBit 数组最大数的位数
+     */
+    public static void radixSort(int[] data, int maxBit) {
+        final int digitTypeNum = 10;
+
+        //临时存放数据的数组(桶)
+        int[] bucket = new int[data.length];
+
+        //计数数组
+        int[] count = new int[digitTypeNum];
+
+        //k表示第几位，1表示个位，2表示十位，3表示百位
+        for (int k = 1; k <= maxBit; k++) {
+
+            //每次循环前, 将count置空，防止上次循环数据影响本次计数
+            for (int i = 0; i < digitTypeNum; i++) {
+                count[i] = 0;
+            }
+
+            //统计每个桶中的数据数量(第k位是0,1,2,3,4,5,6,7,8,9的数量)
+            for (int i = 0; i < data.length; i++) {
+                count[getFigure(data[i], k)]++;
+            }
+
+            //利用count[i]来确定数据放置的位置
+            for (int i = 1; i < digitTypeNum; i++) {
+                count[i] = count[i] + count[i - 1];
+            }
+
+            //将数据从后往前装入各个桶中
+            for (int i = data.length - 1; i >= 0; i--) {
+                int j = getFigure(data[i], k);
+                bucket[count[j] - 1] = data[i];
+                count[j]--;
+            }
+
+            //将桶中的数据取出，赋值给data
+            for (int i = 0; i < data.length; i++) {
+                data[i] = bucket[i];
+            }
+        }
+    }
+
+    /**
+     * 获取整数的位数, 如1为1位, 100为3位, 2000为4位
+     *
+     * @param data 传入整数, int类型数据最大为10位
+     * @return 整数的位数
+     */
+    public static int getDigitBit(int data) {
+
+        //位数
+        int j = 1;
+
+        //int范围为-2147483648 ~ 2147483647
+        for (long i = 10; i <= Integer.MAX_VALUE; i *= 10, j++) {
+            if (i > data) {
+                break;
+            }
+        }
+        return j;
+    }
+
+    /**
+     * 获取整数第n位的数据
+     *
+     * @param data 传入整数
+     * @param n    位数; 如123, 第1位为3, 第2位为2, 第3位为1
+     * @return 成功则返回整数的第n位; 参数不合法则返回-1; 位数不足补0, 如数字3看做03, 第2位为0
+     */
+    public static int getFigure(int data, int n) {
+        if (n < 1 || n > 10) {
+            return -1;
+        }
+        int divisor = 1;
+        for (int i = 2; i <= n; i++) {
+            divisor *= 10;
+        }
+        if (data < divisor) {
+            return 0;
+        }
+        if (n < 10) {
+            data = data % (divisor * 10);
+        }
+        return data / divisor;
+    }
+
+    /**
      * 多条件排序
      *
      * @param num    元素数量

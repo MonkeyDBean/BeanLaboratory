@@ -120,4 +120,30 @@ public class SortUtilTest {
         SortUtil.print(origin);
     }
 
+    @Test
+    public void testRadixSort() {
+        int a = 1;
+        int b = 87654321;
+        int c = 2147483647;
+        System.out.println("number: " + a + ", bit: " + SortUtil.getDigitBit(a));
+        System.out.println("number: " + b + ", bit: " + SortUtil.getDigitBit(b));
+        System.out.println("number: " + c + ", bit: " + SortUtil.getDigitBit(c));
+        System.out.println("number: " + c + ", 1 bit is: " + SortUtil.getFigure(c, 1) + ", 5 bit is: " + SortUtil.getFigure(c, 5) + ", 10 bit is: " + SortUtil.getFigure(c, 10));
+
+        int[] testArray = {10000, 4, 12, 0, 456, 789, 88, 66, 1224, 1204, 1412, 12345};
+        int maxBit = 1;
+        for (int i = 0; i < testArray.length; i++) {
+            int numberBit = SortUtil.getDigitBit(testArray[i]);
+            if (numberBit > maxBit) {
+                maxBit = numberBit;
+            }
+        }
+        SortUtil.radixSort(testArray, maxBit);
+        System.out.println("call radixSort, result is: ");
+        for (int i = 0; i < testArray.length; i++) {
+            System.out.println(testArray[i] + "\t");
+        }
+        System.out.println();
+    }
+
 }
