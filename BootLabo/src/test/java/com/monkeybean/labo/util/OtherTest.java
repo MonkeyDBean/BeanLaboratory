@@ -374,4 +374,21 @@ public class OtherTest {
         logger.info("testLongToInt, originValue: [{}], convertValue: [{}]", originValue, convertValue);
     }
 
+    /**
+     * remove为移除底层集合的最后一个元素, 本例remove移除了iterator和list中的元素
+     * remove是删除上次调用next方法返回的元素, 即调用next方法后调用remove方法才会删除元素
+     * 必须先next再remove, 否则remove方法抛出IllegalStateException
+     */
+    @Test
+    public void testIteratorRemove() {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            list.add(i);
+        }
+        Iterator<Integer> iterator = list.iterator();
+        iterator.next();
+        iterator.remove();
+        assertTrue(list.size() == 2);
+    }
+
 }
