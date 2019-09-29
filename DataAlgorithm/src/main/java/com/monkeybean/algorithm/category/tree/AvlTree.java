@@ -1,4 +1,4 @@
-package com.monkeybean.algorithm.category;
+package com.monkeybean.algorithm.category.tree;
 
 import java.util.Stack;
 
