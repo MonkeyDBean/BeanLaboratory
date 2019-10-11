@@ -1,10 +1,7 @@
 package com.monkeybean.algorithm.category;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -24,6 +21,13 @@ public class StringRelated {
     private static volatile int i = 1;
 
     public static void main(String[] args) {
+
+        // 最大长度
+        System.out.println(searchMaxLength("1000100101", 3));
+        // System.out.println(searchMaxLength("1000100101", 2));
+        // System.out.println(searchMaxLength("1000100101", 0));
+        // System.out.println(searchMaxLength("1111101", 0));
+        // System.out.println(searchMaxLength("1111101", 1));
 
         // 子串查找
         String str1 = "www.taobao.com";
@@ -179,6 +183,81 @@ public class StringRelated {
                 System.out.println("char is: " + entry.getKey() + ", frequency is: " + entry.getValue());
             }
         }
+    }
+
+    /**
+     * 查找给定字符串中连续1的最大长度
+     * 双游标, 时间复杂度为O(n)
+     *
+     * @param s 给定字符串, 格式为二进制形式, 如1000100101
+     * @param k 可以将0翻转为1的个数
+     * @return 返回最大长度
+     * TODO
+     */
+    public static int searchMaxLength(String s, int k) {
+
+        //参数合法性判断
+        if (s == null || s.isEmpty() || k < 0) {
+            return 0;
+        }
+        if (s.length() <= k) {
+            return s.length();
+        }
+
+        //连续为1的子串最大长度
+        int maxLength = k;
+
+        //游标位置
+        int head = 0;
+        int tail = 0;
+
+        //将0翻转为1的剩余次数
+        int remainder = k;
+
+        //记录字符为0的元素位置，用于尾游标的赋值
+        Queue<Integer> markQueue = new ArrayDeque<>();
+
+        //初始化head游标位置
+        while (remainder > 0 && head < s.length()) {
+            if (s.charAt(head) == '0') {
+                remainder--;
+                markQueue.offer(head);
+            }
+            if (remainder > 0) {
+                head++;
+            }
+        }
+        while (head + 1 < s.length()) {
+            if (s.charAt(head + 1) == '1') {
+                head++;
+            } else {
+                break;
+            }
+        }
+        if (head - tail + 1 > maxLength) {
+            maxLength = head - tail + 1;
+        }
+
+        //双游标移动
+        while (head + 1 < s.length()) {
+            if (s.charAt(head + 1) == '0') {
+                if (markQueue.peek() == null) {
+                    break;
+                }
+                tail = markQueue.poll() + 1;
+                head++;
+                markQueue.offer(head);
+                while (head + 1 < s.length() && s.charAt(head + 1) == '1') {
+                    head++;
+                }
+            } else {
+                head++;
+            }
+            if (head - tail + 1 > maxLength) {
+                maxLength = head - tail + 1;
+            }
+        }
+        return maxLength;
     }
 
 }
