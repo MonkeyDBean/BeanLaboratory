@@ -14,6 +14,18 @@ public class DataUtilTest {
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
     @Test
+    public void testFindContinuousSequence() {
+        int n = 15;
+        DataUtil.findContinuousSequenceMethod1(n);
+        System.out.println("------");
+        DataUtil.findContinuousSequenceMethod2(n);
+        System.out.println("------");
+        DataUtil.findContinuousSequenceMethod3(n);
+        System.out.println("------");
+        DataUtil.findContinuousSequenceMethod4(n);
+    }
+
+    @Test
     public void testPickNum() {
         int n1 = 2;
         int m1 = 5;

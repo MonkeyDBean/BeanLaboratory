@@ -22,26 +22,8 @@ public class StringRelated {
 
     public static void main(String[] args) {
 
-        // 最大长度
-        System.out.println(searchMaxLength("1000100101", 3));
-        // System.out.println(searchMaxLength("1000100101", 2));
-        // System.out.println(searchMaxLength("1000100101", 0));
-        // System.out.println(searchMaxLength("1111101", 0));
-        // System.out.println(searchMaxLength("1111101", 1));
-
-        // 子串查找
-        String str1 = "www.taobao.com";
-        String str2 = "taobao";
-        System.out.println("str1: " + str1 + ", str2:" + str2 + ", result: " + searchSubstring(str1, str2));
-
-        // 字符频率
-        String[] strArray = {"www.taobao.com", "taobao", "asdf123123"};
-        charFrequency(strArray);
-
         // 奇偶打印
-        System.out.println();
         printOddAndEvenInorderByTwoThread();
-
     }
 
     /**
@@ -186,15 +168,55 @@ public class StringRelated {
     }
 
     /**
+     * 查找给定字符串连续1的最大长度
+     * 序列索引差值, 推荐
+     *
+     * @param s 给定字符串, 格式为二进制形式, 如1000100101
+     * @param k 可以将0翻转为1的个数
+     * @return 返回最大长度
+     */
+    public static int searchMaxLengthMethod1(String s, int k) {
+
+        //参数合法性判断
+        if (s == null || s.isEmpty()) {
+            return 0;
+        }
+        k = k > 0 ? k : 0;
+        if (s.length() <= k) {
+            return s.length();
+        }
+
+        //存储字符为0的索引位置及字符串两端外的索引位置(-1, n)
+        List<Integer> indexList = new ArrayList<>();
+        indexList.add(-1);
+        int maxLength = 0;
+        for (int i = 0; i <= s.length(); i++) {
+            if (i == s.length() || s.charAt(i) == '0') {
+                indexList.add(i);
+            }
+            if (indexList.size() >= k + 2) {
+
+                //两端的索引间隔, 间隔值越大, 包含的字符1就越多
+                int interval = indexList.get(indexList.size() - 1) - indexList.get(indexList.size() - k - 2) - 1;
+                if (interval > maxLength) {
+                    maxLength = interval;
+                }
+            } else if (i == s.length()) {
+                maxLength = s.length();
+            }
+        }
+        return maxLength;
+    }
+
+    /**
      * 查找给定字符串中连续1的最大长度
      * 双游标, 时间复杂度为O(n)
      *
      * @param s 给定字符串, 格式为二进制形式, 如1000100101
      * @param k 可以将0翻转为1的个数
      * @return 返回最大长度
-     * TODO
      */
-    public static int searchMaxLength(String s, int k) {
+    public static int searchMaxLengthMethod2(String s, int k) {
 
         //参数合法性判断
         if (s == null || s.isEmpty() || k < 0) {
@@ -208,8 +230,8 @@ public class StringRelated {
         int maxLength = k;
 
         //游标位置
-        int head = 0;
-        int tail = 0;
+        int head = -1;
+        int tail = -1;
 
         //将0翻转为1的剩余次数
         int remainder = k;
@@ -218,14 +240,12 @@ public class StringRelated {
         Queue<Integer> markQueue = new ArrayDeque<>();
 
         //初始化head游标位置
-        while (remainder > 0 && head < s.length()) {
-            if (s.charAt(head) == '0') {
+        while (remainder > 0 && head + 1 < s.length()) {
+            if (s.charAt(head + 1) == '0') {
                 remainder--;
-                markQueue.offer(head);
+                markQueue.offer(head + 1);
             }
-            if (remainder > 0) {
-                head++;
-            }
+            head++;
         }
         while (head + 1 < s.length()) {
             if (s.charAt(head + 1) == '1') {
@@ -234,27 +254,26 @@ public class StringRelated {
                 break;
             }
         }
-        if (head - tail + 1 > maxLength) {
-            maxLength = head - tail + 1;
+        if (head - tail > maxLength) {
+            maxLength = head - tail;
         }
 
         //双游标移动
         while (head + 1 < s.length()) {
-            if (s.charAt(head + 1) == '0') {
-                if (markQueue.peek() == null) {
-                    break;
+            head++;
+            if (s.charAt(head) == '0') {
+                if (markQueue.peek() != null) {
+                    tail = markQueue.poll();
+                    markQueue.offer(head);
+                } else {
+                    tail = head;
                 }
-                tail = markQueue.poll() + 1;
-                head++;
-                markQueue.offer(head);
                 while (head + 1 < s.length() && s.charAt(head + 1) == '1') {
                     head++;
                 }
-            } else {
-                head++;
             }
-            if (head - tail + 1 > maxLength) {
-                maxLength = head - tail + 1;
+            if (head - tail > maxLength) {
+                maxLength = head - tail;
             }
         }
         return maxLength;

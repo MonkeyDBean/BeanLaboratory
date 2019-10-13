@@ -10,6 +10,139 @@ import java.util.*;
 public class DataUtil {
 
     /**
+     * 查找所有连续自然数和为n的情况, 如15=1+2+3+4+5; 15=4+5+6; 15=7+8
+     * 遍历查找
+     * 时间复杂度较高, 不推荐
+     *
+     * @param n 给定正整数
+     */
+    public static void findContinuousSequenceMethod1(int n) {
+        if (n < 3) {
+            return;
+        }
+        for (int i = 1; i <= (n + 1) / 2; i++) {
+            int sum = i;
+            for (int j = i + 1; j <= (n + 1) / 2; j++) {
+                sum += j;
+                if (sum == n) {
+                    printContinuousSequence(i, j, n);
+                } else if (sum > n) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 查找所有连续自然数和为n的情况
+     * 区间值累加
+     *
+     * @param n 给定正整数
+     */
+    public static void findContinuousSequenceMethod2(int n) {
+        if (n < 3) {
+            return;
+        }
+
+        //begin及end表示和为n的连续正数区间,middle表示n的中间数
+        int begin = 1;
+        int end = 2;
+        int middle = (n + 1) / 2;
+        int sum = begin + end;
+        while (begin < middle) {
+            if (sum == n) {
+                printContinuousSequence(begin, end, n);
+
+                //从begin+1开始重新计算sum的值
+                begin++;
+                end = begin + 1;
+                sum = begin + end;
+            } else if (sum > n) {
+
+                //begin右移，减去最左边的数
+                sum -= begin;
+                begin++;
+            } else {
+
+                //end右移，添加一个数
+                end++;
+                sum += end;
+            }
+        }
+    }
+
+    /**
+     * 查找所有连续自然数和为n的情况
+     * 利用等差数列求和公式(a1表示首项值, n表示项数, d表示公差): S = n*a1 + n*(n-1)*d/2
+     *
+     * @param n 给定正整数
+     */
+    public static void findContinuousSequenceMethod3(int n) {
+        if (n < 3) {
+            return;
+        }
+        for (int i = 1; i <= (n + 1) / 2; i++) {
+
+            //j为连续序列的项数
+            for (int j = 1; j < (n + 1) / 2; j++) {
+
+                //sum表示以i开头，到i后面j项为止的等差数列和
+                int sum = i * j + (j * (j - 1) / 2);
+                if (sum == n) {
+                    printContinuousSequence(i, i + j - 1, n);
+                } else if (sum > n) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 查找所有连续自然数和为n的情况
+     * 利用等差数列求和公式(a1表示首项值, an表示末项值, n表示项数, d表示公差): S = (a1 + an) / 2 = (a1 + a1 + (n - 1)*d) / 2 = (2*a1 + n - 1) / 2, 即: ((2*S)/n - n + 1)/2 = a1
+     * 此处参数n表示和S, 为确定值, 连续自然数项数最小为2, 最大不超过(n+1)/2, 循环项数即可
+     * 时间复杂度低, 推荐
+     *
+     * @param n 给定正整数
+     */
+    public static void findContinuousSequenceMethod4(int n) {
+        if (n < 3) {
+            return;
+        }
+        for (int i = 2; i <= (n + 1) / 2; i++) {
+
+            //((2*n)/i - i + 1)/2 = a1
+            int temp = n * 2;
+            if (temp % i != 0) {
+                continue;
+            }
+            temp = temp / i - i + 1;
+            if (temp == 0 || temp % 2 != 0) {
+                continue;
+            }
+            int start = temp / 2;
+            int end = start + i - 1;
+            printContinuousSequence(start, end, n);
+        }
+    }
+
+    /**
+     * 格式化输出连续自然数
+     *
+     * @param begin 起始数字
+     * @param end   结束数字
+     * @param sum   自然数和
+     */
+    private static void printContinuousSequence(int begin, int end, int sum) {
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append(sum).append("=");
+        for (int i = begin; i < end; i++) {
+            sBuilder.append(i).append("+");
+        }
+        System.out.println(sBuilder.append(end).toString());
+    }
+
+    /**
      * 从数组选n个数, 和为m
      * 数组各元素值唯一, 无重复元素
      * 打印符合条件的数组
