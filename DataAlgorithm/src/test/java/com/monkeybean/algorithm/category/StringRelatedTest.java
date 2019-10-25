@@ -9,20 +9,20 @@ import org.junit.Test;
 public class StringRelatedTest {
 
     @Test
-    public void searchSubstring() throws Exception {
+    public void searchSubstring() {
         String str1 = "www.taobao.com";
         String str2 = "taobao";
         System.out.println("str1: " + str1 + ", str2:" + str2 + ", result: " + StringRelated.searchSubstring(str1, str2));
     }
 
     @Test
-    public void charFrequency() throws Exception {
+    public void charFrequency() {
         String[] strArray = {"www.taobao.com", "taobao", "asdf123123"};
         StringRelated.charFrequency(strArray);
     }
 
     @Test
-    public void searchMaxLengthMethod() throws Exception {
+    public void searchMaxLengthMethod() {
         String originStr1 = "01000100101";
         String originStr2 = "1111101";
         String originStr3 = "00000";
@@ -58,6 +58,18 @@ public class StringRelatedTest {
         System.out.println(method1Res6);
         System.out.println(method1Res7);
         System.out.println(method1Res8);
+    }
+
+    @Test
+    public void searchLongestCyclicSubstring() {
+        String originStr = "banana";
+        StringRelated.searchLongestRepeatedSubstringMethod1(originStr);
+        System.out.println("dynamic method, originString is: " + originStr
+                + ", result is: " + StringRelated.searchLongestRepeatedSubstringMethod2(originStr));
+        String originStr2 = "aaaaa";
+        StringRelated.searchLongestRepeatedSubstringMethod1(originStr2);
+        System.out.println("dynamic method, originString is: " + originStr2
+                + ", result is: " + StringRelated.searchLongestRepeatedSubstringMethod2(originStr2));
     }
 
 }

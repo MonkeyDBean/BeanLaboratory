@@ -113,7 +113,7 @@ public class StringRelated {
 
             // 查找首个相等字符的位置
             if (charArray1[i] != charArray2[0]) {
-                while (++i <= max && charArray1[i] != charArray2[0]) ;
+                while (i++ <= max && charArray1[i] != charArray2[0]) ;
             }
 
             // 匹配剩余字符
@@ -277,6 +277,166 @@ public class StringRelated {
             }
         }
         return maxLength;
+    }
+
+    /**
+     * 查找最长重复子串
+     * 示例: banana的最长重复子串为ana; aaaa的最长重复子串为aaa
+     * 双指针查找, 滑动窗口
+     *
+     * @param originStr 给定字符串
+     */
+    public static void searchLongestRepeatedSubstringMethod1(String originStr) {
+        if (originStr == null || originStr.length() <= 1) {
+            return;
+        }
+        String aimSubstring = "";
+        int start = 0;
+        int end = 1;
+        int cyclicCount = 0;
+        while (start < originStr.length() - 1 && aimSubstring.length() < originStr.length() - start) {
+            String searchSubStr = originStr.substring(start, end);
+            if (originStr.indexOf(searchSubStr, start + 1) != -1 || end > originStr.length()) {
+                end++;
+                if (searchSubStr.length() > aimSubstring.length()) {
+                    aimSubstring = searchSubStr;
+                }
+            } else {
+                start++;
+                end = start + 1;
+            }
+            cyclicCount++;
+        }
+        System.out.println("originStr is: " + originStr + ", aimSubstring is: " + aimSubstring
+                + ", substringLength is: " + aimSubstring.length() + ", cyclicCount is: " + cyclicCount);
+    }
+
+    /**
+     * 查找最长重复子串
+     * 动态规划(此题目在leetCode对应编号为1044)
+     * 后缀数组(可使用倍增算法或DC3算法构建), 本例使用倍增算法构建
+     * reference: https://www.cnblogs.com/jinkun113/p/4743694.html, https://www.cnblogs.com/victorique/p/8480093.html
+     *
+     * @param originStr 给定字符串
+     * @return 最长重复子串
+     */
+    public static String searchLongestRepeatedSubstringMethod2(String originStr) {
+        if (originStr == null || originStr.length() <= 1) {
+            return "";
+        }
+        int[] sa = getSuffixArray(originStr);
+        int maxCommonLength = 0;
+        int maxCommonLengthOffset = 0;
+
+        //比较LCP(longest common prefix)
+        for (int i = 1; i < sa.length; i++) {
+            int offset1 = sa[i];
+            int offset2 = sa[i - 1];
+            int commonLength = 0;
+            while (offset1 < originStr.length() && offset2 < originStr.length() && originStr.charAt(offset1) == originStr.charAt(offset2)) {
+                offset1++;
+                offset2++;
+                commonLength++;
+            }
+            if (commonLength > maxCommonLength) {
+                maxCommonLength = commonLength;
+                maxCommonLengthOffset = sa[i];
+            }
+        }
+        return originStr.substring(maxCommonLengthOffset, maxCommonLengthOffset + maxCommonLength);
+    }
+
+    /**
+     * 获取后缀数组(后缀子串的有序数组)
+     * 后缀数组排序过程图见image目录下的suffix_array.png
+     *
+     * @param originStr 给定字符串
+     */
+    private static int[] getSuffixArray(String originStr) {
+        char[] charArr = originStr.toCharArray();
+
+        //记录字符序列个数的数组, 初始化默认为0, 此处无需调用Arrays.fill(bucket, 0);
+        int[] bucket = new int[255];
+
+        //排名数组, 索引为后缀串首字符位置, 值为该串的排名分值(对于相同的字符, 排名分值相同)
+        int[] rank = new int[charArr.length];
+
+        //计算所有后缀串的排名分值
+        for (int i = 0; i < charArr.length; i++) {
+            bucket[charArr[i]]++;
+        }
+        for (int i = 1; i < bucket.length; i++) {
+            bucket[i] = bucket[i - 1] + bucket[i];
+        }
+        for (int i = 0; i < charArr.length; i++) {
+            rank[i] = bucket[charArr[i]] - 1;
+        }
+
+        //rank2存放后半部分后缀串的排名分值, 长度不够的设置为0
+        int[] rank2 = new int[charArr.length];
+        bucket = new int[charArr.length];
+
+        //后半部分的排序, 索引为名次, 值为后缀串
+        int[] sa2 = new int[charArr.length];
+
+        //整体的排序
+        int[] sa = new int[charArr.length];
+
+        //对整体排序要赋一个排名分值
+        int[] newRank = new int[charArr.length];
+
+        for (int k = 1; k < charArr.length; k *= 2) {
+
+            //后半部分的排名分值, 从前半部分得到
+            for (int i = 0; i < charArr.length; i++) {
+                rank2[i] = (i + k) < charArr.length ? rank[i + k] : 0;
+            }
+
+            //后半部分排序
+            Arrays.fill(bucket, 0);
+            for (int i = 0; i < charArr.length; i++) {
+                bucket[rank2[i]]++;
+            }
+            for (int i = 1; i < bucket.length; i++) {
+                bucket[i] = bucket[i - 1] + bucket[i];
+            }
+            for (int i = charArr.length - 1; i >= 0; i--) {
+                int rk = --bucket[rank2[i]];
+                sa2[rk] = i;
+            }
+
+            //对前半部分进行排序
+            Arrays.fill(bucket, 0);
+            for (int i = 0; i < charArr.length; i++) {
+                bucket[rank[i]]++;
+            }
+            for (int i = 1; i < bucket.length; i++) {
+                bucket[i] = bucket[i - 1] + bucket[i];
+            }
+            for (int i = charArr.length - 1; i >= 0; i--) {
+
+                //顺序值是根据后半部分计算, 基数排序, 排好了个位数, 现在排十位数，如果十位数相同, 那么已排好的个位数顺序也不会乱
+                int rk = --bucket[rank[sa2[i]]];
+                sa[rk] = sa2[i];
+            }
+
+            //计算新的排序分值, 如果前半部分和后半部分的排序分值都不一样, 则终止
+            newRank[sa[0]] = 0;
+            boolean uniqueRank = true;
+            for (int i = 1; i < charArr.length; i++) {
+                newRank[sa[i]] = newRank[sa[i - 1]];
+                if (rank[sa[i]] == rank[sa[i - 1]] && rank2[sa[i]] == rank2[sa[i - 1]]) {
+                    uniqueRank = false;
+                } else {
+                    newRank[sa[i]] += 1;
+                }
+            }
+            if (uniqueRank) {
+                break;
+            }
+            System.arraycopy(newRank, 0, rank, 0, charArr.length);
+        }
+        return sa;
     }
 
 }

@@ -10,6 +10,105 @@ import java.util.*;
 public class DataUtil {
 
     /**
+     * 动态规划(Dynamic Programming)是多阶段最优化决策解决的过程, 每次决策依赖于当前状态, 又随即引起状态的转移, 一个决策序列是在变化的过程中产生。
+     * 动态规划是一系列以空间换取时间的算法, 最优原理是原问题的最优解包含子问题的最优解。
+     * 基本方法是为了节约重复求相同子问题的时间, 引入数组, 不管它们对最终解是否有用, 把所有子问题的解存于该数组中。
+     * <p>
+     * M*N矩阵中有不同的正整数, 经过这个格子, 就能获得相应价值的奖励, 从左上走到右下, 只能向下向右走, 求能够获得的最大价值。
+     *
+     * @param matrix 矩阵数据
+     * @param m      矩阵行数
+     * @param n      矩阵列数
+     * @return 最大权值
+     */
+    public static int getMatrixHeavy(int[][] matrix, int m, int n) {
+
+        //int m = matrix.length;
+        //动态规划记录数组
+        int[][] dpArray = new int[m][n];
+        int sum = 0;
+        for (int i = 0; i < m; i++) {
+            sum += matrix[i][0];
+            dpArray[i][0] = sum;
+        }
+        sum = 0;
+        for (int j = 0; j < n; j++) {
+            sum += matrix[0][j];
+            dpArray[0][j] = sum;
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+
+                //到当前节点的最大权值 = 当前节点权重 + 到上一节点的最大权值
+                dpArray[i][j] = matrix[i][j] + Math.max(dpArray[i - 1][j], dpArray[i][j - 1]);
+            }
+        }
+        return dpArray[m - 1][n - 1];
+    }
+
+    /**
+     * 给定n个整数(可能包含负数)组成的序列, 求该序列的最大子段和
+     * 动态规划
+     *
+     * @param array 给定数组
+     * @return 最大字段和
+     */
+    public static int maxSequenceSum(int[] array) {
+        int[] dpArray = new int[array.length];
+        dpArray[0] = array[0];
+        int max = array[0];
+        for (int i = 1; i < array.length; i++) {
+            dpArray[i] = Math.max(array[i], array[i] + dpArray[i - 1]);
+            max = dpArray[i] > max ? dpArray[i] : max;
+        }
+        return max;
+    }
+
+    /**
+     * 斐波那契数列: 楼梯共N阶, 初始在第一阶, 每次只能上一阶或两阶, 走到第N阶共有多少走法
+     * 递归
+     *
+     * @param n 阶数
+     * @return 总情况数
+     */
+    public static int fibonacciRecursive(int n) {
+        if (n <= 0) {
+            return 0;
+        } else if (n == 1) {
+            return 1;
+        } else {
+            return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+        }
+    }
+
+    /**
+     * 斐波那契数列: 楼梯阶梯问题, 初始在第一阶
+     * 动态规划
+     *
+     * @param n 阶数
+     * @return 总情况数
+     */
+    public static int fibonacci(int n) {
+        if (n <= 0) {
+            return 0;
+        } else if (n == 1 || n == 2) {
+            return 1;
+        } else {
+
+            //动态规划子集, 开辟n+1长度内存, 实际也可开辟n长度的内存(阶数存储位置向左偏移1)
+            int[] dpArray = new int[n + 1];
+
+            //初始在第一阶, 到达第二阶情况数为1, 第三阶情况数为3
+            dpArray[2] = 1;
+            dpArray[3] = 2;
+            for (int i = 4; i <= n; i++) {
+                dpArray[i] = dpArray[i - 1] + dpArray[i - 2];
+            }
+            return dpArray[n];
+        }
+    }
+
+    /**
      * 查找所有连续自然数和为n的情况, 如15=1+2+3+4+5; 15=4+5+6; 15=7+8
      * 遍历查找
      * 时间复杂度较高, 不推荐

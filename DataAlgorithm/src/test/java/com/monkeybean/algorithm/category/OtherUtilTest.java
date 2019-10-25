@@ -38,6 +38,20 @@ public class OtherUtilTest {
         System.out.println("testForceCast, value: " + value);
     }
 
+    /**
+     * ASCII码的字符范围为0-127
+     * ISO-8859-1(Latin-1)是单字节编码, 字符范围为0-255, 用于英文等欧洲字符的编码
+     * UTF-8对单字节范围内字符仍然用一个字节表示，对汉字采用三个字节表示
+     * UTF编码兼容ISO-8859-1编码，同时也是可以用来表示所有语言的字符
+     * UTF-8 > ISO-8859-1 > ASCII
+     */
+    @Test
+    public void testDecode() {
+        System.out.println("system default charset: " + System.getProperty("file.encoding"));
+        String testStr = "你好";
+        assert testStr.equals(new String(new String(testStr.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1).getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
+    }
+
     @Test
     public void testFileRead() throws Exception {
 

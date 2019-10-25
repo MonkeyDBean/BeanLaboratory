@@ -14,6 +14,36 @@ public class DataUtilTest {
     private static final Logger logger = LoggerFactory.getLogger(DataUtilTest.class);
 
     @Test
+    public void getMatrixHeavy() {
+        int n = 3;
+        int[][] array = {{1, 3, 3}, {2, 1, 3}, {2, 2, 1}};
+//        int[][] array = new int[n][];
+//        int count = 0;
+//        for (int i = 0; i < array.length; i++) {
+//            int[] temp = new int[n];
+//            for (int j = 0; j < temp.length; j++) {
+//                temp[j] = ++count;
+//            }
+//            array[i] = temp;
+//        }
+        System.out.println("getMatrixHeavy, n is: " + n + ", res is: " + DataUtil.getMatrixHeavy(array, n, n));
+    }
+
+    @Test
+    public void maxSequenceSum() {
+        int[] array = {-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        System.out.println("maxSequenceSum, res is: " + DataUtil.maxSequenceSum(array));
+    }
+
+    @Test
+    public void fibonacci() {
+        int n = 27;
+        int recursiveRes = DataUtil.fibonacciRecursive(n);
+        assert DataUtil.fibonacci(n) == recursiveRes;
+        System.out.println("n is: " + n + ", res: " + recursiveRes);
+    }
+
+    @Test
     public void testFindContinuousSequence() {
         int n = 15;
         DataUtil.findContinuousSequenceMethod1(n);
