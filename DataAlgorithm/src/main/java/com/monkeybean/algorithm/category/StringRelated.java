@@ -439,4 +439,105 @@ public class StringRelated {
         return sa;
     }
 
+    /**
+     * 单词匹配
+     * 给定二维小写、无序不重复的字符数组chars(矩阵), 搜索不定长度的全小写字符的单词word是否在字符数组chars出现
+     * 搜索规则: 从chars任意位置开始, 可以向上、下、左、右移动, 依次和word的每个字符匹配, 如果能够匹配完成, 则输出true, 匹配失败返回false
+     * 遍历查找
+     *
+     * @param chars      给定的二维数组, 元素均为小写字符
+     * @param arrayWidth 给定的数组宽度(内部一维数组的长度)
+     * @param word       给定的单词word, 由小写字符组成
+     * @return 匹配成功返回true, 失败返回false
+     */
+    public static boolean wordMatch(char[][] chars, int arrayWidth, String word) {
+        boolean result = false;
+
+        //参数合法性判读
+        if (chars == null || word == null || word.isEmpty() || chars.length + arrayWidth < word.length()) {
+            return result;
+        }
+
+        //二维数组长度
+        int arrayLength = chars.length;
+
+        //给定单词的首字符
+        char wordHead = word.charAt(0);
+
+        //单词字符在数组中的匹配索引
+        final int defaultIndex = -1;
+        int arrayIndexI = defaultIndex;
+        int arrayIndexJ = defaultIndex;
+
+        //搜索首字符位置, 然后比较各个方向的后续字符
+        for (int i = 0; i < arrayLength; i++) {
+            for (int j = 0; j < arrayWidth; j++) {
+                if (chars[i][j] == wordHead) {
+                    arrayIndexI = i;
+                    arrayIndexJ = j;
+                    break;
+                }
+            }
+            if (arrayIndexI != defaultIndex) {
+                break;
+            }
+        }
+
+        //搜索到首字符
+        if (arrayIndexI != defaultIndex) {
+
+            //给定单词的遍历索引位置
+            int wordSearchIndex = 0;
+
+            //每次字符搜索结果
+            boolean eachSearchRes = false;
+            while (wordSearchIndex < word.length()) {
+                if (wordSearchIndex != 0) {
+                    if (eachSearchRes) {
+                        eachSearchRes = false;
+                    } else {
+                        break;
+                    }
+                }
+                wordSearchIndex++;
+                if (wordSearchIndex == word.length()) {
+                    break;
+                }
+                char nextChar = word.charAt(wordSearchIndex);
+
+                //向上
+                if (arrayIndexI > 0 && nextChar == chars[arrayIndexI - 1][arrayIndexJ]) {
+                    arrayIndexI--;
+                    eachSearchRes = true;
+                    continue;
+                }
+
+                //向下
+                if (arrayIndexI < arrayWidth - 1 && nextChar == chars[arrayIndexI + 1][arrayIndexJ]) {
+                    arrayIndexI++;
+                    eachSearchRes = true;
+                    continue;
+                }
+
+                //向左
+                if (arrayIndexJ > 0 && nextChar == chars[arrayIndexI][arrayIndexJ - 1]) {
+                    arrayIndexJ--;
+                    eachSearchRes = true;
+                    continue;
+                }
+
+                //向右
+                if (arrayIndexJ < arrayLength - 1 && nextChar == chars[arrayIndexI][arrayIndexJ + 1]) {
+                    arrayIndexJ++;
+                    eachSearchRes = true;
+                    continue;
+                }
+            }
+            if (wordSearchIndex == word.length()) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
 }

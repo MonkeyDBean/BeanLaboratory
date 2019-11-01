@@ -25,7 +25,6 @@ public class BinaryTree {
         BinaryTree tree = new BinaryTree();
         int num = 10;
         tree.initCompleteTree(num);
-        // tree.generateFixed();
 
         //广度优先遍历
         tree.broadTraversal();
@@ -58,6 +57,10 @@ public class BinaryTree {
                 System.out.print(" -> ");
             }
         }
+
+        //蛇形打印
+        tree.generateFixed();
+        tree.snakePrint(tree.getTreeRoot());
     }
 
     /**
@@ -200,6 +203,169 @@ public class BinaryTree {
         for (int i = 0; i < nodeList.size(); i++) {
             System.out.println("index: " + i + ", data: " + nodeList.get(i).getData() + ", heavy: " + nodeList.get(i).getHeavy());
         }
+    }
+
+    /**
+     * 蛇形打印二叉树, 即第一行从左到右的顺序打印, 第二行从右到左的顺序打印, 第三行从左到右...
+     * 此题对应leetcode编号为103
+     *
+     * @param root 根节点
+     **/
+    public void snakePrint(Node root) {
+        if (root == null) {
+            return;
+        }
+        System.out.println();
+        List<List<Integer>> list = snakeLevelOrderMethod1(root);
+
+        //逐层打印
+        System.out.println("Binary Tree Zigzag Level Order Traversal, Method1:");
+        listTravel(list);
+        list = snakeLevelOrderMethod2(root);
+        System.out.println("Binary Tree Zigzag Level Order Traversal, Method2:");
+        listTravel(list);
+        list = snakeLevelOrderMethod3(root);
+        System.out.println("Binary Tree Zigzag Level Order Traversal, Method3:");
+        listTravel(list);
+    }
+
+    /**
+     * 打印给定list
+     *
+     * @param list 二维列表
+     */
+    private void listTravel(List<List<Integer>> list) {
+        for (List<Integer> levelList : list) {
+            for (Integer data : levelList) {
+                System.out.print(data + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * 锯齿层级遍历
+     * 通过队列实现
+     *
+     * @param root 根节点
+     * @return 层级节点数据列表
+     */
+    private List<List<Integer>> snakeLevelOrderMethod1(Node root) {
+        List<List<Integer>> allList = new ArrayList<>();
+        int level = 0;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            List<Integer> eachList = new ArrayList<>();
+
+            //同一层节点数量
+            int size = queue.size();
+            while (size > 0) {
+                Node curNode = queue.poll();
+                eachList.add(curNode.getData());
+                if (curNode.getlChild() != null) {
+                    queue.offer(curNode.getlChild());
+                }
+                if (curNode.getrChild() != null) {
+                    queue.offer(curNode.getrChild());
+                }
+                size--;
+            }
+            if ((level & 1) == 1) {
+                Collections.reverse(eachList);
+            }
+            allList.add(eachList);
+            level++;
+        }
+        return allList;
+    }
+
+    /**
+     * 锯齿层级遍历
+     * 通过两个栈实现
+     *
+     * @param root 根节点
+     * @return 层级节点数据列表
+     */
+    private List<List<Integer>> snakeLevelOrderMethod2(Node root) {
+        List<List<Integer>> allList = new ArrayList<>();
+        boolean startLeft = true;
+        Stack<Node> evenNodeStack = new Stack<>();
+        Stack<Node> oddNodeStack = new Stack<>();
+        evenNodeStack.push(root);
+        List<Integer> eachList = new ArrayList<>();
+        while (!evenNodeStack.isEmpty() || !oddNodeStack.isEmpty()) {
+            if (startLeft) {
+                if (!evenNodeStack.isEmpty()) {
+                    Node curNode = evenNodeStack.pop();
+                    eachList.add(curNode.getData());
+                    if (curNode.getlChild() != null) {
+                        oddNodeStack.push(curNode.getlChild());
+                    }
+                    if (curNode.getrChild() != null) {
+                        oddNodeStack.push(curNode.getrChild());
+                    }
+                    if (evenNodeStack.isEmpty()) {
+                        startLeft = !startLeft;
+                        allList.add(eachList);
+                        eachList = new ArrayList<>();
+                    }
+                }
+            } else {
+                if (!oddNodeStack.isEmpty()) {
+                    Node curNode = oddNodeStack.pop();
+                    eachList.add(curNode.getData());
+                    if (curNode.getrChild() != null) {
+                        evenNodeStack.push(curNode.getrChild());
+                    }
+                    if (curNode.getlChild() != null) {
+                        evenNodeStack.push(curNode.getlChild());
+                    }
+                    if (oddNodeStack.isEmpty()) {
+                        startLeft = !startLeft;
+                        allList.add(eachList);
+                        eachList = new ArrayList<>();
+                    }
+                }
+            }
+        }
+        return allList;
+    }
+
+    /**
+     * 锯齿层级遍历
+     * 通过递归实现
+     *
+     * @param root 根节点
+     * @return 层级节点数据列表
+     */
+    private List<List<Integer>> snakeLevelOrderMethod3(Node root) {
+        List<List<Integer>> allList = new ArrayList<>();
+        traversal(root, allList, 0);
+        return allList;
+    }
+
+    /**
+     * 通过dps的思想实现锯齿遍历
+     *
+     * @param root    根节点
+     * @param allList 数据存储列表
+     * @param level   层级
+     */
+    private void traversal(Node root, List<List<Integer>> allList, int level) {
+        if (root == null) {
+            return;
+        }
+        if (allList.size() < level + 1) {
+            allList.add(new ArrayList<>());
+        }
+        if ((level & 1) == 1) {
+            allList.get(level).add(0, root.getData());
+        } else {
+            allList.get(level).add(root.getData());
+        }
+        traversal(root.getlChild(), allList, level + 1);
+        traversal(root.getrChild(), allList, level + 1);
     }
 
     /**

@@ -72,4 +72,18 @@ public class StringRelatedTest {
                 + ", result is: " + StringRelated.searchLongestRepeatedSubstringMethod2(originStr2));
     }
 
+    @Test
+    public void wordMatch() {
+        char[][] charArray = {{'a', 'e', 'f'}, {'d', 'x', 'j'}, {'m', 'q', 'h'}};
+        int arrayWidth = 3;
+        String testStr1 = "adx";
+        String testStr2 = "fjh";
+        String testStr3 = "ada";
+        String testStr4 = "axh";
+        assert StringRelated.wordMatch(charArray, arrayWidth, testStr1);
+        assert StringRelated.wordMatch(charArray, arrayWidth, testStr2);
+        assert StringRelated.wordMatch(charArray, arrayWidth, testStr3);
+        assert !StringRelated.wordMatch(charArray, arrayWidth, testStr4);
+    }
+
 }

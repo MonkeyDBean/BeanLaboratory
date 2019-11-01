@@ -44,7 +44,14 @@ public class DataUtilTest {
     }
 
     @Test
-    public void testFindContinuousSequence() {
+    public void findMaxUnContinuousSum() {
+        int[] array = {1, 5, 2, 1, 7};
+        int predictSum = 12;
+        assert predictSum == DataUtil.findMaxUnContinuousSum(array);
+    }
+
+    @Test
+    public void findContinuousSequence() {
         int n = 15;
         DataUtil.findContinuousSequenceMethod1(n);
         System.out.println("------");
@@ -56,7 +63,7 @@ public class DataUtilTest {
     }
 
     @Test
-    public void testPickNum() {
+    public void pickNum() {
         int n1 = 2;
         int m1 = 5;
         int[] originArray1 = {1, 2, 3, 4, 5, 6};
@@ -88,7 +95,7 @@ public class DataUtilTest {
     }
 
     @Test
-    public void testBinarySearch() {
+    public void binarySearch() {
         int n = 50;
         int[] array = new int[n];
         for (int i = 0; i < array.length; i++) {

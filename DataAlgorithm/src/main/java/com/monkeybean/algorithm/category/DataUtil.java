@@ -109,6 +109,26 @@ public class DataUtil {
     }
 
     /**
+     * 数组不相邻元素最大值, 数组元素均为正整数
+     * 动态规划, 对应leetcode编号为198
+     *
+     * @param array 给定数组
+     * @return 和的最大值
+     */
+    public static int findMaxUnContinuousSum(int[] array) {
+        if (array == null || array.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[array.length + 1];
+        dp[0] = 0;
+        dp[1] = array[0];
+        for (int i = 2; i <= array.length; i++) {
+            dp[i] = Math.max(dp[i - 1], dp[i - 2] + array[i - 1]);
+        }
+        return dp[array.length];
+    }
+
+    /**
      * 查找所有连续自然数和为n的情况, 如15=1+2+3+4+5; 15=4+5+6; 15=7+8
      * 遍历查找
      * 时间复杂度较高, 不推荐

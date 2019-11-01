@@ -2,6 +2,14 @@ package com.monkeybean.algorithm.pattern.behavior.template;
 
 /**
  * 设计模式代表最佳实践, 是软件开发人员在软件开发过程中面临一般问题的解决方案, 这些解决方案是众多软件开发人员长时间的试验和错误总结而出。
+ * 六大原则(记忆方法, 首字母连接为Solid):
+ * 1.单一原则(Single Responsibility Principle): 一个类只负责一个功能领域的相应职责, 就一个类而言, 应该只有一个引起它变化的原因, 单一原则是实现高内聚低耦合的指导方针。
+ * 2.开闭原则(Open-Closed Principle): 一个软件实体(一个软件模块或一个由多个类组成的局部结构或一个独立的类)应当对扩展开放, 对修改关闭, 即软件实体尽量在不修改原代码的情况下进行扩展, 抽象化是开闭原则的关键。
+ * 3.里式替换原则(Liskov Substitution Principle): 子类可以扩展父类的功能, 但是不能改变原有父类的功能, 所有引用父类的地方必须能透明的使用其子类的对象, 因此在程序中尽量使用父类来定义, 在运行时再确定子类类型, 用子类对象替换父类对象。
+ * 4.迪米特法则(Law of Demeter): 一个软件实体应尽可能少地与其他实体发生相互作用, 尽量降低类与类之间的耦合, 如果两个对象之间不必直接通信, 一个对象调用另一个对象可通过第三者转发这个调用。
+ * 5.接口隔离(Interface Segregation Principle): 使用多个专门的接口, 而不是单一的总借口, 即客户端不应该依赖那些它不需要的接口, 每一个接口应该承担一种相对独立的角色, 应该对客户端提供尽可能小的单独接口。
+ * 6.依赖倒置原则(Dependence Inversion Principle): 抽象不应该依赖于细节, 细节应该依赖于抽象, 面向接口编程, 而不是针对实现编程。
+ * <p>
  * Design Patterns - Elements of Reusable Object-Oriented Software(中文译名：设计模式 - 可复用的面向对象软件元素)中提到总共有23种设计模式.
  * 设计模式可分为三大类:创建型模式(Creation Pattern), 结构型模式(Structural Pattern), 行为型模式(Behavior Pattern)。
  * 除此之外，还有J2EE设计模式。
